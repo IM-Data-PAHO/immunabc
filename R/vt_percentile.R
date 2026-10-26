@@ -2,7 +2,7 @@
 #'
 #' This function calculates the number of days since the start of the timeliness window needed to vaccinate a given percentage of the analyzed records, for each \code{dose} and geographic area present in \code{data}.
 #'
-#' @param data The output from the \code{immunABC::vt_distribution} function. The disaggregation is inherited from this data.
+#' @param data The output from the \code{immunabc::vt_distribution} function. The disaggregation is inherited from this data.
 #' @param percentiles Numeric. A vector of percentiles (greater than 0 and at most 100) to calculate. Default is \code{c(25, 50, 75)}.
 #'
 #' @return A data frame with one row per \code{percentile} for each \code{dose} and geographic area, with the following columns:

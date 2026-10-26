@@ -3,7 +3,7 @@
 #' This function generates a heatmap displaying the proportion of doses administered
 #' by place of occurrence, for each place of residence.
 #'
-#' @param data The output from the \code{immunABC::roc_distribution} function.
+#' @param data The output from the \code{immunabc::roc_distribution} function.
 #' @param digits The number of digits to show in the labels. Default is 0.
 #'
 #' @return A ggplot object representing the heatmap.

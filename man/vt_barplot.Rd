@@ -7,7 +7,7 @@
 vt_barplot(data, within_ADM1 = NULL, plot_missing = TRUE)
 }
 \arguments{
-\item{data}{The output from the \code{immunABC::vt_rate} function.}
+\item{data}{The output from the \code{immunabc::vt_rate} function.}
 
 \item{within_ADM1}{Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".}
 

@@ -7,7 +7,7 @@
 roc_heatmap(data, digits = 0)
 }
 \arguments{
-\item{data}{The output from the \code{immunABC::roc_distribution} function.}
+\item{data}{The output from the \code{immunabc::roc_distribution} function.}
 
 \item{digits}{The number of digits to show in the labels. Default is 0.}
 }

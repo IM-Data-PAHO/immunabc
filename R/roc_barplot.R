@@ -2,7 +2,7 @@
 #'
 #' This function creates a bar plot showing vaccination coverage by place of residence and place of vaccination occurrence.
 #'
-#' @param data The output from the \code{immunABC::roc_coverage()} function.
+#' @param data The output from the \code{immunabc::roc_coverage()} function.
 #' @param year A numeric value specifying the year of the data to be plotted. Only one year.
 #' @param vaccine A string specifying the vaccine of interest. Only one vaccine.
 #' @param within_ADM1 When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".

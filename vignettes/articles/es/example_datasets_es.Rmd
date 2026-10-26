@@ -16,7 +16,7 @@ output:
 <a href="../en/example_datasets_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
-library(immunABC)
+library(immunabc)
 library(dplyr)
 library(knitr)
 ```
@@ -58,7 +58,7 @@ Por ejemplo, los nombres de las vacunas utilizados en el paquete immunABC son:
 
 ## immunABC.EIR
 
-El conjunto de datos `immunABC::immunABC.EIR` es el más importante del paquete. Proporciona un ejemplo de Registro Nominal de Vacunación electrónico (RNVe). Es una tabla nominal simulada con eventos individuales de vacunación. Cada fila corresponde a una vacunación e incluye información sobre la residencia de la persona, el lugar donde fue vacunada, su fecha de nacimiento y la dosis recibida.
+El conjunto de datos `immunabc::immunABC.EIR` es el más importante del paquete. Proporciona un ejemplo de Registro Nominal de Vacunación electrónico (RNVe). Es una tabla nominal simulada con eventos individuales de vacunación. Cada fila corresponde a una vacunación e incluye información sobre la residencia de la persona, el lugar donde fue vacunada, su fecha de nacimiento y la dosis recibida.
 
 ```{r immunABC-EIR, message=FALSE}
 immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacunación electrónico")
@@ -75,7 +75,7 @@ immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacu
 
 ## immunABC.schedule
 
-El conjunto de datos `immunABC::immunABC.schedule` define el esquema nacional de vacunación, con cada dosis y su edad recomendada de administración (en días). Esta tabla permite determinar si una persona tiene las vacunas que le corresponden según el esquema.
+El conjunto de datos `immunabc::immunABC.schedule` define el esquema nacional de vacunación, con cada dosis y su edad recomendada de administración (en días). Esta tabla permite determinar si una persona tiene las vacunas que le corresponden según el esquema.
 
 ```{r immunABC-schedule, message=FALSE}
 immunABC.schedule %>% kable(caption = "Ejemplo de esquema de vacunación")
@@ -96,7 +96,7 @@ Los conjuntos de datos de población proporcionan estimaciones poblacionales en 
 
 ### immunABC.pop.ADM0
 
-El conjunto de datos `immunABC::immunABC.pop.ADM0` proporciona estimaciones poblacionales agregadas a nivel nacional (ADM0).
+El conjunto de datos `immunabc::immunABC.pop.ADM0` proporciona estimaciones poblacionales agregadas a nivel nacional (ADM0).
 
 ```{r immunABC-pop-ADM0, message=FALSE}
 immunABC.pop.ADM0 %>% kable(caption = "Ejemplo de población a nivel ADM0")
@@ -106,7 +106,7 @@ Esta tabla está en formato largo y contiene la población (`population`) de ni�
 
 ### immunABC.pop.ADM1
 
-El conjunto de datos `immunABC::immunABC.pop.ADM1` proporciona datos poblacionales agregados al primer nivel administrativo subnacional (ADM1), que suele corresponder a regiones, provincias o estados.
+El conjunto de datos `immunabc::immunABC.pop.ADM1` proporciona datos poblacionales agregados al primer nivel administrativo subnacional (ADM1), que suele corresponder a regiones, provincias o estados.
 
 ```{r immunABC-pop-ADM1, message=FALSE}
 immunABC.pop.ADM1 %>% head() %>% kable(caption = "Ejemplo de población a nivel ADM1")
@@ -116,7 +116,7 @@ Esta tabla está en formato largo y contiene la población (`population`) de ni�
 
 ### immunABC.pop.ADM2
 
-El conjunto de datos `immunABC::immunABC.pop.ADM2` proporciona datos poblacionales más detallados por niveles ADM1 y ADM2, lo que permite análisis con mayor desagregación geográfica.
+El conjunto de datos `immunabc::immunABC.pop.ADM2` proporciona datos poblacionales más detallados por niveles ADM1 y ADM2, lo que permite análisis con mayor desagregación geográfica.
 
 ```{r immunABC-pop-ADM2, message=FALSE}
 immunABC.pop.ADM2 %>% head() %>% kable(caption = "Ejemplo de población a nivel ADM2")

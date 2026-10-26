@@ -16,7 +16,7 @@ output:
 <a href="../es/residence_occurrence_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
-library(immunABC)
+library(immunabc)
 library(dplyr)
 library(ggplot2)
 library(knitr)
@@ -83,7 +83,7 @@ To make it easy for you to test out immunABC's functionality and understand the 
 
 ### EIR
 
-The `immunABC::immunABC.EIR` data frame provides a simulated, nominal-level table representing individual vaccination events from an Electronic Immunization Registry (EIR). Each row corresponds to a single vaccination act for a person, including information on their residence, where they were vaccinated (occurrence), their date of birth, and the vaccine dose received.
+The `immunabc::immunABC.EIR` data frame provides a simulated, nominal-level table representing individual vaccination events from an Electronic Immunization Registry (EIR). Each row corresponds to a single vaccination act for a person, including information on their residence, where they were vaccinated (occurrence), their date of birth, and the vaccine dose received.
 
 ```{r immunABC-EIR, message=FALSE}
 immunABC.EIR %>% head() %>% kable(caption = "Example Electronic Immunization Registry")
@@ -100,7 +100,7 @@ immunABC.EIR %>% head() %>% kable(caption = "Example Electronic Immunization Reg
 
 ### Vaccination Schedule
 
-The `immunABC::immunABC.schedule` dataset defines the national immunization schedule, listing each vaccine dose and its recommended age of administration (in days). It helps the package determine whether an individual is up to date with their vaccinations.
+The `immunabc::immunABC.schedule` dataset defines the national immunization schedule, listing each vaccine dose and its recommended age of administration (in days). It helps the package determine whether an individual is up to date with their vaccinations.
 
 ```{r immunABC-schedule, message=FALSE}
 immunABC.schedule %>% kable(caption = "Example Immunization Schedule")
@@ -127,7 +127,7 @@ Note that this table is in long format and contains the corresponding `populatio
 
 > **Note**
 > 
-> If your analysis is at a different political geographic level, see `immunABC::immunABC.pop.ADM0` and `immunABC::immunABC.pop.ADM2` for the required format and columns.
+> If your analysis is at a different political geographic level, see `immunabc::immunABC.pop.ADM0` and `immunabc::immunABC.pop.ADM2` for the required format and columns.
 
 ## Coverage Analysis
 

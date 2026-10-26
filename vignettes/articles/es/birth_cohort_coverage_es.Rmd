@@ -16,7 +16,7 @@ output:
 <a href="../en/birth_cohort_coverage_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
-library(immunABC)
+library(immunabc)
 library(dplyr)
 library(knitr)
 ```
@@ -89,7 +89,7 @@ Para facilitar la prueba de immunABC y la comprensión de la estructura requerid
 
 ### RNVe
 
-El conjunto de datos `immunABC::immunABC.EIR` proporciona un ejemplo de Registro Nominal de Vacunación electrónico (RNVe). Es una tabla nominal simulada con eventos individuales de vacunación. Cada fila corresponde a una vacunación e incluye información sobre la residencia de la persona, el lugar donde fue vacunada (ocurrencia), su fecha de nacimiento y la dosis recibida.
+El conjunto de datos `immunabc::immunABC.EIR` proporciona un ejemplo de Registro Nominal de Vacunación electrónico (RNVe). Es una tabla nominal simulada con eventos individuales de vacunación. Cada fila corresponde a una vacunación e incluye información sobre la residencia de la persona, el lugar donde fue vacunada (ocurrencia), su fecha de nacimiento y la dosis recibida.
 
 ```{r immunABC-EIR, message=FALSE}
 immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacunación electrónico")
@@ -106,7 +106,7 @@ immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacu
 
 ### Esquema de vacunación
 
-El conjunto de datos `immunABC::immunABC.schedule` define el esquema nacional de vacunación, con cada dosis y su edad recomendada de administración (en días). Esta tabla permite determinar si una persona tiene las vacunas que le corresponden según el esquema.
+El conjunto de datos `immunabc::immunABC.schedule` define el esquema nacional de vacunación, con cada dosis y su edad recomendada de administración (en días). Esta tabla permite determinar si una persona tiene las vacunas que le corresponden según el esquema.
 
 ```{r immunABC-schedule, message=FALSE}
 immunABC.schedule %>% kable(caption = "Ejemplo de esquema de vacunación")

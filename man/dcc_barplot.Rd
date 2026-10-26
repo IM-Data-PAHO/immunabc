@@ -13,7 +13,7 @@ dcc_barplot(
 )
 }
 \arguments{
-\item{data}{The output from the \code{immunABC::dcc_rate} function.}
+\item{data}{The output from the \code{immunabc::dcc_rate} function.}
 
 \item{date_1_name}{Character. Label for the first date variable, used in the plot subtitle.}
 

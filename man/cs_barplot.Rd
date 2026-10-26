@@ -7,7 +7,7 @@
 cs_barplot(data, birth_cohorts = NULL, within_ADM1 = NULL)
 }
 \arguments{
-\item{data}{The output from the \code{immunABC::cs_coverage} function.}
+\item{data}{The output from the \code{immunabc::cs_coverage} function.}
 
 \item{birth_cohorts}{Numeric (optional). A vector specifying the birth cohort(s) for which coverage should be plotted. If \code{NULL} (default), all years are plotted.}
 

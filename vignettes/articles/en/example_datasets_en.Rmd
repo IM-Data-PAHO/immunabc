@@ -16,7 +16,7 @@ output:
 <a href="../es/example_datasets_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
-library(immunABC)
+library(immunabc)
 library(dplyr)
 library(knitr)
 ```
@@ -58,7 +58,7 @@ For example, the vaccine names used in the immunABC example datasets are:
 
 ## immunABC.EIR
 
-The `immunABC::immunABC.EIR` dataframe is the most important dataset in the package. It is a nominal-level table representing individual vaccination events from an Electronic Immunization Registry (EIR). Each row corresponds to a single vaccination act for a person, including information on their residence, where they were vaccinated, their date of birth, and the vaccine dose received.
+The `immunabc::immunABC.EIR` dataframe is the most important dataset in the package. It is a nominal-level table representing individual vaccination events from an Electronic Immunization Registry (EIR). Each row corresponds to a single vaccination act for a person, including information on their residence, where they were vaccinated, their date of birth, and the vaccine dose received.
 
 ```{r immunABC-EIR, message=FALSE}
 immunABC.EIR %>% head() %>% kable(caption = "Example Electronic Immunization Registry")
@@ -75,7 +75,7 @@ immunABC.EIR %>% head() %>% kable(caption = "Example Electronic Immunization Reg
 
 ## immunABC.schedule
 
-The `immunABC::immunABC.schedule` dataset defines the national immunization schedule, listing each vaccine dose and its recommended age of administration (in days). It helps the package determine whether an individual is up to date with their vaccinations.
+The `immunabc::immunABC.schedule` dataset defines the national immunization schedule, listing each vaccine dose and its recommended age of administration (in days). It helps the package determine whether an individual is up to date with their vaccinations.
 
 ```{r immunABC-schedule, message=FALSE}
 immunABC.schedule %>% kable(caption = "Example Immunization Schedule")
@@ -96,7 +96,7 @@ Population datasets provide population estimates at different geographic levels,
 
 ### immunABC.pop.ADM0
 
-The `immunABC::immunABC.pop.ADM0` dataset provides aggregated population estimates at the national level (ADM0).
+The `immunabc::immunABC.pop.ADM0` dataset provides aggregated population estimates at the national level (ADM0).
 
 ```{r immunABC-pop-ADM0, message=FALSE}
 immunABC.pop.ADM0 %>% kable(caption = "Example Population at ADM0")
@@ -106,7 +106,7 @@ This table is in long format and contains the corresponding `population` of chil
 
 ### immunABC.pop.ADM1
 
-The `immunABC::immunABC.pop.ADM1` dataset provides population data aggregated at the first subnational administrative level (ADM1), typically corresponding to regions, provinces, or states.
+The `immunabc::immunABC.pop.ADM1` dataset provides population data aggregated at the first subnational administrative level (ADM1), typically corresponding to regions, provinces, or states.
 
 ```{r immunABC-pop-ADM1, message=FALSE}
 immunABC.pop.ADM1 %>% head() %>% kable(caption = "Example Population at ADM1")
@@ -116,7 +116,7 @@ Note that this table is in long format and contains the corresponding `populatio
 
 ### immunABC.pop.ADM2
 
-The `immunABC::immunABC.pop.ADM2` dataset provides more granular population data by both ADM1 and ADM2 levels, allowing analyses at a finer geographic resolution.
+The `immunabc::immunABC.pop.ADM2` dataset provides more granular population data by both ADM1 and ADM2 levels, allowing analyses at a finer geographic resolution.
 
 ```{r immunABC-pop-ADM2, message=FALSE}
 immunABC.pop.ADM2 %>% head() %>% kable(caption = "Example Population at ADM2")

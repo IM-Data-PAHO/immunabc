@@ -7,7 +7,7 @@
 nod_barplot(data, order = "alpha", within_ADM1 = NULL)
 }
 \arguments{
-\item{data}{Dataframe formatted from the output of the \code{immunABC::nod_dropout} function.}
+\item{data}{Dataframe formatted from the output of the \code{immunabc::nod_dropout} function.}
 
 \item{order}{Organizes the bars based on three options: "alpha", "desc" or "asc", default is "alpha"}
 

@@ -16,7 +16,7 @@ output:
 <a href="../en/date_consistency_comparison_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
-library(immunABC)
+library(immunabc)
 library(dplyr)
 library(knitr)
 ```
@@ -65,7 +65,7 @@ Las funciones de este módulo requieren que proporcione su **RNVe** en el format
 
 ### RNVe
 
-El conjunto de datos `immunABC::immunABC.EIR` proporciona una tabla nominal simulada con eventos individuales de vacunación de un Registro Nominal de Vacunación electrónico (RNVe). Cada fila corresponde a una vacunación de una persona.
+El conjunto de datos `immunabc::immunABC.EIR` proporciona una tabla nominal simulada con eventos individuales de vacunación de un Registro Nominal de Vacunación electrónico (RNVe). Cada fila corresponde a una vacunación de una persona.
 
 ```{r immunABC-EIR, message=FALSE}
 immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacunación electrónico")

@@ -2,7 +2,7 @@
 #'
 #' Generates a bar plot showing percentage of doses administered within, before or after the timeliness window, grouped by geographic area. If \code{vt_rate} was run with \code{vaccines} specified, the plot is faceted by dose.
 #'
-#' @param data The output from the \code{immunABC::vt_rate} function.
+#' @param data The output from the \code{immunabc::vt_rate} function.
 #' @param within_ADM1 Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".
 #' @param plot_missing Boolean (default TRUE). Plots DATE_MISSING records as its own category. Defaults to TRUE so all bars add to 100.
 #'

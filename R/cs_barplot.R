@@ -2,7 +2,7 @@
 #'
 #' Generates a bar plot of complete schedule vaccination coverage, grouped by geographic area and colored by birth cohort.
 #'
-#' @param data The output from the \code{immunABC::cs_coverage} function.
+#' @param data The output from the \code{immunabc::cs_coverage} function.
 #' @param birth_cohorts Numeric (optional). A vector specifying the birth cohort(s) for which coverage should be plotted. If \code{NULL} (default), all years are plotted.
 #' @param within_ADM1 Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".
 #'

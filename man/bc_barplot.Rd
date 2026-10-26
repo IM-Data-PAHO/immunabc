@@ -13,7 +13,7 @@ bc_barplot(
 )
 }
 \arguments{
-\item{data}{Data frame. The output from the \code{immunABC::bc_coverage} function.}
+\item{data}{Data frame. The output from the \code{immunabc::bc_coverage} function.}
 
 \item{vaccine}{Character. A string specifying the vaccine of interest. Only one vaccine.}
 

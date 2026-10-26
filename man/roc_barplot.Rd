@@ -7,7 +7,7 @@
 roc_barplot(data, year, vaccine, within_ADM1 = NULL)
 }
 \arguments{
-\item{data}{The output from the \code{immunABC::roc_coverage()} function.}
+\item{data}{The output from the \code{immunabc::roc_coverage()} function.}
 
 \item{year}{A numeric value specifying the year of the data to be plotted. Only one year.}
 

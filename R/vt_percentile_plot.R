@@ -2,7 +2,7 @@
 #'
 #' Generates a range plot of the number of days since the start of the timeliness window needed to vaccinate each percentile, with one row per geographic area (or per dose, when \code{data} is not disaggregated by geographic area). Each percentile is drawn as a point, joined by a line from the lowest to the highest percentile. Rows are sorted by the percentile closest to the median (P50), with the slowest areas at the top, so the plot remains readable with many geographic areas. When \code{data} is disaggregated by geographic area, the plot is faceted by \code{dose}. The timeliness window of each dose is shaded.
 #'
-#' @param data The output from the \code{immunABC::vt_percentile} function.
+#' @param data The output from the \code{immunabc::vt_percentile} function.
 #' @param within_ADM1 Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".
 #' @param n_slowest Numeric (optional). Shows only this number of geographic areas, the ones that take the longest to reach the percentile closest to 50. Useful when there are many areas. Default is \code{NULL}, which shows all areas.
 #'

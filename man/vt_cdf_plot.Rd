@@ -14,7 +14,7 @@ vt_cdf_plot(
 )
 }
 \arguments{
-\item{data}{The output from the \code{immunABC::vt_distribution} function.}
+\item{data}{The output from the \code{immunabc::vt_distribution} function.}
 
 \item{percentile}{Numeric (optional). A single percentile (greater than 0 and at most 100) to highlight in the plot. This is inserted as a label for all highlighted areas and for the combined plot. Default is \code{NULL}, which highlights nothing.}
 

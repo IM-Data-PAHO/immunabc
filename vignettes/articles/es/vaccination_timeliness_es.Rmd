@@ -16,7 +16,7 @@ output:
 <a href="../en/vaccination_timeliness_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
-library(immunABC)
+library(immunabc)
 library(dplyr)
 library(knitr)
 
@@ -175,7 +175,7 @@ Las funciones de este módulo requieren su **RNVe** y un **esquema de vacunació
 
 ### RNVe
 
-El conjunto de datos `immunABC::immunABC.EIR` proporciona una tabla nominal simulada con eventos individuales de vacunación de un RNVe. Cada fila corresponde a una vacunación de una persona.
+El conjunto de datos `immunabc::immunABC.EIR` proporciona una tabla nominal simulada con eventos individuales de vacunación de un RNVe. Cada fila corresponde a una vacunación de una persona.
 
 ```{r immunABC-EIR, message=FALSE}
 immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacunación electrónico")
@@ -194,7 +194,7 @@ immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacu
 
 ### Esquema de vacunación
 
-El conjunto de datos `immunABC::immunABC.schedule` define el esquema nacional de vacunación, indicando para cada dosis la edad de administración y el periodo de oportunidad, en días.
+El conjunto de datos `immunabc::immunABC.schedule` define el esquema nacional de vacunación, indicando para cada dosis la edad de administración y el periodo de oportunidad, en días.
 
 ```{r immunABC-schedule, message=FALSE}
 immunABC.schedule %>% kable(caption = "Ejemplo de esquema de vacunación con periodos de oportunidad")

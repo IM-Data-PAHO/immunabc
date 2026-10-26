@@ -1,6 +1,6 @@
 #' (No)minal (D)ropout Bar Plot
 #'
-#' @param data Dataframe formatted from the output of the \code{immunABC::nod_dropout} function.
+#' @param data Dataframe formatted from the output of the \code{immunabc::nod_dropout} function.
 #' @param within_ADM1 When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".
 #' @param order Organizes the bars based on three options: "alpha", "desc" or "asc", default is "alpha"
 #'

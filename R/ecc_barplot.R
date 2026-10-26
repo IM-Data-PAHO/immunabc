@@ -4,7 +4,7 @@
 #'
 #' Generates a bar plot of eligibility rates (doses administered within vs outside the scheduled age window), grouped by geographic area and colored by eligibility result. If \code{data} is disaggregated by \code{dose} (i.e. \code{ecc_rate} was run with \code{vaccines} specified), the plot is faceted by dose.
 #'
-#' @param data The output from the \code{immunABC::ecc_rate} function.
+#' @param data The output from the \code{immunabc::ecc_rate} function.
 #' @param within_ADM1 Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".
 #' @param plot_missing Boolean (default TRUE). Plots DATE_MISSING records as its own category. Defaults to TRUE so all bars add to 100.
 #'

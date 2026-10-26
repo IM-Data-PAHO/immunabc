@@ -4,7 +4,7 @@
 #'
 #' The timeliness window of each dose is shaded. If \code{data} is disaggregated by geographic area, each area is drawn as a thin grey line for context, and all areas combined are drawn as a single highlighted line. Specific areas can be highlighted in color with \code{highlight}. Records vaccinated before the timeliness window and records with a missing date are excluded from the distribution and reported in the caption.
 #'
-#' @param data The output from the \code{immunABC::vt_distribution} function.
+#' @param data The output from the \code{immunabc::vt_distribution} function.
 #' @param percentile Numeric (optional). A single percentile (greater than 0 and at most 100) to highlight in the plot. This is inserted as a label for all highlighted areas and for the combined plot. Default is \code{NULL}, which highlights nothing.
 #' @param highlight Character (optional). Up to 5 geographic areas to highlight in color. Only available when \code{data} is disaggregated by "ADM1" or "ADM2". Default is \code{NULL}, which highlights nothing.
 #' @param within_ADM1 Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".

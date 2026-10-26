@@ -2,7 +2,7 @@
 #'
 #' Generates a bar plot of date consistencies, grouped by geographic area and colored by consistency result.
 #'
-#' @param data The output from the \code{immunABC::dcc_rate} function.
+#' @param data The output from the \code{immunabc::dcc_rate} function.
 #' @param date_1_name Character. Label for the first date variable, used in the plot subtitle.
 #' @param date_2_name Character. Label for the second date variable, used in the plot subtitle.
 #' @param within_ADM1 Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".
