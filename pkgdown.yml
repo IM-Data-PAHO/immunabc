@@ -16,7 +16,7 @@ articles:
   articles/es/residence_occurrence_es: es/residence_occurrence_es.html
   articles/en/vaccination_timeliness_en: en/vaccination_timeliness_en.html
   articles/es/vaccination_timeliness_es: es/vaccination_timeliness_es.html
-last_built: 2026-10-21T18:23Z
+last_built: 2026-10-26T22:15Z
 urls:
   reference: https://im-data-paho.github.io/immunabc/reference
   article: https://im-data-paho.github.io/immunabc/articles

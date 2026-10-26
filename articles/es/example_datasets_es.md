@@ -57,7 +57,7 @@ immunABC son:
 ### immunABC.EIR
 
 El conjunto de datos
-[`immunABC::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
+[`immunabc::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
 es el más importante del paquete. Proporciona un ejemplo de Registro
 Nominal de Vacunación electrónico (RNVe). Es una tabla nominal simulada
 con eventos individuales de vacunación. Cada fila corresponde a una
@@ -96,7 +96,7 @@ style="width:100%;"}
 ### immunABC.schedule
 
 El conjunto de datos
-[`immunABC::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
+[`immunabc::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
 define el esquema nacional de vacunación, con cada dosis y su edad
 recomendada de administración (en días). Esta tabla permite determinar
 si una persona tiene las vacunas que le corresponden según el esquema.
@@ -144,7 +144,7 @@ denominador, principalmente en los análisis de cobertura.
 #### immunABC.pop.ADM0
 
 El conjunto de datos
-[`immunABC::immunABC.pop.ADM0`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM0.md)
+[`immunabc::immunABC.pop.ADM0`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM0.md)
 proporciona estimaciones poblacionales agregadas a nivel nacional
 (ADM0).
 
@@ -169,7 +169,7 @@ determinado.
 #### immunABC.pop.ADM1
 
 El conjunto de datos
-[`immunABC::immunABC.pop.ADM1`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM1.md)
+[`immunabc::immunABC.pop.ADM1`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM1.md)
 proporciona datos poblacionales agregados al primer nivel administrativo
 subnacional (ADM1), que suele corresponder a regiones, provincias o
 estados.
@@ -197,7 +197,7 @@ determinado a nivel `ADM1`.
 #### immunABC.pop.ADM2
 
 El conjunto de datos
-[`immunABC::immunABC.pop.ADM2`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM2.md)
+[`immunabc::immunABC.pop.ADM2`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM2.md)
 proporciona datos poblacionales más detallados por niveles ADM1 y ADM2,
 lo que permite análisis con mayor desagregación geográfica.
 

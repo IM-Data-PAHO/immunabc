@@ -14,7 +14,7 @@ roc_heatmap(data, digits = 0)
 - data:
 
   The output from the
-  [`immunABC::roc_distribution`](https://im-data-paho.github.io/immunabc/reference/roc_distribution.md)
+  [`immunabc::roc_distribution`](https://im-data-paho.github.io/immunabc/reference/roc_distribution.md)
   function.
 
 - digits:

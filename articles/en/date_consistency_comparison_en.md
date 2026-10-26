@@ -65,7 +65,7 @@ standard immunABC format.
 #### EIR
 
 The
-[`immunABC::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
+[`immunabc::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
 data frame provides a simulated, nominal-level table representing
 individual vaccination events from an Electronic Immunization Registry
 (EIR). Each row corresponds to a single vaccination act for a person.

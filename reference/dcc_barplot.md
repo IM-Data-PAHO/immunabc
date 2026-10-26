@@ -20,7 +20,7 @@ dcc_barplot(
 - data:
 
   The output from the
-  [`immunABC::dcc_rate`](https://im-data-paho.github.io/immunabc/reference/dcc_rate.md)
+  [`immunabc::dcc_rate`](https://im-data-paho.github.io/immunabc/reference/dcc_rate.md)
   function.
 
 - date_1_name:

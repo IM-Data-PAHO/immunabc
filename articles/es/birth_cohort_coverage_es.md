@@ -101,7 +101,7 @@ que utiliza este módulo.
 #### RNVe
 
 El conjunto de datos
-[`immunABC::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
+[`immunabc::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
 proporciona un ejemplo de Registro Nominal de Vacunación electrónico
 (RNVe). Es una tabla nominal simulada con eventos individuales de
 vacunación. Cada fila corresponde a una vacunación e incluye información
@@ -140,7 +140,7 @@ style="width:100%;"}
 #### Esquema de vacunación
 
 El conjunto de datos
-[`immunABC::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
+[`immunabc::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
 define el esquema nacional de vacunación, con cada dosis y su edad
 recomendada de administración (en días). Esta tabla permite determinar
 si una persona tiene las vacunas que le corresponden según el esquema.

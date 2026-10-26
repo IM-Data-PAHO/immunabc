@@ -283,7 +283,7 @@ estándar de immunABC.
 #### RNVe
 
 El conjunto de datos
-[`immunABC::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
+[`immunabc::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
 proporciona una tabla nominal simulada con eventos individuales de
 vacunación de un RNVe. Cada fila corresponde a una vacunación de una
 persona.
@@ -336,7 +336,7 @@ style="width:100%;"}
 #### Esquema de vacunación
 
 El conjunto de datos
-[`immunABC::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
+[`immunabc::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
 define el esquema nacional de vacunación, indicando para cada dosis la
 edad de administración y el periodo de oportunidad, en días.
 

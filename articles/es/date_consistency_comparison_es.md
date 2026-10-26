@@ -67,7 +67,7 @@ formato estándar de immunABC.
 #### RNVe
 
 El conjunto de datos
-[`immunABC::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
+[`immunabc::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
 proporciona una tabla nominal simulada con eventos individuales de
 vacunación de un Registro Nominal de Vacunación electrónico (RNVe). Cada
 fila corresponde a una vacunación de una persona.

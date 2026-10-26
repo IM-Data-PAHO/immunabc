@@ -15,7 +15,7 @@ vt_percentile(data, percentiles = c(25, 50, 75))
 - data:
 
   The output from the
-  [`immunABC::vt_distribution`](https://im-data-paho.github.io/immunabc/reference/vt_distribution.md)
+  [`immunabc::vt_distribution`](https://im-data-paho.github.io/immunabc/reference/vt_distribution.md)
   function. The disaggregation is inherited from this data.
 
 - percentiles:

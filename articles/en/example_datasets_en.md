@@ -57,7 +57,7 @@ are:
 ### immunABC.EIR
 
 The
-[`immunABC::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
+[`immunabc::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
 dataframe is the most important dataset in the package. It is a
 nominal-level table representing individual vaccination events from an
 Electronic Immunization Registry (EIR). Each row corresponds to a single
@@ -98,7 +98,7 @@ Example Electronic Immunization Registry {.table style="width:100%;"}
 ### immunABC.schedule
 
 The
-[`immunABC::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
+[`immunabc::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
 dataset defines the national immunization schedule, listing each vaccine
 dose and its recommended age of administration (in days). It helps the
 package determine whether an individual is up to date with their
@@ -144,7 +144,7 @@ denominator (mainly for coverage analyses).
 #### immunABC.pop.ADM0
 
 The
-[`immunABC::immunABC.pop.ADM0`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM0.md)
+[`immunabc::immunABC.pop.ADM0`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM0.md)
 dataset provides aggregated population estimates at the national level
 (ADM0).
 
@@ -168,7 +168,7 @@ of children of a specific `age` during a given `year`.
 #### immunABC.pop.ADM1
 
 The
-[`immunABC::immunABC.pop.ADM1`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM1.md)
+[`immunabc::immunABC.pop.ADM1`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM1.md)
 dataset provides population data aggregated at the first subnational
 administrative level (ADM1), typically corresponding to regions,
 provinces, or states.
@@ -196,7 +196,7 @@ the `ADM1` level.
 #### immunABC.pop.ADM2
 
 The
-[`immunABC::immunABC.pop.ADM2`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM2.md)
+[`immunabc::immunABC.pop.ADM2`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM2.md)
 dataset provides more granular population data by both ADM1 and ADM2
 levels, allowing analyses at a finer geographic resolution.
 

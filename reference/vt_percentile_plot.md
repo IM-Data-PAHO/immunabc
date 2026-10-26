@@ -21,7 +21,7 @@ vt_percentile_plot(data, within_ADM1 = NULL, n_slowest = NULL)
 - data:
 
   The output from the
-  [`immunABC::vt_percentile`](https://im-data-paho.github.io/immunabc/reference/vt_percentile.md)
+  [`immunabc::vt_percentile`](https://im-data-paho.github.io/immunabc/reference/vt_percentile.md)
   function.
 
 - within_ADM1:

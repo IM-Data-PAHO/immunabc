@@ -279,7 +279,7 @@ standard immunABC format.
 #### EIR
 
 The
-[`immunABC::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
+[`immunabc::immunABC.EIR`](https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.md)
 data frame provides a simulated, nominal-level table representing
 individual vaccination events from an EIR. Each row corresponds to a
 single vaccination act for a person.
@@ -330,7 +330,7 @@ Example Electronic Immunization Registry {.table style="width:100%;"}
 #### Vaccination Schedule
 
 The
-[`immunABC::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
+[`immunabc::immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
 dataset defines the national immunization schedule, listing for each
 vaccine dose its age of administration and its timeliness window, in
 days.
