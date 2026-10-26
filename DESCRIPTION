@@ -1,4 +1,4 @@
-Package: immunABC
+Package: immunabc
 Type: Package
 Title: immunABC is an R package aimed at immunization (A)nalyses (B)eyond (C)overage
 Version: 0.11.2
