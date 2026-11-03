@@ -19,7 +19,7 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Usage
 
-Currently, immunABC contains six main modules. Follow the links below to explore detailed vignettes with practical examples and guidance on how to use each module:
+Currently, immunABC contains seven main modules. Follow the links below to explore detailed vignettes with practical examples and guidance on how to use each module:
 
 1. [**Nominal Dropout Rate**](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html)  
    Calculates dropout rates between any two vaccine doses using nominal data. This module ensures accurate follow-up tracking across a vaccination schedule.
@@ -36,7 +36,10 @@ Currently, immunABC contains six main modules. Follow the links below to explore
 5. [**Date Consistency Comparison**](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.html)  
    Identifies and quantifies logical inconsistencies between any two date variables in the EIR (e.g., vaccination date before date of birth). Helps detect data entry errors and record linkage issues before downstream analyses.
 
-6. [**Vaccination Timeliness**](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html)  
+6. [**Dose Sequence Comparison**](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.html)  
+   Evaluates, person by person, whether the doses of an ordered sequence (e.g., DTP1, DTP2 and DTP3) are registered consistently in the EIR: whether any earlier dose is skipped, and whether the doses were administered in chronological order. Helps detect doses registered with the wrong dose number, unregistered doses and record linkage issues.
+
+7. [**Vaccination Timeliness**](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html)  
    Analyzes the vaccination timeliness of the population, that is, the time that elapses between the age of eligibility for each dose and its administration, using nominal data from the electronic immunization registry. Vaccinating on time, and not only completing the schedule, is key to protecting each individual before they reach the period of highest risk for the disease. Furthermore, analyzing vaccination timeliness allows us to understand coverage and its impact on the epidemiology of the disease, monitor the vaccine supply chain, investigate access problems or vaccination willingness in certain communities and, through actions at different levels, prevent future dropouts.
 
 Each module works seamlessly with the example datasets provided in the package. These examples make it easy to test out the functionality and serve as a reference when preparing your own data. Learn more about these example datasets [in this vignette](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.html).

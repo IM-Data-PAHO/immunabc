@@ -128,6 +128,90 @@
   return(classified)
 }
 
+#' Prepare the EIR for the dose sequence comparison (sc_) module.
+#'
+#' Filters by birth_cohorts, checks (and optionally fixes) residence consistency per ID,
+#' keeps only the doses in vaccines and removes duplicated ID-dose records, keeping the earliest date_vax.
+#' Returns one row per ID and dose received, with residence renamed to ADM1 and ADM2.
+#'
+#' NOTE: Does not validate its inputs. Callers must validate data.EIR, vaccines, birth_cohorts
+#'       and fix_residence before calling it.
+#'
+#' @import dplyr
+#' @import lubridate
+#'
+#' @keywords internal
+#' @noRd
+.sc_prepare <- function(data.EIR, vaccines, birth_cohorts = NULL, fix_residence = TRUE, check_residence = TRUE) {
+
+  # Checks if the birth_cohorts variable is used
+  if(!is.null(birth_cohorts)) {
+    data.EIR <- data.EIR %>%
+      filter(year(date_birth) %in% birth_cohorts)
+  }
+
+  # Checks residence consistency per ID, since each person is assigned to a single residence
+  if(check_residence) {
+    n_inconsistent <- .validate_residence(data.EIR)
+
+    if(fix_residence) {
+      data.EIR <- .fix_residence(data.EIR)
+    } else if(n_inconsistent > 0) {
+      warning(
+        "Residence inconsistencies were not corrected (fix_residence = FALSE). ",
+        "Each person will be assigned the residence of their first record in data.EIR, or set fix_residence = TRUE."
+      )
+    }
+  }
+
+  prepare_EIR <- data.EIR %>%
+    filter(dose %in% vaccines) %>%
+    select(ID, date_birth, date_vax, ADM1 = ADM1_residence, ADM2 = ADM2_residence, dose)
+
+  # Warns about duplicated ID-dose records, then keeps the earliest date_vax of each one
+  .validate_duplicates_sequence(prepare_EIR, vaccines)
+
+  prepare_EIR <- prepare_EIR %>%
+    # NA dates are sorted last, so they are only kept when there is no other date for that dose
+    arrange(ID, dose, date_vax) %>%
+    distinct(ID, dose, .keep_all = TRUE) %>%
+    # each person keeps a single residence and date of birth
+    group_by(ID) %>%
+    mutate(
+      ADM1 = first(ADM1),
+      ADM2 = first(ADM2),
+      date_birth = first(date_birth)
+    ) %>%
+    ungroup()
+
+  return(prepare_EIR)
+}
+
+#' Summarise the doses received per person for the dose sequence comparison (sc_) module.
+#'
+#' Returns one row per ID with its residence, date of birth, the combination of doses received
+#' (\code{sequence}, e.g. "DTP1 + DTP3", following the order in vaccines) and whether it is consistent.
+#' A sequence is consistent when no earlier dose is skipped, i.e. the doses received are the first
+#' doses of the sequence (e.g. "DTP1" or "DTP1 + DTP2"), even if the sequence is not finished yet.
+#'
+#' @import dplyr
+#'
+#' @keywords internal
+#' @noRd
+.sc_classify_sequence <- function(prepare_EIR, vaccines) {
+
+  classified <- prepare_EIR %>%
+    group_by(ID, date_birth, ADM1, ADM2) %>%
+    summarise(
+      sequence = paste(vaccines[vaccines %in% dose], collapse = " + "),
+      # positions of the doses received must be 1, 2, ..., k with no gaps
+      consistent = identical(which(vaccines %in% dose), seq_len(sum(vaccines %in% dose))),
+      .groups = "drop"
+    )
+
+  return(classified)
+}
+
 #' Compute the daily (pdf) and cumulative (cdf) distribution of vaccinations from daily counts.
 #'
 #' NOTE: data must already be grouped according to the disaggregation levels required,

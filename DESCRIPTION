@@ -6,6 +6,7 @@ Authors@R: c(
     person("Ignacio", "Castro", email = "castroign@paho.org", role = "ctb"),
     person("Dan", "Alvarez", email = "alvarezdan@paho.org", role = "ctb"),
     person("Rafael", "Leon", email = "leonraf@paho.org", role = "ctb"),
+    person("Sergio", "Loayza", email = "loayzaser@paho.org", role = "ctb"),
     person("Alejandro", "Vasquez", role = "rev"),
     person("Pamela", "Burgos", email = "burgospam@paho.org", role = "rev"),
     person("Marcela", "Contreras", email = "contrermar@paho.org", role = "rev"),

@@ -374,6 +374,81 @@
   }
 }
 
+#' Validate EIR duplicates for a dose sequence.
+#'
+#' @keywords internal
+#' @noRd
+.validate_duplicates_sequence <- function(data.EIR, vaccines) {
+  n_duplicated <- data.EIR %>%
+    filter(dose %in% vaccines) %>%
+    count(ID, dose) %>%
+    filter(n > 1) %>%
+    nrow()
+
+  if(n_duplicated > 0) {
+    warning(
+      paste0(
+        "Warning: ", n_duplicated, " ID-dose combination(s) are duplicated in data.EIR. ",
+        "Only the earliest date_vax of each one is kept. We recommend you verify for duplicates before running the process to increase accuracy."
+      )
+    )
+  }
+}
+
+#' Validate a dose sequence (vaccines) for the sc_ module.
+#'
+#' @keywords internal
+#' @noRd
+.validate_sequence <- function(vaccines, data.EIR) {
+  .validate_character(vaccines, "vaccines", min_len = 2)
+
+  if(is.null(vaccines)) {
+    stop("Error: vaccines should be a character vector with the ordered dose sequence, e.g. c(\"DTP1\", \"DTP2\", \"DTP3\").")
+  }
+
+  if(anyDuplicated(vaccines) > 0) {
+    stop("Error: vaccines should not contain repeated doses.")
+  }
+
+  .validate_vaccines(vaccines, data.EIR, "data.EIR")
+}
+
+#' Validate mode of sc_rate.
+#'
+#' @keywords internal
+#' @noRd
+.validate_sc_mode <- function(mode) {
+  .validate_character(mode, "mode", exp_len = 1)
+
+  if(is.null(mode) || !(mode %in% c("simple", "complex"))) {
+    stop("Error: The mode parameter should be one of: simple, complex.")
+  }
+}
+
+#' Validate input data to sc_barplot (output of sc_rate or sc_date_sequence).
+#'
+#' @keywords internal
+#' @noRd
+.validate_sc_barplot_data <- function(data) {
+  if(is.data.frame(data) && "chronology" %in% names(data)) {
+    .validate_output_data(data, c("chronology", "n", "total", "rate"), "sc_date_sequence")
+  } else {
+    .validate_output_data(data, c("sequence", "consistent", "n", "total", "rate"), "sc_rate or sc_date_sequence")
+  }
+}
+
+#' Validate input data to sc_inconsistent_plot.
+#'
+#' @keywords internal
+#' @noRd
+.validate_sc_inconsistent_data <- function(data) {
+  .validate_output_data(
+    data,
+    c("ID", "ADM1_residence", "ADM2_residence", "sequence", "skipped_doses"),
+    "sc_inconsistent"
+  )
+}
+
 #' Validate Date object.
 #'
 #' @keywords internal

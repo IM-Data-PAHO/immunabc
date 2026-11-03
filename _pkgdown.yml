@@ -24,6 +24,8 @@ navbar:
         href: articles/en/birth_cohort_coverage_en.html
       - text: Date Consistency Comparison
         href: articles/en/date_consistency_comparison_en.html
+      - text: Dose Sequence Comparison
+        href: articles/en/dose_sequence_comparison_en.html
       - text: Vaccination Timeliness
         href: articles/en/vaccination_timeliness_en.html
       - text: -------
@@ -44,6 +46,15 @@ reference:
       - dcc_barplot
       - dcc_inconsistent
       - dcc_inconsistent_plot
+
+  - title: Dose Sequence Comparison
+    desc: Functions for identifying and visualizing incomplete and chronologically inconsistent dose sequences in the EIR.
+    contents:
+      - sc_rate
+      - sc_barplot
+      - sc_inconsistent
+      - sc_inconsistent_plot
+      - sc_date_sequence
 
   - title: Vaccination Timeliness
     desc: Functions for calculating and visualizing vaccination timeliness in the EIR.
