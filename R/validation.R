@@ -425,16 +425,12 @@
   }
 }
 
-#' Validate input data to sc_barplot (output of sc_rate or sc_date_sequence).
+#' Validate input data to sc_barplot (output of sc_rate).
 #'
 #' @keywords internal
 #' @noRd
 .validate_sc_barplot_data <- function(data) {
-  if(is.data.frame(data) && "chronology" %in% names(data)) {
-    .validate_output_data(data, c("chronology", "n", "total", "rate"), "sc_date_sequence")
-  } else {
-    .validate_output_data(data, c("sequence", "consistent", "n", "total", "rate"), "sc_rate or sc_date_sequence")
-  }
+  .validate_output_data(data, c("sequence", "consistent", "n", "total", "rate"), "sc_rate")
 }
 
 #' Validate input data to sc_inconsistent_plot.
@@ -444,7 +440,7 @@
 .validate_sc_inconsistent_data <- function(data) {
   .validate_output_data(
     data,
-    c("ID", "ADM1_residence", "ADM2_residence", "sequence", "skipped_doses"),
+    c("ID", "ADM1_residence", "ADM2_residence", "sequence", "skipped_doses", "out_of_order"),
     "sc_inconsistent"
   )
 }

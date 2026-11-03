@@ -1,6 +1,6 @@
 #' Dose (S)equence (C)omparison Inconsistent Records Plot
 #'
-#' Generates a heatmap showing how inconsistent dose sequences (sequences where an earlier dose is skipped) are distributed across the combinations of doses received, for each geographic area of residence. Each column adds to 100\% of the inconsistent sequences in that area. Consistent sequences are not shown.
+#' Generates a heatmap showing how inconsistent dose sequences (sequences where an earlier dose is skipped and/or the doses were not administered in chronological order) are distributed across the combinations of doses received, for each geographic area of residence. Each column adds to 100\% of the inconsistent sequences in that area. Consistent sequences are not shown.
 #'
 #' @param data The output from the \code{immunabc::sc_inconsistent} function.
 #' @param geo_level Character. The geographic level of residence to show as columns. Must be "ADM0", "ADM1" or "ADM2". If not specified, the default is "ADM0".
@@ -26,7 +26,11 @@ sc_inconsistent_plot <- function(data, geo_level = "ADM0", within_ADM1 = NULL, d
   prepare_data <- data %>%
     rename(ADM1 = ADM1_residence, ADM2 = ADM2_residence) %>%
     filter(if(!is.null(within_ADM1)) {ADM1 %in% within_ADM1} else {TRUE}) %>%
-    mutate(ADM0 = "ADM0")
+    mutate(
+      ADM0 = "ADM0",
+      # flag sequences administered out of chronological order
+      sequence = if_else(out_of_order, paste0(sequence, " (out of order)"), sequence)
+    )
 
   # most frequent combinations of doses received at the top
   sequence_levels <- prepare_data %>%

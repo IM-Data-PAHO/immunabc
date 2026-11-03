@@ -190,24 +190,48 @@
 #' Summarise the doses received per person for the dose sequence comparison (sc_) module.
 #'
 #' Returns one row per ID with its residence, date of birth, the combination of doses received
-#' (\code{sequence}, e.g. "DTP1 + DTP3", following the order in vaccines) and whether it is consistent.
-#' A sequence is consistent when no earlier dose is skipped, i.e. the doses received are the first
-#' doses of the sequence (e.g. "DTP1" or "DTP1 + DTP2"), even if the sequence is not finished yet.
+#' (\code{sequence}, e.g. "DTP1 + DTP3", following the order in vaccines) and the checks behind
+#' its classification:
+#' \itemize{
+#'   \item \code{skipped}: an earlier dose of the sequence is missing (e.g. "DTP1 + DTP3").
+#'   \item \code{out_of_order}: a dose was administered before (or, unless allow_same_day, on the
+#'         same day as) the previous dose received in the sequence.
+#'   \item \code{date_missing}: at least two doses received and at least one with no date_vax, so
+#'         the chronological order cannot be fully evaluated.
+#'   \item \code{consistent}: FALSE if skipped or out_of_order, NA if not but date_missing,
+#'         TRUE otherwise. Unfinished sequences (e.g. "DTP1 + DTP2") can be consistent.
+#' }
 #'
 #' @import dplyr
 #'
 #' @keywords internal
 #' @noRd
-.sc_classify_sequence <- function(prepare_EIR, vaccines) {
+.sc_classify_sequence <- function(prepare_EIR, vaccines, allow_same_day = FALSE) {
 
   classified <- prepare_EIR %>%
+    # sort each person's doses following the order of the sequence
+    mutate(dose_order = match(dose, vaccines)) %>%
+    arrange(ID, dose_order) %>%
     group_by(ID, date_birth, ADM1, ADM2) %>%
+    # days since the previous dose received in the sequence
+    mutate(days_since_previous = as.numeric(date_vax - lag(date_vax))) %>%
     summarise(
-      sequence = paste(vaccines[vaccines %in% dose], collapse = " + "),
+      sequence = paste(dose, collapse = " + "),
       # positions of the doses received must be 1, 2, ..., k with no gaps
-      consistent = identical(which(vaccines %in% dose), seq_len(sum(vaccines %in% dose))),
+      skipped = !identical(dose_order, seq_len(n())),
+      out_of_order = if(allow_same_day) {
+        any(days_since_previous < 0, na.rm = TRUE)
+      } else {
+        any(days_since_previous <= 0, na.rm = TRUE)
+      },
+      date_missing = n() >= 2 & anyNA(date_vax),
       .groups = "drop"
-    )
+    ) %>%
+    mutate(consistent = case_when(
+      skipped | out_of_order ~ FALSE,
+      date_missing ~ NA,
+      TRUE ~ TRUE
+    ))
 
   return(classified)
 }

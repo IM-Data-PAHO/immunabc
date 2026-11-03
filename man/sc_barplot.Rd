@@ -12,21 +12,17 @@ sc_barplot(
 )
 }
 \arguments{
-\item{data}{The output from the \code{immunabc::sc_rate} or \code{immunabc::sc_date_sequence} functions.}
+\item{data}{The output from the \code{immunabc::sc_rate} function.}
 
 \item{sequence_name}{Character. Label for the dose sequence, used in the plot subtitle (e.g. \code{"DTP1 - DTP3"}). Default is \code{"dose sequence"}.}
 
 \item{within_ADM1}{Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".}
 
-\item{plot_missing}{Boolean (default TRUE). Only used with the output of \code{sc_date_sequence}. Plots DATE_MISSING sequences as its own category. Defaults to TRUE so all bars add to 100.}
+\item{plot_missing}{Boolean (default TRUE). Plots DATE_MISSING sequences as its own category. Defaults to TRUE so all bars add to 100.}
 }
 \value{
 A ggplot object representing the bar plot.
 }
 \description{
-Generates a stacked bar plot of dose sequences, grouped by geographic area. It accepts the output of either:
-\itemize{
-  \item \code{sc_rate}: shows consistent and inconsistent sequences (\code{mode = "simple"}) or consistent sequences and every inconsistent combination of doses received (\code{mode = "complex"}).
-  \item \code{sc_date_sequence}: shows chronologically consistent and inconsistent sequences.
-}
+Generates a stacked bar plot of dose sequences, grouped by geographic area, from the output of \code{sc_rate}: consistent and inconsistent sequences (\code{mode = "simple"}) or consistent sequences and every inconsistent combination of doses received (\code{mode = "complex"}). Sequences that cannot be fully evaluated because a date is missing are shown as \code{DATE_MISSING}.
 }

@@ -27,10 +27,10 @@ Many vaccines in a national immunization schedule are administered as an ordered
 
 When an Electronic Immunization Registry (EIR) contains people with a skipped dose (e.g., DTP1 and DTP3 but no DTP2), or with doses administered out of chronological order (e.g., DTP2 administered before DTP1), it usually points to data quality problems: doses registered with the wrong dose number, doses administered but never registered, or records that were not correctly linked to the same person. These problems bias any downstream analysis that relies on dose numbers, such as coverage, dropout or complete schedule analyses.
 
-The dose sequence comparison module allows users to evaluate, person by person, whether the doses of an ordered sequence were registered consistently, from two complementary angles:
+The dose sequence comparison module allows users to evaluate, person by person, whether the doses of an ordered sequence were registered consistently. A sequence is only considered consistent when it passes both checks:
 
-1. **Sequence consistency**: whether any earlier dose of the sequence is skipped.
-2. **Chronological consistency**: whether the doses received were administered in chronological order.
+1. **No skipped doses**: no earlier dose of the sequence is missing.
+2. **Chronological order**: the doses received were administered in the order of the sequence.
 
 Since this is a nominal indicator (evaluated person by person), each person is assigned to a single place of residence, so all results can be disaggregated by geographic level.
 
@@ -56,29 +56,26 @@ An ordered vector of doses to evaluate, passed to every `sc_` function through t
 
 ## Sequence Consistency Categories
 
-A sequence is **consistent** when no earlier dose is skipped, that is, when the doses received are the first doses of the sequence. A person who has not finished the sequence yet (e.g., only DTP1, or DTP1 and DTP2) is consistent: they may simply not have reached the age for the next dose, or may have dropped out (see the [Nominal Dropout Rate](nominal_dropout_en.html) module). A sequence is **inconsistent** when a dose is missing before the last dose received.
+A sequence is **consistent** when:
+
+1. No earlier dose is skipped, that is, the doses received are the first doses of the sequence. A person who has not finished the sequence yet (e.g., only DTP1, or DTP1 and DTP2) can be consistent: they may simply not have reached the age for the next dose, or may have dropped out (see the [Nominal Dropout Rate](nominal_dropout_en.html) module).
+2. Every dose received was administered after the previous dose received in the sequence. By default, two doses administered on the same day are also considered out of order (see `allow_same_day`).
+
+A sequence is **inconsistent** when it fails either check: a dose is missing before the last dose received, and/or the doses were administered out of chronological order. When a person has at least two doses of the sequence and one of them has no `date_vax`, the chronological order cannot be fully evaluated; if no other problem is found, the sequence is classified as `DATE_MISSING`.
 
 For a `DTP1`, `DTP2`, `DTP3` sequence:
 
-| Doses received | Category | Skipped doses |
-|---|---|---|
-| `DTP1` | `CONSISTENT` | |
-| `DTP1 + DTP2` | `CONSISTENT` | |
-| `DTP1 + DTP2 + DTP3` | `CONSISTENT` | |
-| `DTP2` | `INCONSISTENT` | `DTP1` |
-| `DTP3` | `INCONSISTENT` | `DTP1 + DTP2` |
-| `DTP1 + DTP3` | `INCONSISTENT` | `DTP2` |
-| `DTP2 + DTP3` | `INCONSISTENT` | `DTP1` |
-
-## Chronological Consistency Categories
-
-Only the doses each person received are compared, in the order of the sequence. People with fewer than two doses of the sequence cannot be evaluated and are excluded.
-
-| Category | Meaning |
-|---|---|
-| `CONSISTENT` | Every dose received was administered after the previous dose received in the sequence. |
-| `INCONSISTENT` | At least one dose was administered before (or, by default, on the same day as) the previous dose received in the sequence. |
-| `DATE_MISSING` | At least one dose received has no `date_vax`. |
+| Doses received | Dates | Category | Skipped doses | Out of order |
+|---|---|---|---|---|
+| `DTP1` | | `CONSISTENT` | | |
+| `DTP1 + DTP2` | DTP1 before DTP2 | `CONSISTENT` | | |
+| `DTP1 + DTP2 + DTP3` | DTP1 before DTP2 before DTP3 | `CONSISTENT` | | |
+| `DTP1 + DTP2` | DTP2 before DTP1 | `INCONSISTENT` | | ✔ |
+| `DTP1 + DTP2` | DTP2 with no `date_vax` | `DATE_MISSING` | | |
+| `DTP2` | | `INCONSISTENT` | `DTP1` | |
+| `DTP3` | | `INCONSISTENT` | `DTP1 + DTP2` | |
+| `DTP1 + DTP3` | DTP1 before DTP3 | `INCONSISTENT` | `DTP2` | |
+| `DTP2 + DTP3` | DTP3 before DTP2 | `INCONSISTENT` | `DTP1` | ✔ |
 
 # Usage
 
@@ -111,13 +108,12 @@ immunABC.EIR %>% head() %>% kable(caption = "Example Electronic Immunization Reg
 
 ### Expected Workflow
 
-The `sc_` suite contains five functions that work together:
+The `sc_` suite contains four functions that work together:
 
 1. `sc_rate()` — computes the percentage of consistent and inconsistent sequences, aggregated by geographic level.
-2. `sc_barplot()` — visualizes the output of `sc_rate()` or `sc_date_sequence()` as a stacked bar chart.
+2. `sc_barplot()` — visualizes the output of `sc_rate()` as a stacked bar chart.
 3. `sc_inconsistent()` — lists each person with an inconsistent sequence, with the date of each dose in a schedule-like table.
 4. `sc_inconsistent_plot()` — visualizes how inconsistent sequences are distributed across combinations of doses received, as a heatmap.
-5. `sc_date_sequence()` — computes the percentage of sequences with a chronological inconsistency, aggregated by geographic level.
 
 The figure below shows the expected workflow.
 
@@ -135,8 +131,8 @@ dtp_sequence <- c("DTP1", "DTP2", "DTP3")
 
 `sc_rate()` evaluates each person's sequence and returns, for each geographic unit, the count and percentage of people in each category. It has two modes:
 
-- `mode = "simple"` (default): classifies each sequence as `CONSISTENT` or `INCONSISTENT`.
-- `mode = "complex"`: keeps `CONSISTENT` as a single category, and breaks down `INCONSISTENT` into each combination of doses received (e.g., `DTP1 + DTP3`).
+- `mode = "simple"` (default): classifies each sequence as `CONSISTENT`, `INCONSISTENT` or `DATE_MISSING`.
+- `mode = "complex"`: keeps `CONSISTENT` and `DATE_MISSING` as single categories, and breaks down `INCONSISTENT` into each combination of doses received (e.g., `DTP1 + DTP3`). Combinations administered out of chronological order are flagged with the `(out of order)` suffix (e.g., `DTP1 + DTP2 (out of order)`).
 
 ```{r sc-rate-simple, message=FALSE}
 rate_simple <- sc_rate(
@@ -171,9 +167,10 @@ rate_complex %>%
 - `geo_level`: `"ADM0"` (default), `"ADM1"`, or `"ADM2"`.
 - `mode`: `"simple"` (default) or `"complex"`.
 - `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to. Default `NULL` uses all available cohorts.
+- `allow_same_day`: Logical, defaults to `FALSE`. Whether two consecutive doses administered on the same day are considered in chronological order. Doses of the same vaccine series should not be administered on the same day, but this may be relaxed for sequences that combine different vaccines.
 - `fix_residence`: Logical, defaults to `TRUE`. See [Handling residence inconsistencies] below.
 
-The output contains the `sequence` category, a `consistent` column (`TRUE`/`FALSE`), the number of people (`n`), the total number of people with at least one dose of the sequence (`total`) and the percentage (`rate`).
+The output contains the `sequence` category, a `consistent` column (`TRUE`/`FALSE`, `NA` for `DATE_MISSING`), the number of people (`n`), the total number of people with at least one dose of the sequence (`total`) and the percentage (`rate`).
 
 ### Handling residence inconsistencies
 
@@ -182,7 +179,7 @@ Since each person is evaluated as a whole, they must be assigned to a single pla
 - `fix_residence = TRUE` (default): all of a person's records are corrected to the `ADM1_residence`/`ADM2_residence` tied to their **most recent vaccination**.
 - `fix_residence = FALSE`: residence values are left as recorded, and each person is assigned the residence of their first record.
 
-`sc_rate()` and `sc_date_sequence()` only check residence when `geo_level` is `"ADM1"` or `"ADM2"`. `sc_inconsistent()` always checks it, since its output includes the residence of each person.
+`sc_rate()` only checks residence when `geo_level` is `"ADM1"` or `"ADM2"`. `sc_inconsistent()` always checks it, since its output includes the residence of each person.
 
 ### Step 2 — Visualize sequence consistency with `sc_barplot()`
 
@@ -206,14 +203,16 @@ sc_barplot(
 
 #### Parameters accepted
 
-- `data`: Output of `sc_rate()` or `sc_date_sequence()`.
+- `data`: Output of `sc_rate()`.
 - `sequence_name`: Display label for the dose sequence in the plot subtitle. Default: `"dose sequence"`.
 - `within_ADM1`: Character vector to filter to specific ADM1 units when `geo_level = "ADM2"`. Default: `NULL`.
-- `plot_missing`: Boolean. Only used with the output of `sc_date_sequence()`. If `TRUE` (default), `DATE_MISSING` sequences are shown as a separate bar segment so all bars sum to 100%.
+- `plot_missing`: Boolean. If `TRUE` (default), `DATE_MISSING` sequences are shown as a separate bar segment (gray) so all bars sum to 100%.
 
 #### Interpretation
 
-Each bar represents a geographic unit. The `CONSISTENT` segment (blue) is shown at the bottom of each bar, and the inconsistent segments stack on top of it. Areas with a larger share of inconsistent sequences should be prioritized for data quality review. The complex mode shows which dose is usually skipped: for example, a large share of `DTP2 + DTP3` (skipped `DTP1`) may indicate that first doses are being registered with the wrong dose number, or that first doses are administered somewhere that does not report to the EIR.
+Each bar represents a geographic unit. The `CONSISTENT` segment (blue) is shown at the bottom of each bar, the inconsistent segments stack on top of it, and `DATE_MISSING` (gray) is shown at the top. Areas with a larger share of inconsistent sequences should be prioritized for data quality review. The complex mode shows which dose is usually skipped: for example, a large share of `DTP2 + DTP3` (skipped `DTP1`) may indicate that first doses are being registered with the wrong dose number, or that first doses are administered somewhere that does not report to the EIR.
+
+Sequences flagged `(out of order)` are usually rare, so even small percentages deserve attention. They may be caused by typos in `date_vax`, by doses registered with the wrong dose number (e.g., DTP2 registered as DTP1 and vice versa), or by records from two different people linked to the same ID. The [Date Consistency Comparison](date_consistency_comparison_en.html) module can help investigate the dates involved.
 
 ### Step 3 — Inspect individual inconsistent sequences with `sc_inconsistent()`
 
@@ -233,9 +232,10 @@ inconsistent_df %>% head(10) %>% kable(caption = "Sample of inconsistent sequenc
 - `data.EIR`: EIR data frame in immunABC format.
 - `vaccines`: Ordered character vector of at least two doses.
 - `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to. Default `NULL` uses all available cohorts.
+- `allow_same_day`: Logical, defaults to `FALSE`.
 - `fix_residence`: Logical, defaults to `TRUE`.
 
-The `sequence` column shows the combination of doses received, and the `skipped_doses` column shows the doses missing before the last dose received. This table can be exported for record-level correction workflows, for example, to look for the skipped doses under a different dose number or a different ID.
+The `sequence` column shows the combination of doses received, the `skipped_doses` column shows the doses missing before the last dose received (`NA` if none), and the `out_of_order` column shows whether the doses were administered out of chronological order. A person can have both problems at once. `DATE_MISSING` sequences are not included. This table can be exported for record-level correction workflows, for example, to look for the skipped doses under a different dose number or a different ID.
 
 ### Step 4 — Visualize the distribution of inconsistent sequences with `sc_inconsistent_plot()`
 
@@ -258,44 +258,8 @@ sc_inconsistent_plot(inconsistent_df, geo_level = "ADM1")
 
 #### Interpretation
 
-Rows are sorted with the most frequent combinations at the top. When one combination dominates in a specific area (a darker cell than the rest of its row), it suggests a local registration practice worth investigating, rather than a random data entry error.
-
-### Step 5 — Compute chronological consistency with `sc_date_sequence()`
-
-`sc_date_sequence()` checks, for each person, whether the doses received were administered in the order of the sequence. Unfinished and inconsistent sequences are also evaluated, using only the doses received (e.g., a person with `DTP1 + DTP3` is checked for `DTP1` before `DTP3`).
-
-```{r sc-date-sequence, message=FALSE, warning=FALSE}
-date_sequence_df <- sc_date_sequence(
-  data.EIR  = immunABC.EIR,
-  vaccines  = dtp_sequence,
-  geo_level = "ADM1"
-)
-
-date_sequence_df %>% kable(digits = 2, caption = "Chronological consistency by ADM1")
-```
-
-#### Parameters accepted
-
-- `data.EIR`: EIR data frame in immunABC format.
-- `vaccines`: Ordered character vector of at least two doses.
-- `geo_level`: `"ADM0"` (default), `"ADM1"`, or `"ADM2"`.
-- `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to. Default `NULL` uses all available cohorts.
-- `allow_same_day`: Logical, defaults to `FALSE`. Whether two consecutive doses administered on the same day are considered consistent. Doses of the same vaccine series should not be administered on the same day, but this may be relaxed for sequences that combine different vaccines.
-- `fix_residence`: Logical, defaults to `TRUE`.
-
-The output may also be passed to `sc_barplot()`:
-
-```{r sc-date-sequence-barplot, message=FALSE, fig.width=10, fig.height=5}
-sc_barplot(
-  data          = date_sequence_df,
-  sequence_name = "DTP1 - DTP3"
-)
-```
-
-#### Interpretation
-
-Chronological inconsistencies are usually rare, so even small percentages deserve attention. They may be caused by typos in `date_vax`, by doses registered with the wrong dose number (e.g., DTP2 registered as DTP1 and vice versa), or by records from two different people linked to the same ID. The [Date Consistency Comparison](date_consistency_comparison_en.html) module can help investigate the dates involved.
+Rows are sorted with the most frequent combinations at the top, and combinations administered out of chronological order are flagged with the `(out of order)` suffix. When one combination dominates in a specific area (a darker cell than the rest of its row), it suggests a local registration practice worth investigating, rather than a random data entry error.
 
 # Summary
 
-The `sc_` module provides a complete pipeline for assessing whether ordered dose sequences are registered consistently in EIR data. `sc_rate()` and `sc_barplot()` give a geographic overview of sequences with skipped doses, `sc_inconsistent()` and `sc_inconsistent_plot()` allow record-level inspection and characterization of which doses are being skipped, and `sc_date_sequence()` quantifies sequences administered out of chronological order. Together, they help data managers and public health analysts detect and prioritize data quality corrections before analyses that rely on dose numbers, such as coverage, dropout or complete schedule analyses.
+The `sc_` module provides a complete pipeline for assessing whether ordered dose sequences are registered consistently in EIR data, where a sequence is only consistent when no dose is skipped and the doses were administered in chronological order. `sc_rate()` and `sc_barplot()` give a geographic overview of inconsistent sequences, and `sc_inconsistent()` and `sc_inconsistent_plot()` allow record-level inspection and characterization of which doses are being skipped or administered out of order. Together, they help data managers and public health analysts detect and prioritize data quality corrections before analyses that rely on dose numbers, such as coverage, dropout or complete schedule analyses.

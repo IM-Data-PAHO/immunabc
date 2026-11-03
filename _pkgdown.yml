@@ -54,7 +54,6 @@ reference:
       - sc_barplot
       - sc_inconsistent
       - sc_inconsistent_plot
-      - sc_date_sequence
 
   - title: Vaccination Timeliness
     desc: Functions for calculating and visualizing vaccination timeliness in the EIR.

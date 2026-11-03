@@ -10,6 +10,7 @@ sc_rate(
   geo_level = "ADM0",
   mode = "simple",
   birth_cohorts = NULL,
+  allow_same_day = FALSE,
   fix_residence = TRUE
 )
 }
@@ -20,17 +21,24 @@ sc_rate(
 
 \item{geo_level}{Character. The geographic level to aggregate results by. Must be "ADM0", "ADM1" or "ADM2". If not specified, the default is "ADM0".}
 
-\item{mode}{Character. Either \code{"simple"} (default), which classifies each sequence as \code{CONSISTENT} or \code{INCONSISTENT}, or \code{"complex"}, which keeps \code{CONSISTENT} as a single category and shows every inconsistent combination of doses received (e.g. \code{"DTP1 + DTP3"}).}
+\item{mode}{Character. Either \code{"simple"} (default), which classifies each sequence as \code{CONSISTENT} or \code{INCONSISTENT}, or \code{"complex"}, which keeps \code{CONSISTENT} as a single category and shows every inconsistent combination of doses received (e.g. \code{"DTP1 + DTP3"}), flagging the ones administered out of chronological order (e.g. \code{"DTP1 + DTP2 (out of order)"}).}
 
 \item{birth_cohorts}{Numeric (optional). A vector specifying the birth cohort(s) for which the rate should be calculated. If \code{NULL} (default), all available cohorts are used.}
+
+\item{allow_same_day}{Logical. Whether two consecutive doses administered on the same day are considered chronologically consistent. Default is \code{FALSE}, since doses of the same vaccine series should not be administered on the same day.}
 
 \item{fix_residence}{Logical. When a person's residence differs across their records, whether to correct all of that person's records to the residence of their most recent vaccination (TRUE, default) or leave the data as-is (FALSE), in which case each person is assigned the residence of their first record.}
 }
 \value{
 A data frame with one row per \code{sequence} category for the specified \code{geo_level}, with the following columns:
 \itemize{
-  \item \code{sequence}: \code{CONSISTENT}, or when \code{mode = "simple"}, \code{INCONSISTENT}. When \code{mode = "complex"}, inconsistent sequences are shown as the combination of doses received, e.g. \code{"DTP1 + DTP3"} (missing DTP2).
-  \item \code{consistent}: whether that category corresponds to a consistent sequence.
+  \item \code{sequence}: the category of each sequence, one of:
+  \itemize{
+    \item \code{CONSISTENT}: no dose skipped and every dose administered in chronological order.
+    \item \code{INCONSISTENT} (only when \code{mode = "simple"}): a dose was skipped and/or administered out of chronological order. When \code{mode = "complex"}, inconsistent sequences are shown as the combination of doses received, e.g. \code{"DTP1 + DTP3"} (missing DTP2), with the suffix \code{" (out of order)"} when the doses were not administered in chronological order.
+    \item \code{DATE_MISSING}: no dose skipped and no chronological inconsistency found, but at least one dose received has no \code{date_vax}, so the chronological order cannot be fully evaluated.
+  }
+  \item \code{consistent}: whether that category corresponds to a consistent sequence (\code{NA} for \code{DATE_MISSING}).
   \item \code{n}: number of people in that category.
   \item \code{total}: total number of people with at least one dose of the sequence.
   \item \code{rate}: percentage of people in that category (\code{n / total * 100}).
@@ -40,7 +48,11 @@ A data frame with one row per \code{sequence} category for the specified \code{g
 This function checks, for each person, whether the doses they received of an ordered dose sequence (e.g. DTP1, DTP2 and DTP3) are consistent, and calculates the percentage of consistent and inconsistent sequences, further disaggregating by geographic level of residence, using data from the electronic immunization registry (EIR).
 }
 \details{
-A sequence is consistent when no earlier dose is skipped, i.e. the doses received are the first doses of the sequence. For a DTP1, DTP2, DTP3 sequence, "DTP1", "DTP1 + DTP2" and "DTP1 + DTP2 + DTP3" are consistent (the person may simply not have finished the sequence yet), while "DTP2", "DTP3", "DTP1 + DTP3" and "DTP2 + DTP3" are inconsistent.
+A sequence is consistent when both of the following hold:
+\itemize{
+  \item No earlier dose is skipped, i.e. the doses received are the first doses of the sequence. For a DTP1, DTP2, DTP3 sequence, "DTP1", "DTP1 + DTP2" and "DTP1 + DTP2 + DTP3" pass this check (the person may simply not have finished the sequence yet), while "DTP2", "DTP3", "DTP1 + DTP3" and "DTP2 + DTP3" do not.
+  \item The doses received were administered in chronological order, i.e. each dose after the previous dose received in the sequence (e.g. DTP2 after DTP1).
+}
 
 Only people with at least one dose of the sequence are evaluated. Since this is a nominal indicator, each person is assigned to a single place of residence (see \code{fix_residence}).
 }

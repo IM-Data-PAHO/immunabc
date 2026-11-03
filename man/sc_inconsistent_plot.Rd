@@ -19,5 +19,5 @@ sc_inconsistent_plot(data, geo_level = "ADM0", within_ADM1 = NULL, digits = 0)
 A ggplot object representing the heatmap.
 }
 \description{
-Generates a heatmap showing how inconsistent dose sequences (sequences where an earlier dose is skipped) are distributed across the combinations of doses received, for each geographic area of residence. Each column adds to 100\% of the inconsistent sequences in that area. Consistent sequences are not shown.
+Generates a heatmap showing how inconsistent dose sequences (sequences where an earlier dose is skipped and/or the doses were not administered in chronological order) are distributed across the combinations of doses received, for each geographic area of residence. Each column adds to 100\% of the inconsistent sequences in that area. Consistent sequences are not shown.
 }
