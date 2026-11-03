@@ -8,7 +8,7 @@ sc_rate(
   data.EIR,
   vaccines,
   geo_level = "ADM0",
-  mode = "simple",
+  aggregated = TRUE,
   birth_cohorts = NULL,
   allow_same_day = FALSE,
   fix_residence = TRUE
@@ -21,7 +21,7 @@ sc_rate(
 
 \item{geo_level}{Character. The geographic level to aggregate results by. Must be "ADM0", "ADM1" or "ADM2". If not specified, the default is "ADM0".}
 
-\item{mode}{Character. Either \code{"simple"} (default), which classifies each sequence as \code{CONSISTENT} or \code{INCONSISTENT}, or \code{"complex"}, which keeps \code{CONSISTENT} as a single category and shows every inconsistent combination of doses received (e.g. \code{"DTP1 + DTP3"}), flagging the ones administered out of chronological order (e.g. \code{"DTP1 + DTP2 (out of order)"}).}
+\item{aggregated}{Logical. Whether to pool all inconsistent sequences into a single \code{INCONSISTENT} category (TRUE, default), or keep \code{CONSISTENT} as a single category and show every inconsistent combination of doses received (FALSE), e.g. \code{"DTP1 + DTP3"}, flagging the ones administered out of chronological order (e.g. \code{"DTP1 + DTP2 (out of order)"}).}
 
 \item{birth_cohorts}{Numeric (optional). A vector specifying the birth cohort(s) for which the rate should be calculated. If \code{NULL} (default), all available cohorts are used.}
 
@@ -35,7 +35,7 @@ A data frame with one row per \code{sequence} category for the specified \code{g
   \item \code{sequence}: the category of each sequence, one of:
   \itemize{
     \item \code{CONSISTENT}: no dose skipped and every dose administered in chronological order.
-    \item \code{INCONSISTENT} (only when \code{mode = "simple"}): a dose was skipped and/or administered out of chronological order. When \code{mode = "complex"}, inconsistent sequences are shown as the combination of doses received, e.g. \code{"DTP1 + DTP3"} (missing DTP2), with the suffix \code{" (out of order)"} when the doses were not administered in chronological order.
+    \item \code{INCONSISTENT} (only when \code{aggregated = TRUE}): a dose was skipped and/or administered out of chronological order. When \code{aggregated = FALSE}, inconsistent sequences are shown as the combination of doses received, e.g. \code{"DTP1 + DTP3"} (missing DTP2), with the suffix \code{" (out of order)"} when the doses were not administered in chronological order.
     \item \code{DATE_MISSING}: no dose skipped and no chronological inconsistency found, but at least one dose received has no \code{date_vax}, so the chronological order cannot be fully evaluated.
   }
   \item \code{consistent}: whether that category corresponds to a consistent sequence (\code{NA} for \code{DATE_MISSING}).

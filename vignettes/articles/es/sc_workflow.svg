@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" style="background: #ffffff; background-color: #ffffff; color-scheme: light;" version="1.1" width="1081px" height="361px" viewBox="-0.5 -0.5 1081 361">
+<svg xmlns="http://www.w3.org/2000/svg" style="background: #ffffff; background-color: #ffffff; color-scheme: light;" version="1.1" width="1081px" height="461px" viewBox="-0.5 -0.5 1081 461">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 L 3 5 z" fill="#000000"/>
@@ -8,14 +8,15 @@
   <g font-family="Helvetica, Arial, sans-serif" font-size="14px" text-anchor="middle" fill="#000000">
 
     <!-- EIR -->
-    <rect x="0" y="150" width="120" height="60" fill="#dae8fc" stroke="#6c8ebf"/>
-    <text x="60" y="180" dy="0.35em">EIR</text>
+    <rect x="0" y="200" width="120" height="60" fill="#dae8fc" stroke="#6c8ebf"/>
+    <text x="60" y="230" dy="0.35em">EIR</text>
 
     <!-- branches from EIR -->
-    <path d="M 120 180 L 180 180" fill="none" stroke="#000000"/>
-    <path d="M 180 130 L 180 230" fill="none" stroke="#000000"/>
+    <path d="M 120 230 L 180 230" fill="none" stroke="#000000"/>
+    <path d="M 180 130 L 180 330" fill="none" stroke="#000000"/>
     <path d="M 180 130 L 238 130" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
     <path d="M 180 230 L 238 230" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
+    <path d="M 180 330 L 238 330" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
 
     <!-- row 1: sc_rate -->
     <rect x="240" y="100" width="240" height="60" rx="9" fill="#fff2cc" stroke="#d6b656"/>
@@ -38,26 +39,27 @@
     <rect x="1000" y="0" width="80" height="60" rx="9" fill="#d5e8d4" stroke="#82b366"/>
     <text x="1040" y="30" dy="0.35em">Analyze</text>
 
-    <!-- row 2: sc_inconsistent -->
+    <!-- row 2: sc_heatmap -->
     <rect x="240" y="200" width="240" height="60" rx="9" fill="#fff2cc" stroke="#d6b656"/>
-    <text x="360" y="230" dy="0.35em">sc_inconsistent()</text>
+    <text x="360" y="230" dy="0.35em">sc_heatmap()</text>
     <path d="M 480 230 L 558 230" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
     <rect x="560" y="200" width="80" height="60" fill="#ffe6cc" stroke="#d79b00"/>
-    <text x="600" y="230" dy="0.35em">Table</text>
+    <text x="600" y="230" dy="0.35em">Plot</text>
     <path d="M 640 230 L 718 230" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
-    <rect x="720" y="200" width="240" height="60" rx="9" fill="#fff2cc" stroke="#d6b656"/>
-    <text x="840" y="230" dy="0.35em">sc_inconsistent_plot()</text>
-    <path d="M 960 230 L 998 230" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
-    <rect x="1000" y="200" width="80" height="60" fill="#ffe6cc" stroke="#d79b00"/>
-    <text x="1040" y="230" dy="0.35em">Plot</text>
+    <rect x="720" y="200" width="80" height="60" rx="9" fill="#d5e8d4" stroke="#82b366"/>
+    <text x="760" y="230" dy="0.35em">Analyze</text>
 
-    <!-- row 2: analyze -->
-    <path d="M 600 260 L 600 298" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
-    <rect x="560" y="300" width="80" height="60" rx="9" fill="#d5e8d4" stroke="#82b366"/>
-    <text x="600" y="330" dy="0.35em">Analyze</text>
-    <path d="M 1040 260 L 1040 298" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
-    <rect x="1000" y="300" width="80" height="60" rx="9" fill="#d5e8d4" stroke="#82b366"/>
-    <text x="1040" y="330" dy="0.35em">Analyze</text>
+    <!-- row 3: sc_inconsistent -->
+    <rect x="240" y="300" width="240" height="60" rx="9" fill="#fff2cc" stroke="#d6b656"/>
+    <text x="360" y="330" dy="0.35em">sc_inconsistent()</text>
+    <path d="M 480 330 L 558 330" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
+    <rect x="560" y="300" width="80" height="60" fill="#ffe6cc" stroke="#d79b00"/>
+    <text x="600" y="330" dy="0.35em">Table</text>
+
+    <!-- row 3: analyze -->
+    <path d="M 600 360 L 600 398" fill="none" stroke="#000000" marker-end="url(#arrow)"/>
+    <rect x="560" y="400" width="80" height="60" rx="9" fill="#d5e8d4" stroke="#82b366"/>
+    <text x="600" y="430" dy="0.35em">Analyze</text>
 
   </g>
 </svg>

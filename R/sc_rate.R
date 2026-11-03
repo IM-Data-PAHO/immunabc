@@ -13,7 +13,7 @@
 #' @param data.EIR Data frame. A data frame containing individual vaccination records. See \code{immunABC.EIR} for expected structure.
 #' @param vaccines Character. A character vector of at least two doses with the ordered dose sequence to evaluate, e.g. \code{c("DTP1", "DTP2", "DTP3")}.
 #' @param geo_level Character. The geographic level to aggregate results by. Must be "ADM0", "ADM1" or "ADM2". If not specified, the default is "ADM0".
-#' @param mode Character. Either \code{"simple"} (default), which classifies each sequence as \code{CONSISTENT} or \code{INCONSISTENT}, or \code{"complex"}, which keeps \code{CONSISTENT} as a single category and shows every inconsistent combination of doses received (e.g. \code{"DTP1 + DTP3"}), flagging the ones administered out of chronological order (e.g. \code{"DTP1 + DTP2 (out of order)"}).
+#' @param aggregated Logical. Whether to pool all inconsistent sequences into a single \code{INCONSISTENT} category (TRUE, default), or keep \code{CONSISTENT} as a single category and show every inconsistent combination of doses received (FALSE), e.g. \code{"DTP1 + DTP3"}, flagging the ones administered out of chronological order (e.g. \code{"DTP1 + DTP2 (out of order)"}).
 #' @param birth_cohorts Numeric (optional). A vector specifying the birth cohort(s) for which the rate should be calculated. If \code{NULL} (default), all available cohorts are used.
 #' @param allow_same_day Logical. Whether two consecutive doses administered on the same day are considered chronologically consistent. Default is \code{FALSE}, since doses of the same vaccine series should not be administered on the same day.
 #' @param fix_residence Logical. When a person's residence differs across their records, whether to correct all of that person's records to the residence of their most recent vaccination (TRUE, default) or leave the data as-is (FALSE), in which case each person is assigned the residence of their first record.
@@ -23,7 +23,7 @@
 #'   \item \code{sequence}: the category of each sequence, one of:
 #'   \itemize{
 #'     \item \code{CONSISTENT}: no dose skipped and every dose administered in chronological order.
-#'     \item \code{INCONSISTENT} (only when \code{mode = "simple"}): a dose was skipped and/or administered out of chronological order. When \code{mode = "complex"}, inconsistent sequences are shown as the combination of doses received, e.g. \code{"DTP1 + DTP3"} (missing DTP2), with the suffix \code{" (out of order)"} when the doses were not administered in chronological order.
+#'     \item \code{INCONSISTENT} (only when \code{aggregated = TRUE}): a dose was skipped and/or administered out of chronological order. When \code{aggregated = FALSE}, inconsistent sequences are shown as the combination of doses received, e.g. \code{"DTP1 + DTP3"} (missing DTP2), with the suffix \code{" (out of order)"} when the doses were not administered in chronological order.
 #'     \item \code{DATE_MISSING}: no dose skipped and no chronological inconsistency found, but at least one dose received has no \code{date_vax}, so the chronological order cannot be fully evaluated.
 #'   }
 #'   \item \code{consistent}: whether that category corresponds to a consistent sequence (\code{NA} for \code{DATE_MISSING}).
@@ -36,13 +36,13 @@
 #' @import lubridate
 #'
 #' @export
-sc_rate <- function(data.EIR, vaccines, geo_level = "ADM0", mode = "simple", birth_cohorts = NULL, allow_same_day = FALSE, fix_residence = TRUE) {
+sc_rate <- function(data.EIR, vaccines, geo_level = "ADM0", aggregated = TRUE, birth_cohorts = NULL, allow_same_day = FALSE, fix_residence = TRUE) {
 
   # validations
   .validate_data.EIR(data.EIR)
   .validate_sequence(vaccines, data.EIR)
   .validate_geo_level(geo_level)
-  .validate_sc_mode(mode)
+  .validate_logical(aggregated, "aggregated")
   .validate_numeric(birth_cohorts, "birth_cohorts", min_len = 1)
   .validate_logical(allow_same_day, "allow_same_day")
   .validate_logical(fix_residence, "fix_residence")
@@ -68,12 +68,12 @@ sc_rate <- function(data.EIR, vaccines, geo_level = "ADM0", mode = "simple", bir
   ) %>%
     .sc_classify_sequence(vaccines, allow_same_day)
 
-  # consistent sequences are always pooled together, inconsistent ones only in simple mode
+  # consistent sequences are always pooled together, inconsistent ones only when aggregated
   sequences <- sequences %>%
     mutate(sequence = case_when(
       is.na(consistent) ~ "DATE_MISSING",
       consistent ~ "CONSISTENT",
-      mode == "simple" ~ "INCONSISTENT",
+      aggregated ~ "INCONSISTENT",
       out_of_order ~ paste0(sequence, " (out of order)"),
       TRUE ~ sequence
     ))

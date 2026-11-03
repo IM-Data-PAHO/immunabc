@@ -1,6 +1,6 @@
 #' Dose (S)equence (C)omparison Barplot
 #'
-#' Generates a stacked bar plot of dose sequences, grouped by geographic area, from the output of \code{sc_rate}: consistent and inconsistent sequences (\code{mode = "simple"}) or consistent sequences and every inconsistent combination of doses received (\code{mode = "complex"}). Sequences that cannot be fully evaluated because a date is missing are shown as \code{DATE_MISSING}.
+#' Generates a stacked bar plot of dose sequences, grouped by geographic area, from the output of \code{sc_rate}: consistent and inconsistent sequences (\code{aggregated = TRUE}) or consistent sequences and every inconsistent combination of doses received (\code{aggregated = FALSE}). Sequences that cannot be fully evaluated because a date is missing are shown as \code{DATE_MISSING}.
 #'
 #' @param data The output from the \code{immunabc::sc_rate} function.
 #' @param sequence_name Character. Label for the dose sequence, used in the plot subtitle (e.g. \code{"DTP1 - DTP3"}). Default is \code{"dose sequence"}.

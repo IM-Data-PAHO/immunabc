@@ -112,8 +112,8 @@ The `sc_` suite contains four functions that work together:
 
 1. `sc_rate()` — computes the percentage of consistent and inconsistent sequences, aggregated by geographic level.
 2. `sc_barplot()` — visualizes the output of `sc_rate()` as a stacked bar chart.
-3. `sc_inconsistent()` — lists each person with an inconsistent sequence, with the date of each dose in a schedule-like table.
-4. `sc_inconsistent_plot()` — visualizes how inconsistent sequences are distributed across combinations of doses received, as a heatmap.
+3. `sc_heatmap()` — visualizes how people are distributed across every combination of doses received, consistent and inconsistent, as a heatmap.
+4. `sc_inconsistent()` — lists each person with an inconsistent sequence, with the date of each dose in a schedule-like table.
 
 The figure below shows the expected workflow.
 
@@ -129,35 +129,35 @@ dtp_sequence <- c("DTP1", "DTP2", "DTP3")
 
 ### Step 1 — Compute sequence consistency with `sc_rate()`
 
-`sc_rate()` evaluates each person's sequence and returns, for each geographic unit, the count and percentage of people in each category. It has two modes:
+`sc_rate()` evaluates each person's sequence and returns, for each geographic unit, the count and percentage of people in each category. The `aggregated` parameter controls how inconsistent sequences are shown:
 
-- `mode = "simple"` (default): classifies each sequence as `CONSISTENT`, `INCONSISTENT` or `DATE_MISSING`.
-- `mode = "complex"`: keeps `CONSISTENT` and `DATE_MISSING` as single categories, and breaks down `INCONSISTENT` into each combination of doses received (e.g., `DTP1 + DTP3`). Combinations administered out of chronological order are flagged with the `(out of order)` suffix (e.g., `DTP1 + DTP2 (out of order)`).
+- `aggregated = TRUE` (default): classifies each sequence as `CONSISTENT`, `INCONSISTENT` or `DATE_MISSING`.
+- `aggregated = FALSE`: keeps `CONSISTENT` and `DATE_MISSING` as single categories, and breaks down `INCONSISTENT` into each combination of doses received (e.g., `DTP1 + DTP3`). Combinations administered out of chronological order are flagged with the `(out of order)` suffix (e.g., `DTP1 + DTP2 (out of order)`).
 
-```{r sc-rate-simple, message=FALSE}
-rate_simple <- sc_rate(
-  data.EIR  = immunABC.EIR,
-  vaccines  = dtp_sequence,
-  geo_level = "ADM1",
-  mode      = "simple"
+```{r sc-rate-aggregated, message=FALSE}
+rate_aggregated <- sc_rate(
+  data.EIR   = immunABC.EIR,
+  vaccines   = dtp_sequence,
+  geo_level  = "ADM1",
+  aggregated = TRUE
 )
 
-rate_simple %>% kable(digits = 2, caption = "Sequence consistency by ADM1 (simple mode)")
+rate_aggregated %>% kable(digits = 2, caption = "Sequence consistency by ADM1 (aggregated)")
 ```
 
 Notice the warning: when a person has the same dose registered more than once, only the earliest `date_vax` is kept. We recommend checking for duplicates before running the analysis.
 
-```{r sc-rate-complex, message=FALSE, warning=FALSE}
-rate_complex <- sc_rate(
-  data.EIR  = immunABC.EIR,
-  vaccines  = dtp_sequence,
-  geo_level = "ADM1",
-  mode      = "complex"
+```{r sc-rate-disaggregated, message=FALSE, warning=FALSE}
+rate_disaggregated <- sc_rate(
+  data.EIR   = immunABC.EIR,
+  vaccines   = dtp_sequence,
+  geo_level  = "ADM1",
+  aggregated = FALSE
 )
 
-rate_complex %>%
+rate_disaggregated %>%
   filter(ADM1 == "ADM1_1") %>%
-  kable(digits = 2, caption = "Sequence consistency in ADM1_1 (complex mode)")
+  kable(digits = 2, caption = "Sequence consistency in ADM1_1 (disaggregated)")
 ```
 
 #### Parameters accepted
@@ -165,7 +165,7 @@ rate_complex %>%
 - `data.EIR`: EIR data frame in immunABC format.
 - `vaccines`: Ordered character vector of at least two doses, e.g. `c("DTP1", "DTP2", "DTP3")`.
 - `geo_level`: `"ADM0"` (default), `"ADM1"`, or `"ADM2"`.
-- `mode`: `"simple"` (default) or `"complex"`.
+- `aggregated`: Logical, defaults to `TRUE`. Whether to pool all inconsistent sequences into a single `INCONSISTENT` category.
 - `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to. Default `NULL` uses all available cohorts.
 - `allow_same_day`: Logical, defaults to `FALSE`. Whether two consecutive doses administered on the same day are considered in chronological order. Doses of the same vaccine series should not be administered on the same day, but this may be relaxed for sequences that combine different vaccines.
 - `fix_residence`: Logical, defaults to `TRUE`. See [Handling residence inconsistencies] below.
@@ -179,24 +179,24 @@ Since each person is evaluated as a whole, they must be assigned to a single pla
 - `fix_residence = TRUE` (default): all of a person's records are corrected to the `ADM1_residence`/`ADM2_residence` tied to their **most recent vaccination**.
 - `fix_residence = FALSE`: residence values are left as recorded, and each person is assigned the residence of their first record.
 
-`sc_rate()` only checks residence when `geo_level` is `"ADM1"` or `"ADM2"`. `sc_inconsistent()` always checks it, since its output includes the residence of each person.
+`sc_rate()` and `sc_heatmap()` only check residence when results are disaggregated below `"ADM0"`. `sc_inconsistent()` always checks it, since its output includes the residence of each person.
 
 ### Step 2 — Visualize sequence consistency with `sc_barplot()`
 
 The output of `sc_rate()` can be passed directly to `sc_barplot()` to produce a stacked bar chart per geographic unit.
 
-```{r sc-barplot-simple, message=FALSE, fig.width=10, fig.height=5}
+```{r sc-barplot-aggregated, message=FALSE, fig.width=10, fig.height=5}
 sc_barplot(
-  data          = rate_simple,
+  data          = rate_aggregated,
   sequence_name = "DTP1 - DTP3"
 )
 ```
 
-In complex mode, each inconsistent combination is shown in a different color:
+With `aggregated = FALSE`, each inconsistent combination is shown in a different color:
 
-```{r sc-barplot-complex, message=FALSE, fig.width=10, fig.height=5}
+```{r sc-barplot-disaggregated, message=FALSE, fig.width=10, fig.height=5}
 sc_barplot(
-  data          = rate_complex,
+  data          = rate_disaggregated,
   sequence_name = "DTP1 - DTP3"
 )
 ```
@@ -210,11 +210,56 @@ sc_barplot(
 
 #### Interpretation
 
-Each bar represents a geographic unit. The `CONSISTENT` segment (blue) is shown at the bottom of each bar, the inconsistent segments stack on top of it, and `DATE_MISSING` (gray) is shown at the top. Areas with a larger share of inconsistent sequences should be prioritized for data quality review. The complex mode shows which dose is usually skipped: for example, a large share of `DTP2 + DTP3` (skipped `DTP1`) may indicate that first doses are being registered with the wrong dose number, or that first doses are administered somewhere that does not report to the EIR.
+Each bar represents a geographic unit. The `CONSISTENT` segment (blue) is shown at the bottom of each bar, the inconsistent segments stack on top of it, and `DATE_MISSING` (gray) is shown at the top. Areas with a larger share of inconsistent sequences should be prioritized for data quality review. The disaggregated view shows which dose is usually skipped: for example, a large share of `DTP2 + DTP3` (skipped `DTP1`) may indicate that first doses are being registered with the wrong dose number, or that first doses are administered somewhere that does not report to the EIR.
 
 Sequences flagged `(out of order)` are usually rare, so even small percentages deserve attention. They may be caused by typos in `date_vax`, by doses registered with the wrong dose number (e.g., DTP2 registered as DTP1 and vice versa), or by records from two different people linked to the same ID. The [Date Consistency Comparison](date_consistency_comparison_en.html) module can help investigate the dates involved.
 
-### Step 3 — Inspect individual inconsistent sequences with `sc_inconsistent()`
+### Step 3 — Explore every combination of doses received with `sc_heatmap()`
+
+`sc_heatmap()` takes the EIR directly and shows, for each geographic unit of residence (columns), the percentage of people with each combination of doses received (rows). Rows are split into panels:
+
+- **Consistent**: the "diagonal" of the sequence, from fewest to most doses (`DTP1`, `DTP1 + DTP2`, `DTP1 + DTP2 + DTP3`).
+- **Date missing**: sequences that cannot be fully evaluated (only shown if there are any).
+- **Inconsistent**: every inconsistent combination, from most to least frequent.
+
+By default, consistent sequences are shown and percentages are calculated over **all** people with at least one dose of the sequence in each area, so each column adds up to 100%. Looking only at what is wrong, without the context of what is right, does not show how big the problem is.
+
+```{r sc-heatmap-adm1, message=FALSE, warning=FALSE, fig.width=10, fig.height=7}
+sc_heatmap(
+  data.EIR  = immunABC.EIR,
+  vaccines  = dtp_sequence,
+  geo_level = "ADM1"
+)
+```
+
+Once the size of the problem is clear, set `show_consistent = FALSE` to deep dive into the inconsistent sequences. Percentages are recalculated over the inconsistent sequences only, so each column adds up to 100% of the inconsistent sequences in that area:
+
+```{r sc-heatmap-adm1-inconsistent, message=FALSE, warning=FALSE, fig.width=10, fig.height=6}
+sc_heatmap(
+  data.EIR        = immunABC.EIR,
+  vaccines        = dtp_sequence,
+  geo_level       = "ADM1",
+  show_consistent = FALSE
+)
+```
+
+#### Parameters accepted
+
+- `data.EIR`: EIR data frame in immunABC format.
+- `vaccines`: Ordered character vector of at least two doses.
+- `geo_level`: Geographic level of residence to show as columns: `"ADM0"` (default), `"ADM1"`, or `"ADM2"`.
+- `show_consistent`: Logical, defaults to `TRUE`. Whether to show consistent and `DATE_MISSING` sequences (percentages over all people), or only inconsistent sequences (percentages over inconsistent sequences).
+- `within_ADM1`: Character vector to filter to specific ADM1 units. Default: `NULL`.
+- `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to. Default `NULL` uses all available cohorts.
+- `allow_same_day`: Logical, defaults to `FALSE`.
+- `fix_residence`: Logical, defaults to `TRUE`.
+- `digits`: Number of decimal digits in the labels. Default: `0`.
+
+#### Interpretation
+
+Compare each inconsistent row against the consistent panel: an inconsistent combination that is as frequent as a consistent one points to a systematic registration problem rather than occasional data entry errors. When one combination dominates in a specific area (a darker cell than the rest of its row), it suggests a local registration practice worth investigating.
+
+### Step 4 — Inspect individual inconsistent sequences with `sc_inconsistent()`
 
 `sc_inconsistent()` returns a person-level table of all inconsistent sequences in a schedule-like format: one row per person and one column per dose of the sequence, containing the date each dose was administered (`NA` if it was not received).
 
@@ -237,29 +282,6 @@ inconsistent_df %>% head(10) %>% kable(caption = "Sample of inconsistent sequenc
 
 The `sequence` column shows the combination of doses received, the `skipped_doses` column shows the doses missing before the last dose received (`NA` if none), and the `out_of_order` column shows whether the doses were administered out of chronological order. A person can have both problems at once. `DATE_MISSING` sequences are not included. This table can be exported for record-level correction workflows, for example, to look for the skipped doses under a different dose number or a different ID.
 
-### Step 4 — Visualize the distribution of inconsistent sequences with `sc_inconsistent_plot()`
-
-The output of `sc_inconsistent()` can be passed to `sc_inconsistent_plot()` to produce a heatmap of how inconsistent sequences are distributed across combinations of doses received. Each column represents a geographic unit of residence and adds up to 100% of its inconsistent sequences. Consistent sequences are not shown.
-
-```{r sc-inconsistent-plot-adm0, message=FALSE, fig.width=6, fig.height=5}
-sc_inconsistent_plot(inconsistent_df)
-```
-
-```{r sc-inconsistent-plot-adm1, message=FALSE, fig.width=10, fig.height=5}
-sc_inconsistent_plot(inconsistent_df, geo_level = "ADM1")
-```
-
-#### Parameters accepted
-
-- `data`: Output of `sc_inconsistent()`.
-- `geo_level`: Geographic level of residence to show as columns: `"ADM0"` (default), `"ADM1"`, or `"ADM2"`.
-- `within_ADM1`: Character vector to filter to specific ADM1 units. Default: `NULL`.
-- `digits`: Number of decimal digits in the labels. Default: `0`.
-
-#### Interpretation
-
-Rows are sorted with the most frequent combinations at the top, and combinations administered out of chronological order are flagged with the `(out of order)` suffix. When one combination dominates in a specific area (a darker cell than the rest of its row), it suggests a local registration practice worth investigating, rather than a random data entry error.
-
 # Summary
 
-The `sc_` module provides a complete pipeline for assessing whether ordered dose sequences are registered consistently in EIR data, where a sequence is only consistent when no dose is skipped and the doses were administered in chronological order. `sc_rate()` and `sc_barplot()` give a geographic overview of inconsistent sequences, and `sc_inconsistent()` and `sc_inconsistent_plot()` allow record-level inspection and characterization of which doses are being skipped or administered out of order. Together, they help data managers and public health analysts detect and prioritize data quality corrections before analyses that rely on dose numbers, such as coverage, dropout or complete schedule analyses.
+The `sc_` module provides a complete pipeline for assessing whether ordered dose sequences are registered consistently in EIR data, where a sequence is only consistent when no dose is skipped and the doses were administered in chronological order. `sc_rate()` and `sc_barplot()` give a geographic overview of inconsistent sequences, `sc_heatmap()` puts every inconsistent combination of doses in the context of the consistent ones, and `sc_inconsistent()` allows record-level inspection of the people with inconsistent sequences. Together, they help data managers and public health analysts detect and prioritize data quality corrections before analyses that rely on dose numbers, such as coverage, dropout or complete schedule analyses.

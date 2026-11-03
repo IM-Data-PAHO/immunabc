@@ -413,36 +413,12 @@
   .validate_vaccines(vaccines, data.EIR, "data.EIR")
 }
 
-#' Validate mode of sc_rate.
-#'
-#' @keywords internal
-#' @noRd
-.validate_sc_mode <- function(mode) {
-  .validate_character(mode, "mode", exp_len = 1)
-
-  if(is.null(mode) || !(mode %in% c("simple", "complex"))) {
-    stop("Error: The mode parameter should be one of: simple, complex.")
-  }
-}
-
 #' Validate input data to sc_barplot (output of sc_rate).
 #'
 #' @keywords internal
 #' @noRd
 .validate_sc_barplot_data <- function(data) {
   .validate_output_data(data, c("sequence", "consistent", "n", "total", "rate"), "sc_rate")
-}
-
-#' Validate input data to sc_inconsistent_plot.
-#'
-#' @keywords internal
-#' @noRd
-.validate_sc_inconsistent_data <- function(data) {
-  .validate_output_data(
-    data,
-    c("ID", "ADM1_residence", "ADM2_residence", "sequence", "skipped_doses", "out_of_order"),
-    "sc_inconsistent"
-  )
 }
 
 #' Validate Date object.

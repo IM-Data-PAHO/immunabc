@@ -112,8 +112,8 @@ El conjunto de funciones `sc_` contiene cuatro funciones que trabajan en conjunt
 
 1. `sc_rate()` — calcula el porcentaje de secuencias consistentes e inconsistentes, agregado por nivel geográfico.
 2. `sc_barplot()` — visualiza el resultado de `sc_rate()` como un gráfico de barras apiladas.
-3. `sc_inconsistent()` — lista cada persona con una secuencia inconsistente, con la fecha de cada dosis en una tabla con formato de esquema.
-4. `sc_inconsistent_plot()` — visualiza cómo se distribuyen las secuencias inconsistentes entre las combinaciones de dosis recibidas, como un mapa de calor.
+3. `sc_heatmap()` — visualiza cómo se distribuyen las personas entre todas las combinaciones de dosis recibidas, consistentes e inconsistentes, como un mapa de calor.
+4. `sc_inconsistent()` — lista cada persona con una secuencia inconsistente, con la fecha de cada dosis en una tabla con formato de esquema.
 
 La figura a continuación muestra el flujo de trabajo esperado.
 
@@ -129,35 +129,35 @@ dtp_sequence <- c("DTP1", "DTP2", "DTP3")
 
 ### Paso 1 — Calcular la consistencia de la secuencia con `sc_rate()`
 
-`sc_rate()` evalúa la secuencia de cada persona y devuelve, para cada unidad geográfica, el conteo y el porcentaje de personas en cada categoría. Tiene dos modos:
+`sc_rate()` evalúa la secuencia de cada persona y devuelve, para cada unidad geográfica, el conteo y el porcentaje de personas en cada categoría. El parámetro `aggregated` controla cómo se muestran las secuencias inconsistentes:
 
-- `mode = "simple"` (predeterminado): clasifica cada secuencia como `CONSISTENT`, `INCONSISTENT` o `DATE_MISSING`.
-- `mode = "complex"`: mantiene `CONSISTENT` y `DATE_MISSING` como categorías únicas y desglosa `INCONSISTENT` en cada combinación de dosis recibidas (p. ej., `DTP1 + DTP3`). Las combinaciones administradas fuera de orden cronológico se marcan con el sufijo `(out of order)` (p. ej., `DTP1 + DTP2 (out of order)`).
+- `aggregated = TRUE` (predeterminado): clasifica cada secuencia como `CONSISTENT`, `INCONSISTENT` o `DATE_MISSING`.
+- `aggregated = FALSE`: mantiene `CONSISTENT` y `DATE_MISSING` como categorías únicas y desglosa `INCONSISTENT` en cada combinación de dosis recibidas (p. ej., `DTP1 + DTP3`). Las combinaciones administradas fuera de orden cronológico se marcan con el sufijo `(out of order)` (p. ej., `DTP1 + DTP2 (out of order)`).
 
-```{r sc-rate-simple, message=FALSE}
-rate_simple <- sc_rate(
-  data.EIR  = immunABC.EIR,
-  vaccines  = dtp_sequence,
-  geo_level = "ADM1",
-  mode      = "simple"
+```{r sc-rate-aggregated, message=FALSE}
+rate_aggregated <- sc_rate(
+  data.EIR   = immunABC.EIR,
+  vaccines   = dtp_sequence,
+  geo_level  = "ADM1",
+  aggregated = TRUE
 )
 
-rate_simple %>% kable(digits = 2, caption = "Consistencia de la secuencia por ADM1 (modo simple)")
+rate_aggregated %>% kable(digits = 2, caption = "Consistencia de la secuencia por ADM1 (agregada)")
 ```
 
 Observe la advertencia: cuando una persona tiene la misma dosis registrada más de una vez, solo se conserva la fecha de vacunación (`date_vax`) más temprana. Se recomienda verificar los duplicados antes de ejecutar el análisis.
 
-```{r sc-rate-complex, message=FALSE, warning=FALSE}
-rate_complex <- sc_rate(
-  data.EIR  = immunABC.EIR,
-  vaccines  = dtp_sequence,
-  geo_level = "ADM1",
-  mode      = "complex"
+```{r sc-rate-disaggregated, message=FALSE, warning=FALSE}
+rate_disaggregated <- sc_rate(
+  data.EIR   = immunABC.EIR,
+  vaccines   = dtp_sequence,
+  geo_level  = "ADM1",
+  aggregated = FALSE
 )
 
-rate_complex %>%
+rate_disaggregated %>%
   filter(ADM1 == "ADM1_1") %>%
-  kable(digits = 2, caption = "Consistencia de la secuencia en ADM1_1 (modo complejo)")
+  kable(digits = 2, caption = "Consistencia de la secuencia en ADM1_1 (desagregada)")
 ```
 
 #### Parámetros aceptados
@@ -165,7 +165,7 @@ rate_complex %>%
 - `data.EIR`: Tabla del RNVe en formato immunABC.
 - `vaccines`: Vector de caracteres ordenado de al menos dos dosis, p. ej. `c("DTP1", "DTP2", "DTP3")`.
 - `geo_level`: `"ADM0"` (predeterminado), `"ADM1"` o `"ADM2"`.
-- `mode`: `"simple"` (predeterminado) o `"complex"`.
+- `aggregated`: Lógico, con valor predeterminado `TRUE`. Indica si todas las secuencias inconsistentes se agrupan en una sola categoría `INCONSISTENT`.
 - `birth_cohorts`: Vector numérico con el o los años de cohorte de nacimiento a filtrar. El valor predeterminado `NULL` utiliza todas las cohortes disponibles.
 - `allow_same_day`: Lógico, con valor predeterminado `FALSE`. Indica si dos dosis consecutivas administradas el mismo día se consideran en orden cronológico. Las dosis de una misma serie de vacunas no deberían administrarse el mismo día, pero esta regla puede flexibilizarse para secuencias que combinan vacunas distintas.
 - `fix_residence`: Lógico, con valor predeterminado `TRUE`. Vea [Manejo de inconsistencias de residencia] más abajo.
@@ -179,24 +179,24 @@ Dado que cada persona se evalúa como un todo, debe asignarse a un único lugar 
 - `fix_residence = TRUE` (predeterminado): todos los registros de una persona se corrigen para usar el `ADM1_residence`/`ADM2_residence` de su **vacunación más reciente**.
 - `fix_residence = FALSE`: los valores de residencia se dejan tal como fueron registrados, y a cada persona se le asigna la residencia de su primer registro.
 
-`sc_rate()` solo verifica la residencia cuando `geo_level` es `"ADM1"` o `"ADM2"`. `sc_inconsistent()` siempre la verifica, ya que su resultado incluye la residencia de cada persona.
+`sc_rate()` y `sc_heatmap()` solo verifican la residencia cuando los resultados se desagregan por debajo de `"ADM0"`. `sc_inconsistent()` siempre la verifica, ya que su resultado incluye la residencia de cada persona.
 
 ### Paso 2 — Visualizar la consistencia de la secuencia con `sc_barplot()`
 
 El resultado de `sc_rate()` puede pasarse directamente a `sc_barplot()` para generar un gráfico de barras apiladas por unidad geográfica.
 
-```{r sc-barplot-simple, message=FALSE, fig.width=10, fig.height=5}
+```{r sc-barplot-aggregated, message=FALSE, fig.width=10, fig.height=5}
 sc_barplot(
-  data          = rate_simple,
+  data          = rate_aggregated,
   sequence_name = "DTP1 - DTP3"
 )
 ```
 
-En el modo complejo, cada combinación inconsistente se muestra con un color distinto:
+Con `aggregated = FALSE`, cada combinación inconsistente se muestra con un color distinto:
 
-```{r sc-barplot-complex, message=FALSE, fig.width=10, fig.height=5}
+```{r sc-barplot-disaggregated, message=FALSE, fig.width=10, fig.height=5}
 sc_barplot(
-  data          = rate_complex,
+  data          = rate_disaggregated,
   sequence_name = "DTP1 - DTP3"
 )
 ```
@@ -210,11 +210,56 @@ sc_barplot(
 
 #### Interpretación
 
-Cada barra representa una unidad geográfica. El segmento `CONSISTENT` (azul) se muestra en la parte inferior de cada barra, los segmentos inconsistentes se apilan encima y `DATE_MISSING` (gris) se muestra en la parte superior. Las áreas con una mayor proporción de secuencias inconsistentes deben priorizarse para la revisión de la calidad de los datos. El modo complejo muestra qué dosis se salta con mayor frecuencia: por ejemplo, una proporción alta de `DTP2 + DTP3` (se saltó `DTP1`) puede indicar que las primeras dosis se están registrando con un número de dosis equivocado, o que las primeras dosis se administran en lugares que no reportan al RNVe.
+Cada barra representa una unidad geográfica. El segmento `CONSISTENT` (azul) se muestra en la parte inferior de cada barra, los segmentos inconsistentes se apilan encima y `DATE_MISSING` (gris) se muestra en la parte superior. Las áreas con una mayor proporción de secuencias inconsistentes deben priorizarse para la revisión de la calidad de los datos. La vista desagregada muestra qué dosis se salta con mayor frecuencia: por ejemplo, una proporción alta de `DTP2 + DTP3` (se saltó `DTP1`) puede indicar que las primeras dosis se están registrando con un número de dosis equivocado, o que las primeras dosis se administran en lugares que no reportan al RNVe.
 
 Las secuencias marcadas como `(out of order)` suelen ser poco frecuentes, por lo que incluso porcentajes pequeños merecen atención. Pueden deberse a errores de digitación en la fecha de vacunación (`date_vax`), a dosis registradas con un número de dosis equivocado (p. ej., DTP2 registrada como DTP1 y viceversa), o a registros de dos personas distintas vinculados al mismo ID. El módulo de [Comparación de consistencia de fechas](date_consistency_comparison_es.html) puede ayudar a investigar las fechas involucradas.
 
-### Paso 3 — Inspeccionar las secuencias inconsistentes individuales con `sc_inconsistent()`
+### Paso 3 — Explorar todas las combinaciones de dosis recibidas con `sc_heatmap()`
+
+`sc_heatmap()` recibe directamente el RNVe y muestra, para cada unidad geográfica de residencia (columnas), el porcentaje de personas con cada combinación de dosis recibidas (filas). Las filas se dividen en paneles:
+
+- **Consistent**: la "diagonal" de la secuencia, de menos a más dosis (`DTP1`, `DTP1 + DTP2`, `DTP1 + DTP2 + DTP3`).
+- **Date missing**: secuencias que no pueden evaluarse por completo (solo se muestra si existen).
+- **Inconsistent**: cada combinación inconsistente, de la más a la menos frecuente.
+
+De forma predeterminada se muestran las secuencias consistentes y los porcentajes se calculan sobre **todas** las personas con al menos una dosis de la secuencia en cada área, por lo que cada columna suma 100%. Mirar solo lo que está mal, sin el contexto de lo que está bien, no muestra qué tan grande es el problema.
+
+```{r sc-heatmap-adm1, message=FALSE, warning=FALSE, fig.width=10, fig.height=7}
+sc_heatmap(
+  data.EIR  = immunABC.EIR,
+  vaccines  = dtp_sequence,
+  geo_level = "ADM1"
+)
+```
+
+Una vez claro el tamaño del problema, use `show_consistent = FALSE` para profundizar en las secuencias inconsistentes. Los porcentajes se recalculan solo sobre las secuencias inconsistentes, por lo que cada columna suma el 100% de las secuencias inconsistentes del área:
+
+```{r sc-heatmap-adm1-inconsistent, message=FALSE, warning=FALSE, fig.width=10, fig.height=6}
+sc_heatmap(
+  data.EIR        = immunABC.EIR,
+  vaccines        = dtp_sequence,
+  geo_level       = "ADM1",
+  show_consistent = FALSE
+)
+```
+
+#### Parámetros aceptados
+
+- `data.EIR`: Tabla del RNVe en formato immunABC.
+- `vaccines`: Vector de caracteres ordenado de al menos dos dosis.
+- `geo_level`: Nivel geográfico de residencia que se muestra en las columnas: `"ADM0"` (predeterminado), `"ADM1"` o `"ADM2"`.
+- `show_consistent`: Lógico, con valor predeterminado `TRUE`. Indica si se muestran las secuencias consistentes y `DATE_MISSING` (porcentajes sobre todas las personas), o solo las secuencias inconsistentes (porcentajes sobre las secuencias inconsistentes).
+- `within_ADM1`: Vector de caracteres para filtrar unidades ADM1 específicas. Valor predeterminado: `NULL`.
+- `birth_cohorts`: Vector numérico con el o los años de cohorte de nacimiento a filtrar. El valor predeterminado `NULL` utiliza todas las cohortes disponibles.
+- `allow_same_day`: Lógico, con valor predeterminado `FALSE`.
+- `fix_residence`: Lógico, con valor predeterminado `TRUE`.
+- `digits`: Número de decimales en las etiquetas. Valor predeterminado: `0`.
+
+#### Interpretación
+
+Compare cada fila inconsistente con el panel de secuencias consistentes: una combinación inconsistente tan frecuente como una consistente apunta a un problema sistemático de registro, más que a errores de captura ocasionales. Cuando una combinación predomina en un área específica (una celda más oscura que el resto de su fila), sugiere una práctica local de registro que vale la pena investigar.
+
+### Paso 4 — Inspeccionar las secuencias inconsistentes individuales con `sc_inconsistent()`
 
 `sc_inconsistent()` devuelve una tabla a nivel de persona con todas las secuencias inconsistentes en formato de esquema: una fila por persona y una columna por cada dosis de la secuencia, con la fecha en que se administró cada dosis (`NA` si no fue recibida).
 
@@ -237,29 +282,6 @@ inconsistent_df %>% head(10) %>% kable(caption = "Muestra de secuencias inconsis
 
 La columna `sequence` muestra la combinación de dosis recibidas, la columna `skipped_doses` muestra las dosis que faltan antes de la última dosis recibida (`NA` si no falta ninguna) y la columna `out_of_order` indica si las dosis fueron administradas fuera de orden cronológico. Una persona puede tener ambos problemas a la vez. Las secuencias `DATE_MISSING` no se incluyen. Esta tabla puede exportarse para flujos de corrección a nivel de registro, por ejemplo, para buscar las dosis saltadas bajo otro número de dosis o bajo otro ID.
 
-### Paso 4 — Visualizar la distribución de las secuencias inconsistentes con `sc_inconsistent_plot()`
-
-El resultado de `sc_inconsistent()` puede pasarse a `sc_inconsistent_plot()` para generar un mapa de calor de cómo se distribuyen las secuencias inconsistentes entre las combinaciones de dosis recibidas. Cada columna representa una unidad geográfica de residencia y suma el 100% de sus secuencias inconsistentes. Las secuencias consistentes no se muestran.
-
-```{r sc-inconsistent-plot-adm0, message=FALSE, fig.width=6, fig.height=5}
-sc_inconsistent_plot(inconsistent_df)
-```
-
-```{r sc-inconsistent-plot-adm1, message=FALSE, fig.width=10, fig.height=5}
-sc_inconsistent_plot(inconsistent_df, geo_level = "ADM1")
-```
-
-#### Parámetros aceptados
-
-- `data`: Resultado de `sc_inconsistent()`.
-- `geo_level`: Nivel geográfico de residencia que se muestra en las columnas: `"ADM0"` (predeterminado), `"ADM1"` o `"ADM2"`.
-- `within_ADM1`: Vector de caracteres para filtrar unidades ADM1 específicas. Valor predeterminado: `NULL`.
-- `digits`: Número de decimales en las etiquetas. Valor predeterminado: `0`.
-
-#### Interpretación
-
-Las filas se ordenan con las combinaciones más frecuentes en la parte superior, y las combinaciones administradas fuera de orden cronológico se marcan con el sufijo `(out of order)`. Cuando una combinación predomina en un área específica (una celda más oscura que el resto de su fila), sugiere una práctica local de registro que vale la pena investigar, más que un error de captura aleatorio.
-
 # Resumen
 
-El módulo `sc_` ofrece un flujo completo para evaluar si las secuencias ordenadas de dosis están registradas de forma consistente en los datos del RNVe, donde una secuencia solo es consistente cuando no se salta ninguna dosis y las dosis fueron administradas en orden cronológico. `sc_rate()` y `sc_barplot()` entregan una visión geográfica de las secuencias inconsistentes, y `sc_inconsistent()` y `sc_inconsistent_plot()` permiten la inspección a nivel de registro y caracterizar qué dosis se están saltando o se administraron fuera de orden. En conjunto, ayudan a los gestores de datos y a los analistas de salud pública a detectar y priorizar las correcciones de calidad de datos antes de los análisis que dependen del número de dosis, como los análisis de cobertura, abandono o esquema completo.
+El módulo `sc_` ofrece un flujo completo para evaluar si las secuencias ordenadas de dosis están registradas de forma consistente en los datos del RNVe, donde una secuencia solo es consistente cuando no se salta ninguna dosis y las dosis fueron administradas en orden cronológico. `sc_rate()` y `sc_barplot()` entregan una visión geográfica de las secuencias inconsistentes, `sc_heatmap()` pone cada combinación inconsistente de dosis en el contexto de las consistentes, y `sc_inconsistent()` permite la inspección a nivel de registro de las personas con secuencias inconsistentes. En conjunto, ayudan a los gestores de datos y a los analistas de salud pública a detectar y priorizar las correcciones de calidad de datos antes de los análisis que dependen del número de dosis, como los análisis de cobertura, abandono o esquema completo.

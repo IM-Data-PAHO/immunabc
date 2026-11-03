@@ -53,7 +53,7 @@ reference:
       - sc_rate
       - sc_barplot
       - sc_inconsistent
-      - sc_inconsistent_plot
+      - sc_heatmap
 
   - title: Vaccination Timeliness
     desc: Functions for calculating and visualizing vaccination timeliness in the EIR.
