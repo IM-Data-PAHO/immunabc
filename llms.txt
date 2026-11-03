@@ -31,9 +31,9 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Usage
 
-Currently, immunABC contains six main modules. Follow the links below to
-explore detailed vignettes with practical examples and guidance on how
-to use each module:
+Currently, immunABC contains seven main modules. Follow the links below
+to explore detailed vignettes with practical examples and guidance on
+how to use each module:
 
 1.  [**Nominal Dropout
     Rate**](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html)  
@@ -69,7 +69,16 @@ to use each module:
     birth). Helps detect data entry errors and record linkage issues
     before downstream analyses.
 
-6.  [**Vaccination
+6.  [**Dose Sequence
+    Comparison**](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.html)  
+    Evaluates, person by person, whether the doses of an ordered
+    sequence (e.g., DTP1, DTP2 and DTP3) are registered consistently in
+    the EIR: a sequence is consistent only when no earlier dose is
+    skipped and the doses were administered in chronological order.
+    Helps detect doses registered with the wrong dose number,
+    unregistered doses and record linkage issues.
+
+7.  [**Vaccination
     Timeliness**](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html)  
     Analyzes the vaccination timeliness of the population, that is, the
     time that elapses between the age of eligibility for each dose and
@@ -116,6 +125,20 @@ EIR.
   : (D)ate (C)onsistency (C)omparison Inconsistent Records
 - [`dcc_inconsistent_plot()`](https://im-data-paho.github.io/immunabc/reference/dcc_inconsistent_plot.md)
   : (D)ate (C)onsistency (C)omparison Inconsistent Records Plot
+
+## Dose Sequence Comparison
+
+Functions for identifying and visualizing incomplete and chronologically
+inconsistent dose sequences in the EIR.
+
+- [`sc_rate()`](https://im-data-paho.github.io/immunabc/reference/sc_rate.md)
+  : Dose (S)equence (C)omparison Rate
+- [`sc_barplot()`](https://im-data-paho.github.io/immunabc/reference/sc_barplot.md)
+  : Dose (S)equence (C)omparison Barplot
+- [`sc_inconsistent()`](https://im-data-paho.github.io/immunabc/reference/sc_inconsistent.md)
+  : Dose (S)equence (C)omparison Inconsistent Records
+- [`sc_heatmap()`](https://im-data-paho.github.io/immunabc/reference/sc_heatmap.md)
+  : Dose (S)equence (C)omparison Heatmap
 
 ## Vaccination Timeliness
 
@@ -222,6 +245,10 @@ expects.
   Comparison](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.md):
 - [Comparación de consistencia de
   fechas](https://im-data-paho.github.io/immunabc/articles/es/date_consistency_comparison_es.md):
+- [Dose Sequence
+  Comparison](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.md):
+- [Comparación de secuencia de
+  dosis](https://im-data-paho.github.io/immunabc/articles/es/dose_sequence_comparison_es.md):
 - [Using our Example
   Datasets](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.md):
 - [Uso de los datos de

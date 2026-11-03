@@ -14,6 +14,20 @@ EIR.
 - [`dcc_inconsistent_plot()`](https://im-data-paho.github.io/immunabc/reference/dcc_inconsistent_plot.md)
   : (D)ate (C)onsistency (C)omparison Inconsistent Records Plot
 
+## Dose Sequence Comparison
+
+Functions for identifying and visualizing incomplete and chronologically
+inconsistent dose sequences in the EIR.
+
+- [`sc_rate()`](https://im-data-paho.github.io/immunabc/reference/sc_rate.md)
+  : Dose (S)equence (C)omparison Rate
+- [`sc_barplot()`](https://im-data-paho.github.io/immunabc/reference/sc_barplot.md)
+  : Dose (S)equence (C)omparison Barplot
+- [`sc_inconsistent()`](https://im-data-paho.github.io/immunabc/reference/sc_inconsistent.md)
+  : Dose (S)equence (C)omparison Inconsistent Records
+- [`sc_heatmap()`](https://im-data-paho.github.io/immunabc/reference/sc_heatmap.md)
+  : Dose (S)equence (C)omparison Heatmap
+
 ## Vaccination Timeliness
 
 Functions for calculating and visualizing vaccination timeliness in the

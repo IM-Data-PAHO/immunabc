@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,7 @@
     <li><a class="dropdown-item" href="articles/en/complete_schedule_en.html">Complete Schedule Coverage</a></li>
     <li><a class="dropdown-item" href="articles/en/birth_cohort_coverage_en.html">Birth Cohort Coverage</a></li>
     <li><a class="dropdown-item" href="articles/en/date_consistency_comparison_en.html">Date Consistency Comparison</a></li>
+    <li><a class="dropdown-item" href="articles/en/dose_sequence_comparison_en.html">Dose Sequence Comparison</a></li>
     <li><a class="dropdown-item" href="articles/en/vaccination_timeliness_en.html">Vaccination Timeliness</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Other guides</h6></li>
@@ -80,7 +81,7 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Currently, immunABC contains six main modules. Follow the links below to explore detailed vignettes with practical examples and guidance on how to use each module:</p>
+<p>Currently, immunABC contains seven main modules. Follow the links below to explore detailed vignettes with practical examples and guidance on how to use each module:</p>
 <ol style="list-style-type: decimal">
 <li><p><a href="https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html"><strong>Nominal Dropout Rate</strong></a><br>
 Calculates dropout rates between any two vaccine doses using nominal data. This module ensures accurate follow-up tracking across a vaccination schedule.</p></li>
@@ -92,6 +93,8 @@ Evaluates whether individuals have received all required doses in a national imm
 Lets users track and visualize vaccination status among a specific cohort of newborns. Helps evaluate population-level protection against vaccine-preventable diseases.</p></li>
 <li><p><a href="https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.html"><strong>Date Consistency Comparison</strong></a><br>
 Identifies and quantifies logical inconsistencies between any two date variables in the EIR (e.g., vaccination date before date of birth). Helps detect data entry errors and record linkage issues before downstream analyses.</p></li>
+<li><p><a href="https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.html"><strong>Dose Sequence Comparison</strong></a><br>
+Evaluates, person by person, whether the doses of an ordered sequence (e.g., DTP1, DTP2 and DTP3) are registered consistently in the EIR: a sequence is consistent only when no earlier dose is skipped and the doses were administered in chronological order. Helps detect doses registered with the wrong dose number, unregistered doses and record linkage issues.</p></li>
 <li><p><a href="https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html"><strong>Vaccination Timeliness</strong></a><br>
 Analyzes the vaccination timeliness of the population, that is, the time that elapses between the age of eligibility for each dose and its administration, using nominal data from the electronic immunization registry. Vaccinating on time, and not only completing the schedule, is key to protecting each individual before they reach the period of highest risk for the disease. Furthermore, analyzing vaccination timeliness allows us to understand coverage and its impact on the epidemiology of the disease, monitor the vaccine supply chain, investigate access problems or vaccination willingness in certain communities and, through actions at different levels, prevent future dropouts.</p></li>
 </ol>

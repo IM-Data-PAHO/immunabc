@@ -31,9 +31,9 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Usage
 
-Currently, immunABC contains six main modules. Follow the links below to
-explore detailed vignettes with practical examples and guidance on how
-to use each module:
+Currently, immunABC contains seven main modules. Follow the links below
+to explore detailed vignettes with practical examples and guidance on
+how to use each module:
 
 1.  [**Nominal Dropout
     Rate**](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html)  
@@ -69,7 +69,16 @@ to use each module:
     birth). Helps detect data entry errors and record linkage issues
     before downstream analyses.
 
-6.  [**Vaccination
+6.  [**Dose Sequence
+    Comparison**](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.html)  
+    Evaluates, person by person, whether the doses of an ordered
+    sequence (e.g., DTP1, DTP2 and DTP3) are registered consistently in
+    the EIR: a sequence is consistent only when no earlier dose is
+    skipped and the doses were administered in chronological order.
+    Helps detect doses registered with the wrong dose number,
+    unregistered doses and record linkage issues.
+
+7.  [**Vaccination
     Timeliness**](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html)  
     Analyzes the vaccination timeliness of the population, that is, the
     time that elapses between the age of eligibility for each dose and

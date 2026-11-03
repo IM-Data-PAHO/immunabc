@@ -8,6 +8,8 @@ articles:
   articles/es/complete_schedule_es: es/complete_schedule_es.html
   articles/en/date_consistency_comparison_en: en/date_consistency_comparison_en.html
   articles/es/date_consistency_comparison_es: es/date_consistency_comparison_es.html
+  articles/en/dose_sequence_comparison_en: en/dose_sequence_comparison_en.html
+  articles/es/dose_sequence_comparison_es: es/dose_sequence_comparison_es.html
   articles/en/example_datasets_en: en/example_datasets_en.html
   articles/es/example_datasets_es: es/example_datasets_es.html
   articles/en/nominal_dropout_en: en/nominal_dropout_en.html
@@ -16,7 +18,7 @@ articles:
   articles/es/residence_occurrence_es: es/residence_occurrence_es.html
   articles/en/vaccination_timeliness_en: en/vaccination_timeliness_en.html
   articles/es/vaccination_timeliness_es: es/vaccination_timeliness_es.html
-last_built: 2026-10-26T22:15Z
+last_built: 2026-11-03T15:44Z
 urls:
   reference: https://im-data-paho.github.io/immunabc/reference
   article: https://im-data-paho.github.io/immunabc/articles

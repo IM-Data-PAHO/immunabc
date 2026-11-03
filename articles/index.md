@@ -14,6 +14,10 @@
   Comparison](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.md):
 - [Comparación de consistencia de
   fechas](https://im-data-paho.github.io/immunabc/articles/es/date_consistency_comparison_es.md):
+- [Dose Sequence
+  Comparison](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.md):
+- [Comparación de secuencia de
+  dosis](https://im-data-paho.github.io/immunabc/articles/es/dose_sequence_comparison_es.md):
 - [Using our Example
   Datasets](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.md):
 - [Uso de los datos de
