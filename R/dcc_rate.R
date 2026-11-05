@@ -34,13 +34,7 @@ dcc_rate <- function(data.EIR, date_1, date_2, geo_level = "ADM0", birth_cohorts
     rename(ADM1 = ADM1_residence, ADM2 =ADM2_residence)
 
   # Selects group columns for geo_level
-  group_cols <- if (geo_level == "ADM1") {
-      "ADM1"
-    } else if (geo_level == "ADM2") {
-      c("ADM1", "ADM2")
-    } else {
-      character(0)
-    }
+  group_cols <- .geo_level_cols(geo_level)
   # Calculates the dcc_rate
   dcc_rate <- data.EIR %>%
     # Detects inconsistencies, also counts missing dates

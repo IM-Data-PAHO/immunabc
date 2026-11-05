@@ -50,13 +50,7 @@ sc_rate <- function(data.EIR, vaccines, geo_level = "ADM0", aggregated = TRUE, b
   .validate_date(data.EIR$date_vax, "date_vax")
 
   # Selects group columns for geo_level
-  group_cols <- if (geo_level == "ADM1") {
-      "ADM1"
-    } else if (geo_level == "ADM2") {
-      c("ADM1", "ADM2")
-    } else {
-      character(0)
-    }
+  group_cols <- .geo_level_cols(geo_level)
 
   # One row per person with the combination of doses received and its classification
   sequences <- .sc_prepare(

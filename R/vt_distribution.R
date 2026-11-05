@@ -49,13 +49,7 @@ vt_distribution <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccine
     rename(ADM1 = ADM1_residence, ADM2 = ADM2_residence)
 
   # Selects group columns: always by dose, plus geo_level
-  group_cols <- if (geo_level == "ADM1") {
-      c("dose", "ADM1")
-    } else if (geo_level == "ADM2") {
-      c("dose", "ADM1", "ADM2")
-    } else {
-      "dose"
-    }
+  group_cols <- c("dose", .geo_level_cols(geo_level))
 
   # Calculates the distribution
   vt_distribution <- .vt_classify(data.EIR, data.schedule, vaccines, birth_cohorts) %>%

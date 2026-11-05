@@ -45,13 +45,7 @@ vt_rate <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccines = NULL
 
   # Selects group columns: by dose only when vaccines is specified, plus geo_level
   dose_group <- if(!is.null(vaccines)) "dose" else character(0)
-  group_cols <- if (geo_level == "ADM1") {
-      c(dose_group, "ADM1")
-    } else if (geo_level == "ADM2") {
-      c(dose_group, "ADM1", "ADM2")
-    } else {
-      dose_group
-    }
+  group_cols <- c(dose_group, .geo_level_cols(geo_level))
 
   # Calculates the vt_rate
   vt_rate <- .vt_classify(data.EIR, data.schedule, vaccines, birth_cohorts) %>%
