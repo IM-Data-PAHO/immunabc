@@ -41,7 +41,7 @@ nod_barplot <- function(data, order = "alpha", within_ADM1 = NULL) {
 
   # prepare dataframe for plot filtering WITHIN_ADM1
   nominal_dropout_data <- nominal_dropout_data %>%
-    filter(if(!is.null(within_ADM1)) {ADM1 %in% within_ADM1} else {TRUE})
+    filter(if(!is.null(within_ADM1)) {ADM1_residence %in% within_ADM1} else {TRUE})
 
   # Organizes the plot based on alpha asc or desc
   if(order == "alpha") {
