@@ -46,17 +46,11 @@ nod_dropout <- function(data.EIR, vaccine_init, vaccine_end, geo_level = "ADM0",
     }
   }
 
-  # Groups based on the admin level used
-  if(geo_level == "ADM0") {
-    data.EIR <- data.EIR %>%
-      select(ID, dose, date_vax)
-  } else if (geo_level == "ADM1") {
-    data.EIR <- data.EIR %>%
-    select(ID, dose, date_vax, ADM1_residence)
-  } else if (geo_level == "ADM2"){
-    data.EIR <- data.EIR %>%
-      select(ID, dose, date_vax, ADM1_residence, ADM2_residence)
-  }
+  # Keeps the residence columns for the admin level used, renamed to ADM1 and ADM2 as in other modules
+  geo_cols <- .geo_level_cols(geo_level)
+  data.EIR <- data.EIR %>%
+    rename(ADM1 = ADM1_residence, ADM2 = ADM2_residence) %>%
+    select(ID, dose, date_vax, all_of(geo_cols))
 
   # Validates for duplicates in data, warning message only
   .validate_duplicates(data.EIR, vaccine_init, vaccine_end)
@@ -76,28 +70,16 @@ nod_dropout <- function(data.EIR, vaccine_init, vaccine_end, geo_level = "ADM0",
     ))
 
 
-  if(geo_level == "ADM0") {
-    dropout_rate_nominal <- data.EIR %>%
-      group_by(dropout) %>%
-      summarise(num = n()) %>%
-      mutate(denom = sum(num),
-             percent = num / denom * 100)
-  } else if (geo_level == "ADM1") {
-    dropout_rate_nominal <- data.EIR %>%
-      group_by(ADM1_residence, dropout) %>%
-      summarise(num = n()) %>%
-      mutate(denom = sum(num),
-             percent = num / denom * 100)
-  } else if (geo_level == "ADM2"){
-    dropout_rate_nominal <- data.EIR %>%
-      group_by(ADM1_residence, ADM2_residence, dropout) %>%
-      summarise(num = n()) %>%
-      mutate(denom = sum(num),
-             percent = num / denom * 100)
-  }
+  dropout_rate_nominal <- data.EIR %>%
+    group_by(across(all_of(c(geo_cols, "dropout")))) %>%
+    summarise(num = n()) %>%
+    mutate(denom = sum(num),
+           percent = num / denom * 100)
 
+  # NOTE: the residence columns keep their original names in the output, for compatibility
   dropout_rate_nominal <- dropout_rate_nominal %>%
-    rename(indicator = dropout)
+    rename(indicator = dropout) %>%
+    rename(any_of(c(ADM1_residence = "ADM1", ADM2_residence = "ADM2")))
 
   return(dropout_rate_nominal)
 }
