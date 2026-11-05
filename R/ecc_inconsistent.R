@@ -17,6 +17,10 @@
 #' @keywords internal
 #' @noRd
 ecc_inconsistent <- function(data.EIR, data.schedule, vaccines = NULL, birth_cohorts = NULL) {
+  # NOTE: Unavailable until the eligibility criteria are redefined. The code below is kept for reference.
+  message("ecc_inconsistent is currently unavailable, since the eligibility criteria are being redefined.")
+  return(invisible(NULL))
+
 
   # validations
   .validate_data.schedule(data.schedule)

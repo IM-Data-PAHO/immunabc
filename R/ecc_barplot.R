@@ -16,6 +16,10 @@
 #' @keywords internal
 #' @noRd
 ecc_barplot <- function(data, within_ADM1 = NULL, plot_missing = TRUE) {
+  # NOTE: Unavailable until the eligibility criteria are redefined. The code below is kept for reference.
+  message("ecc_barplot is currently unavailable, since the eligibility criteria are being redefined.")
+  return(invisible(NULL))
+
 
   .validate_ecc_barplot_data(data)
   .validate_character(within_ADM1, "within_ADM1", min_len = 1)

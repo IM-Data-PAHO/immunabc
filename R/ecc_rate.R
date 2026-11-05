@@ -18,6 +18,10 @@
 #' @keywords internal
 #' @noRd
 ecc_rate <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccines = NULL, birth_cohorts = NULL) {
+  # NOTE: Unavailable until the eligibility criteria are redefined. The code below is kept for reference.
+  message("ecc_rate is currently unavailable, since the eligibility criteria are being redefined.")
+  return(invisible(NULL))
+
 
   # validations
   .validate_geo_level(geo_level)

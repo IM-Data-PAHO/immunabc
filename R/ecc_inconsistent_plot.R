@@ -25,6 +25,10 @@ ecc_inconsistent_plot <- function(
       c(50, 60), c(60, 70), c(70, 80), c(80, 90), c(90, 100)
     )
 ) {
+  # NOTE: Unavailable until the eligibility criteria are redefined. The code below is kept for reference.
+  message("ecc_inconsistent_plot is currently unavailable, since the eligibility criteria are being redefined.")
+  return(invisible(NULL))
+
 
   # validations
   .validate_data.schedule(data.schedule)
