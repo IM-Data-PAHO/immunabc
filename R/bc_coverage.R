@@ -30,7 +30,7 @@ bc_coverage <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccines = 
   .validate_logical(validate_doses, "validate_doses")
 
   # determine grouping column(s)
-  basic_groups <- c("year_cohort")
+  basic_groups <- c("birth_cohort")
   if(geo_level != "ADM0") {
     # groups for ADM1
     groups <- c(basic_groups, "ADM1")
@@ -67,7 +67,7 @@ bc_coverage <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccines = 
     ) %>%
     filter(dose %in% prepare_schedule$dose) %>%
     mutate(
-      year_cohort = year(date_birth),
+      birth_cohort = year(date_birth),
       age_at_vax = as.numeric(date_vax - date_birth)
     ) %>%
     left_join(prepare_schedule, by = "dose")
@@ -82,7 +82,7 @@ bc_coverage <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccines = 
 
   # filter for selected birth cohorts
   if(!is.null(birth_cohorts)) {
-    prepare_EIR <- prepare_EIR %>% filter(year_cohort %in% birth_cohorts)
+    prepare_EIR <- prepare_EIR %>% filter(birth_cohort %in% birth_cohorts)
   }
 
   # get number of children with valid doses for the defined groups
@@ -99,11 +99,11 @@ bc_coverage <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccines = 
         ADM1 = ADM1_residence,
         ADM2 = ADM2_residence
       ) %>%
-      mutate(year_cohort = year(date_birth))
+      mutate(birth_cohort = year(date_birth))
 
     if(!is.null(birth_cohorts)) {
       line_list_denominator <- line_list_denominator %>%
-        filter(year_cohort %in% birth_cohorts)
+        filter(birth_cohort %in% birth_cohorts)
     }
 
     line_list_denominator <- line_list_denominator %>%
@@ -117,7 +117,7 @@ bc_coverage <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccines = 
       # select age == 0 because this contains the population of age 0 for that year
       filter(age == 0) %>%
       select(-age) %>%
-      rename(year_cohort = year)
+      rename(birth_cohort = year)
   }
 
   # calculate coverage

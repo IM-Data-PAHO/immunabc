@@ -30,23 +30,23 @@ bc_barplot <- function(data, vaccine, birth_cohorts = NULL, within_ADM1 = NULL, 
   # prepare data for plot
   prepare_data <- data %>%
     filter(dose == vaccine) %>%
-    filter(if(!is.null(birth_cohorts)) {year_cohort %in% birth_cohorts} else {TRUE}) %>%
+    filter(if(!is.null(birth_cohorts)) {birth_cohort %in% birth_cohorts} else {TRUE}) %>%
     filter(if(!is.null(within_ADM1)) {ADM1 %in% within_ADM1} else {TRUE})
 
   cohort_levels <- prepare_data %>%
-    pull(year_cohort) %>%
+    pull(birth_cohort) %>%
     unique() %>%
     sort()
 
   if(length(cohort_levels) > 9) {
     cohort_levels <- tail(cohort_levels, 9)
     prepare_data <- prepare_data %>%
-      filter(year_cohort %in% cohort_levels)
+      filter(birth_cohort %in% cohort_levels)
     warning("Data has more than 9 birth cohorts; keeping only the 9 latest cohorts for plotting.")
   }
 
   prepare_data <- prepare_data %>%
-    mutate(year_cohort = factor(year_cohort, levels = cohort_levels))
+    mutate(birth_cohort = factor(birth_cohort, levels = cohort_levels))
 
   # get max coverage in data
   coverage_max <- max(prepare_data$coverage, na.rm = TRUE)
@@ -55,11 +55,11 @@ bc_barplot <- function(data, vaccine, birth_cohorts = NULL, within_ADM1 = NULL, 
 
   # do plot
   if(ADM_detected == 0) {
-    p <- ggplot(prepare_data, aes(x = "ADM0", y = coverage, fill = year_cohort))
+    p <- ggplot(prepare_data, aes(x = "ADM0", y = coverage, fill = birth_cohort))
   } else {
     p <- ggplot(
       prepare_data,
-      aes(x = reorder(!!sym(geo_column), -coverage), y = coverage, fill = year_cohort)
+      aes(x = reorder(!!sym(geo_column), -coverage), y = coverage, fill = birth_cohort)
     )
   }
 

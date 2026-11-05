@@ -218,7 +218,7 @@
 .validate_bc_barplot_data <- function(data) {
   .validate_data_columns(
     data,
-    c("dose", "year_cohort", "numerator", "population", "coverage"),
+    c("dose", "birth_cohort", "numerator", "population", "coverage"),
     "bc_coverage"
   )
 }
