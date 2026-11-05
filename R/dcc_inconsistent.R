@@ -16,7 +16,7 @@
 dcc_inconsistent <- function(data.EIR, date_1, date_2, birth_cohorts = NULL) {
 
   # validations
-  .validate_data.EIR(data.EIR, indicator = "dcc")
+  .validate_data.EIR(data.EIR, required_columns = .dcc_required_cols)
   .validate_numeric(birth_cohorts, "birth_cohorts", min_len = 1)
   .validate_date(data.EIR[[date_1]], date_1)
   .validate_date(data.EIR[[date_2]], date_2)

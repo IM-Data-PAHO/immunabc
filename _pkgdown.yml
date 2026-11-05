@@ -55,6 +55,17 @@ reference:
       - sc_inconsistent
       - sc_heatmap
 
+  - title: Duplicate Doses
+    desc: Functions for identifying and visualizing doses registered more than once in the EIR.
+    contents:
+      - dd_rate
+      - dd_barplot
+      - dd_heatmap
+      - dd_trend
+      - dd_trend_plot
+      - dd_duplicates
+      - dd_repeat_plot
+
   - title: Vaccination Timeliness
     desc: Functions for calculating and visualizing vaccination timeliness in the EIR.
     contents:

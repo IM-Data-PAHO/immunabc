@@ -28,7 +28,7 @@ dcc_inconsistent_plot <- function(
     )
 ) {
 
-  .validate_data.EIR(data.EIR, indicator = "dcc")
+  .validate_data.EIR(data.EIR, required_columns = .dcc_required_cols)
   .validate_date(data.EIR[[date_1]], date_1)
   .validate_date(data.EIR[[date_2]], date_2)
 

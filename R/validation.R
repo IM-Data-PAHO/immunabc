@@ -146,31 +146,55 @@
 #' @keywords internal
 #' @noRd
 .validate_data.schedule <- function(data.schedule) {
-  if(!is.data.frame(data.schedule)) {
-    stop("Error: data.pop should be a data frame.")
-  }
+  .validate_data_columns(
+    data.schedule,
+    c("dose", "age_schedule", "age_schedule_low", "age_schedule_high"),
+    data_name = "data.schedule"
+  )
+}
 
-  if(!all(c("dose", "age_schedule", "age_schedule_low", "age_schedule_high") %in% names(data.schedule))) {
-    stop("Error: data.schedule should contain the following columns: dose, age_schedule.")
+#' Warn about doses in data.EIR that are missing from data.schedule.
+#'
+#' NOTE: Callers must validate data.EIR and data.schedule before calling it.
+#'
+#' @keywords internal
+#' @noRd
+.validate_schedule_doses <- function(data.EIR, data.schedule) {
+  missing_in_schedule <- setdiff(unique(data.EIR$dose), unique(data.schedule$dose))
+
+  if(length(missing_in_schedule) > 0) {
+    warning(
+      paste0(
+        "Warning: The following dose(s) are present in data.EIR but missing from data.schedule: ",
+        paste(missing_in_schedule, collapse = ", "),
+        "."
+      )
+    )
   }
 }
 
 
-#' Validate that data is the output of a function, checking it is a data frame with the expected columns.
+#' Generic function to validate that a data frame has a set of required columns.
+#'
+#' @param data The data frame to validate.
+#' @param required_columns A vector with the names of the required columns.
+#' @param source_function Optional. Name of the function that is related to \code{data}. Used in the error message.
+#' @param data_name Optional. Specificy name of the data frame, used in the error messages.
 #'
 #' @keywords internal
 #' @noRd
-.validate_output_data <- function(data, minimum_columns, source_function) {
+.validate_data_columns <- function(data, required_columns, source_function = NULL, data_name = "data") {
   if(!is.data.frame(data)) {
-    stop("Error: data should be a data frame.")
+    stop(paste0("Error: ", data_name, " should be a data frame."))
   }
 
-  missing_columns <- setdiff(minimum_columns, names(data))
+  missing_columns <- setdiff(required_columns, names(data))
 
   if(length(missing_columns) > 0) {
     stop(paste0(
-      "Error: data should be the output from ", source_function,
-      " (missing columns: ", paste(missing_columns, collapse = ", "), ")."
+      "Error: ", data_name, " is missing the following columns: ",
+      paste(missing_columns, collapse = ", "), ".",
+      if(!is.null(source_function)) paste0(" It should be the output from ", source_function, ".")
     ))
   }
 }
@@ -180,7 +204,7 @@
 #' @keywords internal
 #' @noRd
 .validate_roc_barplot_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("year", "dose", "doses_applied", "population", "coverage", "coverage_type"),
     "roc_coverage"
@@ -192,7 +216,7 @@
 #' @keywords internal
 #' @noRd
 .validate_bc_barplot_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("dose", "year_cohort", "numerator", "population", "coverage"),
     "bc_coverage"
@@ -204,7 +228,7 @@
 #' @keywords internal
 #' @noRd
 .validate_cs_barplot_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("year", "numerator", "population", "coverage"),
     "cs_coverage"
@@ -223,7 +247,7 @@
 #' @keywords internal
 #' @noRd
 .validate_dcc_barplot_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("consistency", "n", "total", "rate"),
     "dcc_rate"
@@ -237,7 +261,7 @@
 #' @keywords internal
 #' @noRd
 .validate_ecc_barplot_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("eligibility", "n", "total", "rate"),
     "ecc_rate"
@@ -249,7 +273,7 @@
 #' @keywords internal
 #' @noRd
 .validate_vt_barplot_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("timeliness", "n", "total", "rate"),
     "vt_rate"
@@ -261,7 +285,7 @@
 #' @keywords internal
 #' @noRd
 .validate_vt_distribution_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("dose", "day", "age", "n", "pdf", "cdf", "total", "n_early", "n_missing", "window_end", "age_schedule_low"),
     "vt_distribution"
@@ -273,7 +297,7 @@
 #' @keywords internal
 #' @noRd
 .validate_vt_percentile_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("dose", "percentile", "day", "within_window", "window_end", "total"),
     "vt_percentile"
@@ -299,7 +323,7 @@
 #' @keywords internal
 #' @noRd
 .validate_roc_heatmap_data <- function(data) {
-  .validate_output_data(
+  .validate_data_columns(
     data,
     c("frequency", "proportion"),
     "roc_distribution"
@@ -395,7 +419,7 @@
   }
 }
 
-#' Validate a dose sequence (vaccines) for the sc_ module.
+#' Validate a dose sequence (vaccines).
 #'
 #' @keywords internal
 #' @noRd
@@ -418,7 +442,41 @@
 #' @keywords internal
 #' @noRd
 .validate_sc_barplot_data <- function(data) {
-  .validate_output_data(data, c("sequence", "consistent", "n", "total", "rate"), "sc_rate")
+  .validate_data_columns(data, c("sequence", "consistent", "n", "total", "rate"), "sc_rate")
+}
+
+#' Validate the \code{value} argument of the dd_ plots.
+#'
+#' @keywords internal
+#' @noRd
+.validate_dd_value <- function(value) {
+  .validate_character(value, "value", exp_len = 1)
+
+  if(is.null(value) || !(value %in% c("rate", "n"))) {
+    stop("Error: The value parameter should be one of: rate, n.")
+  }
+}
+
+#' Validate the \code{duplication} argument of the dd_ plots.
+#'
+#' @keywords internal
+#' @noRd
+.validate_dd_duplication <- function(duplication) {
+  .validate_character(duplication, "duplication", exp_len = 1)
+
+  if(is.null(duplication) || !(duplication %in% c("duplicate", "repeated"))) {
+    stop("Error: The duplication parameter should be one of: duplicate, repeated.")
+  }
+}
+
+#' Validate input data frame for the dd_ plots, which come from dd_rate or dd_trend.
+#'
+#' @param source_function Name of the function data should be the output of, used in the error message.
+#'
+#' @keywords internal
+#' @noRd
+.validate_dd_plot_data <- function(data, source_function) {
+  .validate_data_columns(data, c("duplication", "n", "total", "rate"), source_function)
 }
 
 #' Validate Date object.
@@ -438,7 +496,7 @@
   invisible(TRUE)  # silent success
 }
 
-#' Validate day_groups bins.
+#' Validate the bins defined in day_groups.
 #'
 #' @keywords internal
 #' @noRd
@@ -468,23 +526,13 @@
   }
 }
 
-#' Validate data.EIR structure and (optionally) schedule compatibility.
+#' Validate data.EIR structure.
 #'
 #' @keywords internal
 #' @noRd
-.validate_data.EIR <- function(data.EIR, data.schedule = NULL, indicator = NULL) {
-  if(!is.data.frame(data.EIR)) {
-    stop("Error: data.EIR should be a data frame.")
-  }
-  if(!is.null(indicator) && indicator == "dcc"){
-    required_columns <- c(
-    "ID",
-    "ADM1_residence",
-    "ADM2_residence",
-    "dose"
-    )
-  } else {
-  required_columns <- c(
+.validate_data.EIR <- function(
+  data.EIR,
+  required_columns = c(
     "ID",
     "date_birth",
     "date_vax",
@@ -493,26 +541,7 @@
     "ADM1_occurrence",
     "ADM2_occurrence",
     "dose"
-    )
-  }
-
-  if(!all(required_columns %in% names(data.EIR))) {
-    stop(paste0(
-      "Error: data.EIR should contain the following columns: ",
-      paste(required_columns, collapse = ", "), "."
-    ))
-  } 
-
-  if(!is.null(data.schedule)) {
-    missing_in_schedule <- setdiff(unique(data.EIR$dose), unique(data.schedule$dose))
-    if(length(missing_in_schedule) > 0) {
-      warning(
-        paste0(
-          "Warning: The following dose(s) are present in data.EIR but missing from data.schedule: ",
-          paste(missing_in_schedule, collapse = ", "),
-          "."
-        )
-      )
-    }
-  }
+  )
+) {
+  .validate_data_columns(data.EIR, required_columns, data_name = "data.EIR")
 }

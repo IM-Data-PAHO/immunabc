@@ -31,7 +31,8 @@ vt_rate <- function(data.EIR, data.schedule, geo_level = "ADM0", vaccines = NULL
   # validations
   .validate_geo_level(geo_level)
   .validate_data.schedule(data.schedule)
-  .validate_data.EIR(data.EIR, data.schedule)
+  .validate_data.EIR(data.EIR)
+  .validate_schedule_doses(data.EIR, data.schedule)
   .validate_date(data.EIR$date_birth, "date_birth")
   .validate_date(data.EIR$date_vax, "date_vax")
   .validate_vaccines(vaccines, data.EIR, "data.EIR")

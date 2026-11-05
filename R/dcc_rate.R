@@ -17,7 +17,7 @@
 dcc_rate <- function(data.EIR, date_1, date_2, geo_level = "ADM0", birth_cohorts = NULL) {
 
   # validations
-  .validate_data.EIR(data.EIR, indicator = "dcc")
+  .validate_data.EIR(data.EIR, required_columns = .dcc_required_cols)
   .validate_geo_level(geo_level)
   .validate_numeric(birth_cohorts, "birth_cohorts", min_len = 1)
   .validate_date(data.EIR[[date_1]], date_1)

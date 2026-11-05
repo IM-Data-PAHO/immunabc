@@ -1,3 +1,14 @@
+#' Construct a vector of the geographic columns used to group results:
+#' empty for "ADM0", "ADM1" for "ADM1", and "ADM1" and "ADM2" for "ADM2".
+#'
+#' NOTE: Does not validate geo_level. Callers must validate it before calling it.
+#'
+#' @keywords internal
+#' @noRd
+.geo_level_cols <- function(geo_level) {
+  switch(geo_level, ADM0 = character(0), ADM1 = "ADM1", ADM2 = c("ADM1", "ADM2"))
+}
+
 #' Detect the smallest admin level in a data frame.
 #'
 #' @keywords internal
@@ -234,6 +245,236 @@
     ))
 
   return(classified)
+}
+
+#' Check which values are missing: NA, or empty or whitespace-only text in character and factor columns.
+#'
+#' @keywords internal
+#' @noRd
+.is_missing <- function(x) {
+  if(is.character(x) || is.factor(x)) {
+    return(is.na(x) | trimws(x) == "")
+  }
+
+  return(is.na(x))
+}
+
+#' Filter data.EIR by vaccines and birth_cohorts, then classify each record for the duplicate
+#' doses (dd_) module.
+#'
+#' Adds three columns: \code{duplication}, \code{copy} and \code{n_copies}. Works in two steps:
+#' \itemize{
+#'   \item Step 1, possible repeats: records with the same ID and dose, sorted by date. The first
+#'         one is FIRST_ENTRY and any later one is an extra record.
+#'   \item Step 2, real duplicates: an extra record that also matches an earlier one on date_vax,
+#'         ADM1_occurrence and ADM2_occurrence is a DUPLICATE. Any other extra record is REPEATED.
+#' }
+#' Records missing a key column do not contain sufficient information to be classified, so they are not evaluated.
+#'
+#' NOTE: Does not validate its inputs, and does not preserve the order of the records. Callers must
+#'       validate data.EIR, vaccines and birth_cohorts before calling it.
+#'
+#' @import dplyr
+#' @import lubridate
+#'
+#' @keywords internal
+#' @noRd
+.dd_prepare <- function(data.EIR, vaccines = NULL, birth_cohorts = NULL) {
+
+  # Checks if the vaccines variable is used
+  if(!is.null(vaccines)) {
+    data.EIR <- data.EIR %>%
+      filter(dose %in% vaccines)
+  }
+
+  # Checks if the birth_cohorts variable is used
+  if(!is.null(birth_cohorts)) {
+    data.EIR <- data.EIR %>%
+      filter(year(date_birth) %in% birth_cohorts)
+  }
+
+  # Records missing a key column are not evaluated
+  evaluated <- data.EIR %>%
+    filter(if_all(all_of(.dd_key_cols), ~ !.is_missing(.x)))
+
+  n_excluded <- nrow(data.EIR) - nrow(evaluated)
+  if(n_excluded > 0) {
+    message(paste0(
+      n_excluded, " record(s) (", round(n_excluded / nrow(data.EIR) * 100, 1), "%) with missing data in ",
+      paste(.dd_key_cols, collapse = ", "), " were not evaluated."
+    ))
+  }
+
+  if(nrow(evaluated) == 0) {
+    stop("Error: There are no records to evaluate with the specified parameters.")
+  }
+
+  # Finds the doses recorded more than once. duplicated() only flags the later copies,
+  # so it runs in both directions to also flag the first one
+  keys <- evaluated %>%
+    select(ID, dose)
+  recorded_more_than_once <- duplicated(keys) | duplicated(keys, fromLast = TRUE)
+
+  # Doses recorded once are labelled straight away, since grouping the whole registry is slow
+  recorded_once <- evaluated %>%
+    filter(!recorded_more_than_once) %>%
+    mutate(copy = 1L, n_copies = 1L, duplication = "FIRST_ENTRY")
+
+  classified <- evaluated %>%
+    filter(recorded_more_than_once) %>%
+    arrange(ID, dose, date_vax, ADM1_occurrence, ADM2_occurrence) %>%
+    # Step 1: possible repeats (same person and dose)
+    group_by(ID, dose) %>%
+    mutate(copy = row_number(), n_copies = n()) %>%
+    # Step 2: real duplicates (also same date and place of occurrence)
+    group_by(date_vax, ADM1_occurrence, ADM2_occurrence, .add = TRUE) %>%
+    mutate(same_as_earlier = row_number() > 1) %>%
+    ungroup() %>%
+    mutate(duplication = case_when(
+      copy == 1 ~ "FIRST_ENTRY",
+      same_as_earlier ~ "DUPLICATE",
+      TRUE ~ "REPEATED"
+    )) %>%
+    select(-same_as_earlier)
+
+  return(bind_rows(recorded_once, classified))
+}
+
+#' Count the DUPLICATE and REPEATED records of each group, for dd_rate and dd_trend.
+#'
+#' Returns one row for each duplication category in each group of group_cols, with n, total and rate.
+#' ADM1 and ADM2 refer to the place of occurrence.
+#'
+#' NOTE: classified must be the output of .dd_prepare, with any group column other than ADM1 and
+#'       ADM2 already added.
+#'
+#' @import dplyr
+#' @import tidyr
+#'
+#' @keywords internal
+#' @noRd
+.dd_summarise <- function(classified, group_cols) {
+
+  classified <- classified %>%
+    # rename for later usage
+    mutate(ADM1 = ADM1_occurrence, ADM2 = ADM2_occurrence)
+
+  # check we still have data after the previous steps
+  if(nrow(classified) == 0) {
+    stop("Error: There are no records to evaluate with the specified parameters.")
+  }
+
+  # Total records of each group, including records with no problem
+  totals <- classified %>%
+    count(across(all_of(group_cols)), name = "total")
+
+  # Number of records of each category in each group
+  counts <- classified %>%
+    count(across(all_of(c(group_cols, "duplication"))), name = "n")
+
+  summary <- totals %>%
+    # make sure there is one row for each category in every group
+    crossing(duplication = c("DUPLICATE", "REPEATED")) %>%
+    left_join(counts, by = c(group_cols, "duplication")) %>%
+    mutate(
+      # replace the NA from empty categories for a 0
+      n = replace_na(n, 0L),
+      rate = n / total * 100
+    ) %>%
+    select(all_of(group_cols), duplication, n, total, rate)
+
+  return(summary)
+}
+
+#' Prepare the output of dd_rate or dd_trend for the dd_ plots.
+#'
+#' Detects the disaggregations in data, filters by within_ADM1, keeps only the duplication category
+#' to plot and builds the shared labels and caption. geo_col, disagg_col and time_col are empty
+#' character vectors when data does not have that disaggregation.
+#'
+#' NOTE: Does not validate its inputs. Callers must validate data, duplication, value and within_ADM1
+#'       before calling it.
+#'
+#' @param trend Logical. Whether data should be the output of dd_trend (TRUE) or dd_rate (FALSE).
+#'
+#' @import dplyr
+#'
+#' @keywords internal
+#' @noRd
+.dd_plot_data <- function(data, duplication, value, within_ADM1 = NULL, trend = FALSE) {
+
+  # detect the disaggregations in the data
+  ADM_detected <- .detect_geo_level(data)
+  geo_col <- if(ADM_detected > 0) paste0("ADM", ADM_detected) else character(0)
+  disagg_col <- intersect(c("dose", "birth_cohort"), names(data))
+  time_col <- intersect(paste0(.dd_periods, "_vax"), names(data))
+
+  # trends over time come from dd_trend, and the rest of the plots from dd_rate
+  if(trend && length(time_col) == 0) {
+    stop("Error: data should be the output from dd_trend.")
+  }
+  if(!trend && length(time_col) > 0) {
+    stop("Error: data should be the output from dd_rate. Use dd_trend_plot for the output of dd_trend.")
+  }
+
+  if(!is.null(within_ADM1) && !("ADM1" %in% names(data))) {
+    stop("Error: within_ADM1 is only available when data is disaggregated by ADM1 or ADM2.")
+  }
+
+  # prepare data for plot
+  prepare_data <- data %>%
+    ungroup() %>%  # just in case users did any grouping beforehand
+    filter(if(!is.null(within_ADM1)) {ADM1 %in% within_ADM1} else {TRUE})
+
+  if(nrow(prepare_data) == 0) {
+    stop("Error: There is no data to plot after filtering by within_ADM1.")
+  }
+
+  # ADM2 areas are plotted by their name alone, so names repeated across ADM1 areas would be merged
+  if(ADM_detected == 2) {
+    repeated_ADM2 <- prepare_data %>%
+      distinct(ADM1, ADM2) %>%
+      count(ADM2) %>%
+      filter(n > 1) %>%
+      pull(ADM2)
+
+    if(length(repeated_ADM2) > 0) {
+      stop(paste0(
+        "Error: The following ADM2 names appear in more than one ADM1: ", paste(repeated_ADM2, collapse = ", "), ". ",
+        "ADM2 names must be unique to be plotted, so please make them unique in data.EIR, or use within_ADM1 to plot one ADM1 at a time."
+      ))
+    }
+  }
+
+  # labels for the category and value shown, with the caption defining the category
+  is_duplicate <- duplication == "duplicate"
+  caption <- if(is_duplicate) {
+      "Duplicate: extra record with the same person, dose, vaccination date and place of occurrence."
+    } else {
+      "Repeated: extra record with the same person and dose but a different date or place."
+    }
+  axis_label <- if(value == "rate") "Rate (%)" else "Number of records"
+  subtitle <- if(value == "rate") {
+      paste0("Percentage of records that are ", if(is_duplicate) "duplicates" else "repeats")
+    } else {
+      paste0("Number of ", if(is_duplicate) "duplicate" else "repeated", " records")
+    }
+
+  # keeps only the category to plot. Categories are in upper case in the data (e.g. "DUPLICATE")
+  selected <- toupper(duplication)
+  prepare_data <- prepare_data %>%
+    filter(duplication == selected)
+
+  return(list(
+    data = prepare_data,
+    geo_col = geo_col,
+    disagg_col = disagg_col,
+    time_col = time_col,
+    title = if(is_duplicate) "Duplicate doses" else "Repeated doses",
+    axis_label = axis_label,
+    subtitle = subtitle,
+    caption = caption
+  ))
 }
 
 #' Compute the daily (pdf) and cumulative (cdf) distribution of vaccinations from daily counts.
