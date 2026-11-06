@@ -7,7 +7,6 @@
 dd_trend_plot(
   data,
   value = "rate",
-  duplication = "duplicate",
   highlight = NULL,
   within_ADM1 = NULL,
   min_total = NULL
@@ -16,21 +15,19 @@ dd_trend_plot(
 \arguments{
 \item{data}{The output from the \code{immunabc::dd_trend} function.}
 
-\item{value}{Character. What to show on the y-axis: "rate" (default), the percentage of records in the \code{duplication} category; or "n", their number. With "n", all areas combined will show the sum of all areas, so its value may be significantly larger than each individual area.}
-
-\item{duplication}{Character. Which records to show: "duplicate" (default), the extra records with the same person, dose, vaccination date and place of occurrence as an earlier record; or "repeated", the extra records with the same person and dose but a different date or place.}
+\item{value}{Character. What to show on the y-axis: "rate" (default), the percentage of records that are duplicates; or "n", their number. With "n", all areas combined will show the sum of all areas, so its value may be significantly larger than each individual area.}
 
 \item{highlight}{Character (optional). Up to 5 geographic areas to highlight in color. Only available when \code{data} is disaggregated by "ADM1" or "ADM2". Default is \code{NULL}, which highlights nothing.}
 
 \item{within_ADM1}{Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. All areas combined then refers to those areas only. Default is \code{NULL}, which means no filtering by "ADM1".}
 
-\item{min_total}{Numeric (optional). Minimum number of records required for a line to be shown for a given period. This means each line may have gaps if the number of records was too small at a given point in time. This is useful because rates based on few records can be misleading and stretch the y-axis. Default is \code{NULL}, which shows all periods.}
+\item{min_total}{Numeric (optional). Minimum number of records required for a line to be shown for a given month. This means each line may have gaps if the number of records was too small at a given point in time. This is useful because rates based on few records can be misleading and stretch the y-axis. Default is \code{NULL}, which shows all months.}
 }
 \value{
 A ggplot object representing the trend plot.
 }
 \description{
-Generates a line plot of the percentage or number of duplicate (or repeated) records according to their reported vaccination date, from the output of \code{dd_trend}, which helps identify the vaccination periods most affected. If duplicates are high only for a few periods, the records from those periods may have been entered twice, for example when moving data from an old system into the EIR.
+Generates a line plot of the percentage or number of duplicate records according to their reported vaccination date, from the output of \code{dd_trend}, which helps identify the vaccination months most affected. If duplicates are high only for a few months, the records from those months may have been entered twice, for example when moving data from an old system into the EIR.
 }
 \details{
 If \code{data} is disaggregated by geographic area, each area is drawn as a thin grey line for context, and all areas combined are drawn as a single highlighted line. Specific areas can be highlighted in color with \code{highlight}. To show a single vaccine, use the \code{vaccines} argument of \code{dd_rate}.

@@ -1,14 +1,19 @@
 #' (D)uplicate (D)oses Repeat Plot
 #'
-#' Generates a histogram of only repeated records as identified by \code{dd_duplicates}. Sorts them by the number of days that have passed since the vaccination date of the first entry (\code{days_since_first_entry}). This helps tell apart the possible causes of repeats: a few days apart usually points to a typo in the date, while a difference that approximately matches the interval between doses of a series may point to the next dose having been registered with the wrong dose number.
+#' Generates two histograms comparing the age of vaccination of records identified as \code{REPEATED}. Shows the age at vaccination of the \code{FIRST_ENTRY}s in one histogram, while showing the age at vaccination of the \code{REPEATED} records in the other. Comparing both helps tell apart the possible causes of repeats: for example, if the repeats of DTP1 are concentrated at the age when DTP2 is due, then the "DTP1" dose may have been registered with the wrong dose number.
 #'
-#' When the user provides \code{data.schedule} and an ordered dose sequence in \code{vaccines}, each dose shows a shaded area highlighting the interval when the next dose in the series is due. This helps visually identify possible repeats that were registered with the wrong dose number. The highlighted area goes from \code{age_schedule_low} to \code{age_schedule_high} of the next dose. Since the number of repeated records is usually small, this plot is not disaggregated by geographic area.
+#' When the user provides \code{data.schedule}, a shaded area highlights the vaccination window of each dose in \code{schedule_vaccines} (using \code{age_schedule_low} and \code{age_schedule_high}). Results can also be split into columns of panels per geographic area of occurrence with \code{geo_level}.
+#'
+#' Records with no \code{date_birth} have no age at vaccination, and records with \code{date_vax} before \code{date_birth} have a negative one, so both are filtered out, with a message.
 #'
 #' @param data The output from the \code{immunabc::dd_duplicates} function.
-#' @param vaccines Character (optional). The doses to show, one panel per dose. When \code{data.schedule} is used, this should be an ordered dose sequence of at least two doses, as in the \code{sc_} module, e.g. \code{c("DTP1", "DTP2", "DTP3")}. If \code{NULL} (default), all doses are pooled together in a single panel.
-#' @param data.schedule Data frame (optional). A data frame defining the vaccination schedule, used to show when the next dose of the sequence in \code{vaccines} is due. See \code{immunABC.schedule} for expected structure. Default is \code{NULL}, which shows no schedule.
+#' @param vaccine Character. The single dose to show, e.g. "DTP1".
+#' @param geo_level Character. The geographic level of occurrence to split the panels by. Must be "ADM0" (default, no split), "ADM1" or "ADM2".
+#' @param within_ADM1 Character (optional). A character vector of one or several "ADM1" areas of occurrence to filter. Default is \code{NULL}, which means no filtering by "ADM1".
 #' @param binwidth Numeric. Width of each bar of the histogram, in days. Default is 7 (one week).
-#' @param max_days Numeric. Maximum number of days since the first entry to show on the x-axis. Repeats after that are not shown but their number is given in the caption. Default is 180 days.
+#' @param max_age Numeric (optional). Maximum age at vaccination, in days, to show on the x-axis. Records after that are not shown but their number is given in the caption. Default is \code{NULL}, which shows all ages.
+#' @param data.schedule Data frame (optional). A data frame defining the vaccination schedule, used to show the vaccination window of the doses in \code{schedule_vaccines}. See \code{immunABC.schedule} for expected structure. Default is \code{NULL}, which shows no schedule.
+#' @param schedule_vaccines Character (optional). Up to 3 doses whose vaccination window is highlighted, e.g. \code{c("DTP1", "DTP2")}. Only used with \code{data.schedule}. If \code{NULL} (default), the vaccination window of \code{vaccine} is highlighted.
 #'
 #' @return A ggplot object representing the histogram.
 #'
@@ -16,101 +21,119 @@
 #' @import ggplot2
 #'
 #' @export
-dd_repeat_plot <- function(data, vaccines = NULL, data.schedule = NULL, binwidth = 7, max_days = 180) {
+dd_repeat_plot <- function(data, vaccine, geo_level = "ADM0", within_ADM1 = NULL, binwidth = 7, max_age = NULL, data.schedule = NULL, schedule_vaccines = NULL) {
 
   # validations
-  .validate_data_columns(data, c("dose", "days_since_first_entry", "duplication"), "dd_duplicates")
-  .validate_character(vaccines, "vaccines", min_len = 1)
-  .validate_vaccines(vaccines, data, "data")
+  .validate_data_columns(
+    data,
+    c("dose", "date_birth", "date_vax", "ADM1_occurrence", "ADM2_occurrence", "group", "duplication"),
+    "dd_duplicates"
+  )
+  .validate_character(vaccine, "vaccine", exp_len = 1)
+  .validate_vaccines(vaccine, data, "data")
+  .validate_character(schedule_vaccines, "schedule_vaccines", min_len = 1, max_len = 3)
   if(!is.null(data.schedule)) {
-    # the next dose is only defined within an ordered sequence of doses
-    if(is.null(vaccines)) {
-      stop("Error: data.schedule needs an ordered dose sequence in vaccines, e.g. c(\"DTP1\", \"DTP2\", \"DTP3\").")
-    }
-    .validate_sequence(vaccines, data)
     .validate_data.schedule(data.schedule)
-    .validate_vaccines(vaccines, data.schedule, "data.schedule")
+    if(is.null(schedule_vaccines)) {
+      schedule_vaccines <- vaccine
+    }
+    .validate_vaccines(schedule_vaccines, data.schedule, "data.schedule")
+  } else if(!is.null(schedule_vaccines)) {
+    stop("Error: schedule_vaccines needs data.schedule to know their vaccination window.")
   }
+  .validate_geo_level(geo_level)
+  .validate_character(within_ADM1, "within_ADM1", min_len = 1)
   .validate_numeric(binwidth, "binwidth", exp_len = 1)
-  .validate_numeric(max_days, "max_days", exp_len = 1)
-  if(binwidth <= 0 || max_days <= 0) {
-    stop("Error: binwidth and max_days should be greater than 0.")
+  .validate_numeric(max_age, "max_age", exp_len = 1)
+  if(binwidth <= 0 || (!is.null(max_age) && max_age <= 0)) {
+    stop("Error: binwidth and max_age should be greater than 0.")
   }
 
-  # get only the repeated records
-  repeats <- data %>%
-    filter(duplication == "REPEATED") %>%
-    mutate(days = days_since_first_entry)
+  # ADM1 and ADM2 refer to the place of occurrence
+  geo_cols <- .geo_level_cols(geo_level)
 
-  # keeps only the doses in vaccines, in their order, one panel each
-  if(!is.null(vaccines)) {
-    repeats <- repeats %>%
-      filter(dose %in% vaccines) %>%
-      mutate(dose = factor(dose, levels = vaccines))
+  records <- data %>%
+    ungroup() %>%  # just in case users did any grouping beforehand
+    filter(dose == vaccine) %>%
+    filter(if(!is.null(within_ADM1)) {ADM1_occurrence %in% within_ADM1} else {TRUE}) %>%
+    mutate(ADM1 = ADM1_occurrence, ADM2 = ADM2_occurrence) %>%
+    # only the groups with repeats, and only their first entry and repeats
+    group_by(group) %>%
+    filter(any(duplication == "REPEATED")) %>%
+    ungroup() %>%
+    filter(duplication %in% c("FIRST_ENTRY", "REPEATED")) %>%
+    mutate(
+      age = as.numeric(date_vax - date_birth),
+      duplication = factor(duplication, levels = c("FIRST_ENTRY", "REPEATED"))
+    )
+
+  if(nrow(records) == 0) {
+    stop("Error: There are no repeated records of ", vaccine, " in data with the specified parameters.")
   }
 
-  if(nrow(repeats) == 0) {
-    stop("Error: There are no repeated records in data.")
+  # records with no date of birth have no age, and negative ages are vaccinations before birth
+  n_no_age <- sum(is.na(records$age))
+  n_negative <- sum(records$age < 0, na.rm = TRUE)
+  if(n_no_age > 0) {
+    message(paste0(n_no_age, " record(s) with no date_birth were excluded, since their age at vaccination is unknown."))
   }
+  if(n_negative > 0) {
+    message(paste0(n_negative, " record(s) with date_vax before date_birth were excluded."))
+  }
+  records <- records %>%
+    filter(!is.na(age), age >= 0)
 
-  # repeats after max_days are left out, so a few very late ones do not stretch the x-axis
-  n_beyond <- sum(repeats$days > max_days)
-  repeats <- repeats %>%
-    filter(days <= max_days)
+  caption <- "A repeated record refers to one with the same ID and dose but a different date or place of vaccination."
 
-  caption <- "Repeated means an extra record with the same ID and dose but a different date or place of vaccination."
-  if(n_beyond > 0) {
-    caption <- paste0(caption, "\n", n_beyond, " repeated records occur more than ", max_days, " days after the first entry.")
+  # records after max_age are left out, so that the x-axis is not streched
+  if(!is.null(max_age)) {
+    n_beyond <- sum(records$age > max_age)
+    records <- records %>%
+      filter(age <= max_age)
+    if(n_beyond > 0) {
+      caption <- paste0(caption, "\n", n_beyond, " records vaccinated at more than ", max_age, " days of age are not shown.")
+    }
   }
 
   p <- ggplot()
 
-  # calculations to show the schedule as a highlighted area
+  # vaccination window of each dose in schedule_vaccines as a shaded area
   if(!is.null(data.schedule)) {
-    # calculate when the next dose of the sequence is due
-    due_data <- data.schedule %>%
-      filter(dose %in% vaccines) %>%
+    window_data <- data.schedule %>%
+      filter(dose %in% schedule_vaccines) %>%
       distinct(dose, .keep_all = TRUE) %>%
-      # order according to the sequence provided in vaccines
-      arrange(match(dose, vaccines)) %>%
-      mutate(
-        due_low = lead(age_schedule_low) - age_schedule,
-        due_high = lead(age_schedule_high) - age_schedule,
-        dose = factor(dose, levels = vaccines)
-      ) %>%
-      # the last dose in the sequence has no next dose
-      filter(!is.na(due_low)) %>%
-      select(dose, due_low, due_high) %>%
-      # cut to the days shown
-      mutate(due_low = pmax(due_low, 0), due_high = pmin(due_high, max_days)) %>%
-      filter(due_low < max_days)
+      mutate(window = factor(paste0(dose, " vaccination window"), levels = paste0(schedule_vaccines, " vaccination window"))) %>%
+      select(window, age_schedule_low, age_schedule_high)
 
-    # shaded area represents the time during which a repeated dose may
-    # simply be a future dose that was mislabelled
     p <- p +
       geom_rect(
-        data = due_data,
-        aes(xmin = due_low, xmax = due_high, ymin = -Inf, ymax = Inf, fill = "Timeliness window"),
+        data = window_data,
+        aes(xmin = age_schedule_low, xmax = age_schedule_high, ymin = -Inf, ymax = Inf, fill = window),
         alpha = 0.4
       ) +
-      scale_fill_manual(values = c("Timeliness window" = "#9cdbf4"))
+      # same light colors as the vt_ module, starting with its timeliness window color
+      scale_fill_manual(values = setNames(c("#9cdbf4", "#fabf7b", "#c9a3dd")[seq_along(schedule_vaccines)], levels(window_data$window)))
   }
 
   # do plot
   p <- p +
     geom_histogram(
-      data = repeats,
-      aes(x = days),
+      data = records,
+      aes(x = age),
       binwidth = binwidth, boundary = 0, closed = "left",
-      fill = "#c9a3dd", color = "white"
+      fill = "#2E9FDF", color = NA
+    ) +
+    # first entries and repeats share the y-axis, so their numbers can be compared
+    facet_grid(
+      rows = vars(duplication), cols = vars(!!!syms(geo_cols)),
+      labeller = labeller(duplication = as_labeller(c(FIRST_ENTRY = "First entry", REPEATED = "Repeated")))
     ) +
     labs(
-      title = "Repeated doses by days since the first entry",
-      x = "Days since the first entry of the same person and dose",
+      title = paste0("Repeated doses of ", vaccine, " by age at vaccination"),
+      x = "Age at vaccination (days)",
       y = "Number of records",
       caption = caption
     ) +
-    coord_cartesian(xlim = c(0, max_days)) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
     theme_classic() +
     theme(
@@ -119,9 +142,8 @@ dd_repeat_plot <- function(data, vaccines = NULL, data.schedule = NULL, binwidth
       panel.border = element_rect(fill = NA)
     )
 
-  if(!is.null(vaccines)) {
-    # each dose has its own y-axis, so the shape of its distribution can be compared
-    p <- p + facet_wrap(vars(dose), scales = "free_y")
+  if(!is.null(max_age)) {
+    p <- p + coord_cartesian(xlim = c(0, max_age))
   }
 
   return(p)

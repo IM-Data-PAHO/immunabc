@@ -6,29 +6,40 @@
 \usage{
 dd_repeat_plot(
   data,
-  vaccines = NULL,
-  data.schedule = NULL,
+  vaccine,
+  geo_level = "ADM0",
+  within_ADM1 = NULL,
   binwidth = 7,
-  max_days = 180
+  max_age = NULL,
+  data.schedule = NULL,
+  schedule_vaccines = NULL
 )
 }
 \arguments{
 \item{data}{The output from the \code{immunabc::dd_duplicates} function.}
 
-\item{vaccines}{Character (optional). The doses to show, one panel per dose. When \code{data.schedule} is used, this should be an ordered dose sequence of at least two doses, as in the \code{sc_} module, e.g. \code{c("DTP1", "DTP2", "DTP3")}. If \code{NULL} (default), all doses are pooled together in a single panel.}
+\item{vaccine}{Character. The single dose to show, e.g. "DTP1".}
 
-\item{data.schedule}{Data frame (optional). A data frame defining the vaccination schedule, used to show when the next dose of the sequence in \code{vaccines} is due. See \code{immunABC.schedule} for expected structure. Default is \code{NULL}, which shows no schedule.}
+\item{geo_level}{Character. The geographic level of occurrence to split the panels by. Must be "ADM0" (default, no split), "ADM1" or "ADM2".}
+
+\item{within_ADM1}{Character (optional). A character vector of one or several "ADM1" areas of occurrence to filter. Default is \code{NULL}, which means no filtering by "ADM1".}
 
 \item{binwidth}{Numeric. Width of each bar of the histogram, in days. Default is 7 (one week).}
 
-\item{max_days}{Numeric. Maximum number of days since the first entry to show on the x-axis. Repeats after that are not shown but their number is given in the caption. Default is 180 days.}
+\item{max_age}{Numeric (optional). Maximum age at vaccination, in days, to show on the x-axis. Records after that are not shown but their number is given in the caption. Default is \code{NULL}, which shows all ages.}
+
+\item{data.schedule}{Data frame (optional). A data frame defining the vaccination schedule, used to show the vaccination window of the doses in \code{schedule_vaccines}. See \code{immunABC.schedule} for expected structure. Default is \code{NULL}, which shows no schedule.}
+
+\item{schedule_vaccines}{Character (optional). Up to 3 doses whose vaccination window is highlighted, e.g. \code{c("DTP1", "DTP2")}. Only used with \code{data.schedule}. If \code{NULL} (default), the vaccination window of \code{vaccine} is highlighted.}
 }
 \value{
 A ggplot object representing the histogram.
 }
 \description{
-Generates a histogram of only repeated records as identified by \code{dd_duplicates}. Sorts them by the number of days that have passed since the vaccination date of the first entry (\code{days_since_first_entry}). This helps tell apart the possible causes of repeats: a few days apart usually points to a typo in the date, while a difference that approximately matches the interval between doses of a series may point to the next dose having been registered with the wrong dose number.
+Generates two histograms comparing the age of vaccination of records identified as \code{REPEATED}. Shows the age at vaccination of the \code{FIRST_ENTRY}s in one histogram, while showing the age at vaccination of the \code{REPEATED} records in the other. Comparing both helps tell apart the possible causes of repeats: for example, if the repeats of DTP1 are concentrated at the age when DTP2 is due, then the "DTP1" dose may have been registered with the wrong dose number.
 }
 \details{
-When the user provides \code{data.schedule} and an ordered dose sequence in \code{vaccines}, each dose shows a shaded area highlighting the interval when the next dose in the series is due. This helps visually identify possible repeats that were registered with the wrong dose number. The highlighted area goes from \code{age_schedule_low} to \code{age_schedule_high} of the next dose. Since the number of repeated records is usually small, this plot is not disaggregated by geographic area.
+When the user provides \code{data.schedule}, a shaded area highlights the vaccination window of each dose in \code{schedule_vaccines} (using \code{age_schedule_low} and \code{age_schedule_high}). Results can also be split into columns of panels per geographic area of occurrence with \code{geo_level}.
+
+Records with no \code{date_birth} have no age at vaccination, and records with \code{date_vax} before \code{date_birth} have a negative one, so both are filtered out, with a message.
 }

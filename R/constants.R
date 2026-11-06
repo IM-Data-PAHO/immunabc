@@ -15,9 +15,3 @@
 #' @keywords internal
 #' @noRd
 .dd_required_cols <- c(.dd_key_cols, "date_birth")
-
-#' Periods that dd_trend can group vaccination dates by.
-#'
-#' @keywords internal
-#' @noRd
-.dd_periods <- c("week", "month", "quarter", "year")

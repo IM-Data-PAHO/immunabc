@@ -407,7 +407,7 @@
   ADM_detected <- .detect_geo_level(data)
   geo_col <- if(ADM_detected > 0) paste0("ADM", ADM_detected) else character(0)
   disagg_col <- intersect(c("dose", "birth_cohort"), names(data))
-  time_col <- intersect(paste0(.dd_periods, "_vax"), names(data))
+  time_col <- intersect("month_vax", names(data))
 
   # trends over time come from dd_trend, and the rest of the plots from dd_rate
   if(trend && length(time_col) == 0) {

@@ -4,28 +4,20 @@
 \alias{dd_trend}
 \title{(D)uplicate (D)oses Trend}
 \usage{
-dd_trend(
-  data.EIR,
-  geo_level = "ADM0",
-  period = "month",
-  vaccines = NULL,
-  birth_cohorts = NULL
-)
+dd_trend(data.EIR, geo_level = "ADM0", vaccines = NULL, birth_cohorts = NULL)
 }
 \arguments{
 \item{data.EIR}{Data frame. A data frame containing individual vaccination records. See \code{immunABC.EIR} for expected structure.}
 
 \item{geo_level}{Character. The geographic level to aggregate results by. Must be "ADM0", "ADM1" or "ADM2". If not specified, the default is "ADM0".}
 
-\item{period}{Character. The period of time to group vaccination dates by: "week", "month" (default), "quarter" or "year". Longer periods have more records each, so their rates are less noisy, especially for small areas.}
-
 \item{vaccines}{Character (optional). A character vector specifying the doses to include in the analysis. If \code{NULL} (default), all doses in \code{data.EIR} are included.}
 
 \item{birth_cohorts}{Numeric (optional). A vector specifying the birth cohort(s) for which the rate should be calculated. If \code{NULL} (default), all available cohorts are used.}
 }
 \value{
-A data frame with one row for each \code{duplication} category in each group, with the same columns as \code{dd_rate}, plus a column with the first day of each period. This column is named differently depending on the period and will be one of: \code{week_vax} (weeks start on Monday), \code{month_vax}, \code{quarter_vax} or \code{year_vax}.
+A data frame with one row for each group, with the same columns as \code{dd_rate}, plus \code{month_vax}, the first day of the month of vaccination. The \code{duplication} column is always \code{DUPLICATE}, and is kept so the output has the same structure as \code{dd_rate}.
 }
 \description{
-This function calculates the percentage of duplicate and repeated records in the electronic immunization registry (EIR) according to their reported date of vaccination, further disaggregating by geographic level. It essentially performs the same calculation as \code{dd_rate}, but disaggregates by time in order to spot any possible trends.
+This function calculates the percentage of duplicate records in the electronic immunization registry (EIR) according to their reported month of vaccination, further disaggregating by geographic level. It essentially performs the same calculation as \code{dd_rate}, but disaggregates by time in order to spot any possible trends. Repeated records are not included: to explore them, use \code{dd_repeat_plot}.
 }
