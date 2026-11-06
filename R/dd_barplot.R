@@ -74,19 +74,17 @@ dd_barplot <- function(data, value = "rate", duplication = "duplicate", within_A
     # orange for duplicates, purple for repeats, so the two are not confused
     geom_col(fill = if(duplication == "duplicate") "#fabf7b" else "#c9a3dd")
 
-  # grab the subtitle
-  subtitle <- plot_data$subtitle
-  
   # only show a combined dashed line when plotting the rate (and as long as there is more than 1 bar)
   show_combined <- value == "rate" && n_distinct(prepare_data$x_value) > 1
   if(show_combined) {
-    p <- p + geom_hline(
-      data = combined,
-      aes(yintercept = combined_rate),
-      linetype = "dashed", color = "#173052"
-    )
-
-    subtitle <- paste0(subtitle, ". Dashed line: all groups combined")
+    p <- p +
+      geom_hline(
+        data = combined,
+        aes(yintercept = combined_rate, linetype = "All groups combined"),
+        color = "#173052"
+      ) +
+      # the dashed line is explained in the legend
+      scale_linetype_manual(values = c("All groups combined" = "dashed"))
   }
 
   # facets
@@ -106,16 +104,12 @@ dd_barplot <- function(data, value = "rate", duplication = "duplicate", within_A
     }
 
   # add a caption when min_total is used
-  caption <- plot_data$caption
-  if(!is.null(min_total)) {
-    caption <- paste0(caption, "\nGroups with fewer than ", min_total, " records are not shown.")
-  }
+  caption <- if(!is.null(min_total)) paste0("Groups with fewer than ", min_total, " records are not shown.") else NULL
 
   # final touches
   p <- p +
     labs(
       title = plot_data$title,
-      subtitle = subtitle,
       x = x_label,
       y = plot_data$axis_label,
       caption = caption
@@ -124,7 +118,10 @@ dd_barplot <- function(data, value = "rate", duplication = "duplicate", within_A
     theme_classic() +
     theme(
       axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-      panel.border = element_rect(fill = NA)
+      panel.border = element_rect(fill = NA),
+      legend.position = "top",
+      legend.justification = "left",
+      legend.title = element_blank()
     )
 
   return(p)

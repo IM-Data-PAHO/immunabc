@@ -83,15 +83,14 @@ dd_repeat_plot <- function(data, vaccine, geo_level = "ADM0", within_ADM1 = NULL
   records <- records %>%
     filter(!is.na(age), age >= 0)
 
-  caption <- "A repeated record refers to one with the same ID and dose but a different date or place of vaccination."
-
   # records after max_age are left out, so that the x-axis is not streched
+  caption <- NULL
   if(!is.null(max_age)) {
     n_beyond <- sum(records$age > max_age)
     records <- records %>%
       filter(age <= max_age)
     if(n_beyond > 0) {
-      caption <- paste0(caption, "\n", n_beyond, " records vaccinated at more than ", max_age, " days of age are not shown.")
+      caption <- paste0(n_beyond, " records vaccinated at more than ", max_age, " days of age are not shown.")
     }
   }
 

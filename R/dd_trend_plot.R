@@ -93,10 +93,8 @@ dd_trend_plot <- function(data, value = "rate", highlight = NULL, within_ADM1 = 
   series_data <- bind_rows(combined_data, highlight_data) %>%
     mutate(series = factor(series, levels = series_levels))
 
-  caption <- plot_data$caption
-  if(!is.null(min_total)) {
-    caption <- paste0(caption, "\nMonths of an area with fewer than ", min_total, " records are not shown.")
-  }
+  # add a caption when min_total is used
+  caption <- if(!is.null(min_total)) paste0("Months of an area with fewer than ", min_total, " records are not shown.") else NULL
 
   # do plot
   p <- p +

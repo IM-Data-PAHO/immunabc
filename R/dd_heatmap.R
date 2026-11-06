@@ -69,7 +69,7 @@ dd_heatmap <- function(data, value = "rate", duplication = "duplicate", within_A
     mutate(x_value = area, y_value = factor(disagg_value, levels = rev(sort(unique(disagg_value)))))
   disagg_label <- c(dose = "Vaccine", birth_cohort = "Birth cohort")[[disagg_col]]
 
-  caption <- paste0(plot_data$caption, "\nGrey cells: ", if(!is.null(min_total)) paste0("fewer than ", min_total, " records.") else "no records.")
+  caption <- paste0("Grey cells: ", if(!is.null(min_total)) paste0("fewer than ", min_total, " records.") else "no records.")
 
   # do plot
   p <- ggplot(prepare_data, aes(x = x_value, y = y_value, fill = cell_value)) +

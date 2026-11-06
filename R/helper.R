@@ -389,7 +389,7 @@
 #' Prepare the output of dd_rate or dd_trend for the dd_ plots.
 #'
 #' Detects the disaggregations in data, filters by within_ADM1, keeps only the duplication category
-#' to plot and builds the shared labels and caption. geo_col, disagg_col and time_col are empty
+#' to plot and builds the shared labels. geo_col, disagg_col and time_col are empty
 #' character vectors when data does not have that disaggregation.
 #'
 #' NOTE: Does not validate its inputs. Callers must validate data, duplication, value and within_ADM1
@@ -446,14 +446,9 @@
     }
   }
 
-  # labels for the category and value shown, with the caption defining the category
+  # labels for the category and value shown
   is_duplicate <- duplication == "duplicate"
-  caption <- if(is_duplicate) {
-      "Duplicate: extra record with the same person, dose, vaccination date and place of occurrence."
-    } else {
-      "Repeated: extra record with the same person and dose but a different date or place."
-    }
-  axis_label <- if(value == "rate") "Rate (%)" else "Number of records"
+  axis_label <- if(value == "rate") "% of records" else "Number of records"
   subtitle <- if(value == "rate") {
       paste0("Percentage of records that are ", if(is_duplicate) "duplicates" else "repeats")
     } else {
@@ -472,8 +467,7 @@
     time_col = time_col,
     title = if(is_duplicate) "Duplicate doses" else "Repeated doses",
     axis_label = axis_label,
-    subtitle = subtitle,
-    caption = caption
+    subtitle = subtitle
   ))
 }
 
