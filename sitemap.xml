@@ -6,6 +6,7 @@
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/complete_schedule_en.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/articles/en/duplicate_doses_en.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/residence_occurrence_en.html</loc></url>
@@ -14,6 +15,7 @@
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/complete_schedule_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/date_consistency_comparison_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/dose_sequence_comparison_es.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/articles/es/duplicate_doses_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/example_datasets_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/residence_occurrence_es.html</loc></url>
@@ -30,6 +32,13 @@
 <url><loc>https://im-data-paho.github.io/immunabc/reference/dcc_inconsistent.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/dcc_inconsistent_plot.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/dcc_rate.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/dd_barplot.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/dd_duplicates.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/dd_heatmap.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/dd_rate.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/dd_trend.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/dd_trend_plot.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.EIR.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM0.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM1.html</loc></url>

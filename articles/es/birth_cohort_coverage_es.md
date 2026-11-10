@@ -263,13 +263,13 @@ coverage_df %>%
   kable(digits = 2, caption = "Cobertura por cohorte de nacimiento a nivel ADM1")
 ```
 
-| dose | year_cohort | ADM1   | numerator | population | coverage |
-|:-----|------------:|:-------|----------:|-----------:|---------:|
-| SRP1 |        2022 | ADM1_1 |       558 |       1733 |    32.20 |
-| SRP1 |        2022 | ADM1_2 |      3138 |      12428 |    25.25 |
-| SRP1 |        2022 | ADM1_3 |     13967 |      50238 |    27.80 |
-| SRP1 |        2022 | ADM1_4 |      2977 |       6382 |    46.65 |
-| SRP1 |        2022 | ADM1_5 |      1362 |       3488 |    39.05 |
+| dose | birth_cohort | ADM1   | numerator | population | coverage |
+|:-----|-------------:|:-------|----------:|-----------:|---------:|
+| SRP1 |         2022 | ADM1_1 |       558 |       1733 |    32.20 |
+| SRP1 |         2022 | ADM1_2 |      3138 |      12428 |    25.25 |
+| SRP1 |         2022 | ADM1_3 |     13967 |      50238 |    27.80 |
+| SRP1 |         2022 | ADM1_4 |      2977 |       6382 |    46.65 |
+| SRP1 |         2022 | ADM1_5 |      1362 |       3488 |    39.05 |
 
 Cobertura por cohorte de nacimiento a nivel ADM1 {.table}
 

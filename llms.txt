@@ -31,7 +31,7 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Usage
 
-Currently, immunABC contains seven main modules. Follow the links below
+Currently, immunABC contains eight main modules. Follow the links below
 to explore detailed vignettes with practical examples and guidance on
 how to use each module:
 
@@ -78,7 +78,16 @@ how to use each module:
     Helps detect doses registered with the wrong dose number,
     unregistered doses and record linkage issues.
 
-7.  [**Vaccination
+7.  [**Duplicate
+    Doses**](https://im-data-paho.github.io/immunabc/articles/en/duplicate_doses_en.html)  
+    Detects doses registered more than once for the same person in the
+    EIR, telling apart duplicate records (the same vaccination event
+    registered more than once, with the same date and place) from
+    repeated records (the same dose registered on a different date or in
+    a different place). Helps clean the EIR before coverage, dropout and
+    other analyses that rely on dose counts.
+
+8.  [**Vaccination
     Timeliness**](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html)  
     Analyzes the vaccination timeliness of the population, that is, the
     time that elapses between the age of eligibility for each dose and
@@ -139,6 +148,26 @@ inconsistent dose sequences in the EIR.
   : Dose (S)equence (C)omparison Inconsistent Records
 - [`sc_heatmap()`](https://im-data-paho.github.io/immunabc/reference/sc_heatmap.md)
   : Dose (S)equence (C)omparison Heatmap
+
+## Duplicate Doses
+
+Functions for identifying and visualizing doses registered more than
+once in the EIR.
+
+- [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
+  : (D)uplicate (D)oses Rate
+- [`dd_barplot()`](https://im-data-paho.github.io/immunabc/reference/dd_barplot.md)
+  : (D)uplicate (D)oses Barplot
+- [`dd_heatmap()`](https://im-data-paho.github.io/immunabc/reference/dd_heatmap.md)
+  : (D)uplicate (D)oses Heatmap
+- [`dd_trend()`](https://im-data-paho.github.io/immunabc/reference/dd_trend.md)
+  : (D)uplicate (D)oses Trend
+- [`dd_trend_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_trend_plot.md)
+  : (D)uplicate (D)oses Trend Plot
+- [`dd_duplicates()`](https://im-data-paho.github.io/immunabc/reference/dd_duplicates.md)
+  : (D)uplicate (D)oses Records
+- [`dd_repeat_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.md)
+  : (D)uplicate (D)oses Repeat Plot
 
 ## Vaccination Timeliness
 
@@ -249,6 +278,10 @@ expects.
   Comparison](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.md):
 - [Comparación de secuencia de
   dosis](https://im-data-paho.github.io/immunabc/articles/es/dose_sequence_comparison_es.md):
+- [Duplicate
+  Doses](https://im-data-paho.github.io/immunabc/articles/en/duplicate_doses_en.md):
+- [Dosis
+  duplicadas](https://im-data-paho.github.io/immunabc/articles/es/duplicate_doses_es.md):
 - [Using our Example
   Datasets](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.md):
 - [Uso de los datos de

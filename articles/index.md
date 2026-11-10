@@ -18,6 +18,10 @@
   Comparison](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.md):
 - [Comparación de secuencia de
   dosis](https://im-data-paho.github.io/immunabc/articles/es/dose_sequence_comparison_es.md):
+- [Duplicate
+  Doses](https://im-data-paho.github.io/immunabc/articles/en/duplicate_doses_en.md):
+- [Dosis
+  duplicadas](https://im-data-paho.github.io/immunabc/articles/es/duplicate_doses_es.md):
 - [Using our Example
   Datasets](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.md):
 - [Uso de los datos de

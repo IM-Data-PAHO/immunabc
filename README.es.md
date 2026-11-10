@@ -32,7 +32,7 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Uso
 
-Actualmente, immunABC contiene siete módulos principales. Siga los
+Actualmente, immunABC contiene ocho módulos principales. Siga los
 enlaces a continuación para explorar viñetas detalladas con ejemplos
 prácticos y orientación sobre cómo usar cada módulo:
 
@@ -84,7 +84,16 @@ prácticos y orientación sobre cómo usar cada módulo:
     dosis equivocado, dosis no registradas y problemas de vinculación de
     registros.
 
-7.  [**Oportunidad de
+7.  [**Dosis
+    duplicadas**](https://im-data-paho.github.io/immunabc/articles/es/duplicate_doses_es.html)  
+    Detecta las dosis registradas más de una vez para la misma persona
+    en el RNVe, distinguiendo los registros duplicados (el mismo evento
+    de vacunación registrado más de una vez, con la misma fecha y lugar)
+    de los registros repetidos (la misma dosis registrada en otra fecha
+    o en otro lugar). Ayuda a depurar el RNVe antes de los análisis de
+    cobertura, abandono y otros que dependen del conteo de dosis.
+
+8.  [**Oportunidad de
     vacunación**](https://im-data-paho.github.io/immunabc/articles/es/vaccination_timeliness_es.html)  
     Analiza la oportunidad de vacunación de la población, es decir, el
     tiempo que transcurre entre la edad de elegibilidad para cada dosis

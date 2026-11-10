@@ -28,6 +28,26 @@ inconsistent dose sequences in the EIR.
 - [`sc_heatmap()`](https://im-data-paho.github.io/immunabc/reference/sc_heatmap.md)
   : Dose (S)equence (C)omparison Heatmap
 
+## Duplicate Doses
+
+Functions for identifying and visualizing doses registered more than
+once in the EIR.
+
+- [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
+  : (D)uplicate (D)oses Rate
+- [`dd_barplot()`](https://im-data-paho.github.io/immunabc/reference/dd_barplot.md)
+  : (D)uplicate (D)oses Barplot
+- [`dd_heatmap()`](https://im-data-paho.github.io/immunabc/reference/dd_heatmap.md)
+  : (D)uplicate (D)oses Heatmap
+- [`dd_trend()`](https://im-data-paho.github.io/immunabc/reference/dd_trend.md)
+  : (D)uplicate (D)oses Trend
+- [`dd_trend_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_trend_plot.md)
+  : (D)uplicate (D)oses Trend Plot
+- [`dd_duplicates()`](https://im-data-paho.github.io/immunabc/reference/dd_duplicates.md)
+  : (D)uplicate (D)oses Records
+- [`dd_repeat_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.md)
+  : (D)uplicate (D)oses Repeat Plot
+
 ## Vaccination Timeliness
 
 Functions for calculating and visualizing vaccination timeliness in the

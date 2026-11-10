@@ -31,7 +31,7 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Usage
 
-Currently, immunABC contains seven main modules. Follow the links below
+Currently, immunABC contains eight main modules. Follow the links below
 to explore detailed vignettes with practical examples and guidance on
 how to use each module:
 
@@ -78,7 +78,16 @@ how to use each module:
     Helps detect doses registered with the wrong dose number,
     unregistered doses and record linkage issues.
 
-7.  [**Vaccination
+7.  [**Duplicate
+    Doses**](https://im-data-paho.github.io/immunabc/articles/en/duplicate_doses_en.html)  
+    Detects doses registered more than once for the same person in the
+    EIR, telling apart duplicate records (the same vaccination event
+    registered more than once, with the same date and place) from
+    repeated records (the same dose registered on a different date or in
+    a different place). Helps clean the EIR before coverage, dropout and
+    other analyses that rely on dose counts.
+
+8.  [**Vaccination
     Timeliness**](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html)  
     Analyzes the vaccination timeliness of the population, that is, the
     time that elapses between the age of eligibility for each dose and
