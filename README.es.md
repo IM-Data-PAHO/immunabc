@@ -19,7 +19,7 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Uso
 
-Actualmente, immunABC contiene siete módulos principales. Siga los enlaces a continuación para explorar viñetas detalladas con ejemplos prácticos y orientación sobre cómo usar cada módulo:
+Actualmente, immunABC contiene ocho módulos principales. Siga los enlaces a continuación para explorar viñetas detalladas con ejemplos prácticos y orientación sobre cómo usar cada módulo:
 
 1. [**Tasa de abandono nominal**](https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.html)  
    Calcula las tasas de abandono entre cualquier par de dosis de vacunas utilizando datos nominales. Este módulo permite dar seguimiento a la continuidad de las personas dentro de un esquema de vacunación.
@@ -39,7 +39,10 @@ Actualmente, immunABC contiene siete módulos principales. Siga los enlaces a co
 6. [**Comparación de secuencia de dosis**](https://im-data-paho.github.io/immunabc/articles/es/dose_sequence_comparison_es.html)  
    Evalúa, persona por persona, si las dosis de una secuencia ordenada (p. ej., DTP1, DTP2 y DTP3) están registradas de forma consistente en el RNVe: una secuencia solo es consistente cuando no se salta ninguna dosis anterior y las dosis fueron administradas en orden cronológico. Ayuda a detectar dosis registradas con un número de dosis equivocado, dosis no registradas y problemas de vinculación de registros.
 
-7. [**Oportunidad de vacunación**](https://im-data-paho.github.io/immunabc/articles/es/vaccination_timeliness_es.html)  
+7. [**Dosis duplicadas**](https://im-data-paho.github.io/immunabc/articles/es/duplicate_doses_es.html)  
+   Detecta las dosis registradas más de una vez para la misma persona en el RNVe, distinguiendo los registros duplicados (el mismo evento de vacunación registrado más de una vez, con la misma fecha y lugar) de los registros repetidos (la misma dosis registrada en otra fecha o en otro lugar). Ayuda a depurar el RNVe antes de los análisis de cobertura, abandono y otros que dependen del conteo de dosis.
+
+8. [**Oportunidad de vacunación**](https://im-data-paho.github.io/immunabc/articles/es/vaccination_timeliness_es.html)  
    Analiza la oportunidad de vacunación de la población, es decir, el tiempo que transcurre entre la edad de elegibilidad para cada dosis y su administración, usando datos nominales del registro electrónico de vacunación. Vacunar a tiempo, y no solo completar el esquema, es clave para proteger a cada individuo antes de que alcance el periodo de mayor riesgo de la enfermedad. Además, conocer la oportunidad de vacunación nos permite entender las coberturas y su impacto en la epidemiología de la enfermedad, monitorear la cadena de suministro de vacunas e insumos, pesquisar problemas de acceso o de disposición a vacunar de ciertas comunidades y, a través de acciones a distintos niveles, prevenir futuros abandonos.
 
 Cada módulo funciona con los conjuntos de datos de ejemplo incluidos en el paquete. Estos datos facilitan probar las funciones y sirven de referencia al preparar sus propios datos. Conozca más sobre estos conjuntos de datos de ejemplo [en esta viñeta](https://im-data-paho.github.io/immunabc/articles/es/example_datasets_es.html).

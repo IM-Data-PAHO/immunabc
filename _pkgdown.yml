@@ -26,6 +26,8 @@ navbar:
         href: articles/en/date_consistency_comparison_en.html
       - text: Dose Sequence Comparison
         href: articles/en/dose_sequence_comparison_en.html
+      - text: Duplicate Doses
+        href: articles/en/duplicate_doses_en.html
       - text: Vaccination Timeliness
         href: articles/en/vaccination_timeliness_en.html
       - text: -------
