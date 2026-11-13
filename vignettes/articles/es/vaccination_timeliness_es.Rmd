@@ -1,5 +1,6 @@
 ---
 title: "Oportunidad de vacunación"
+subtitle: "Indicador UD 2.5"
 author: "OPS/CIM"
 date: "8 de octubre de 2026"
 output:
@@ -13,7 +14,12 @@ output:
     toc_depth: 2
 ---
 
-<a href="../en/vaccination_timeliness_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../en/vaccination_timeliness_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=51" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Lea el manual de la OPS</a>
+</div>
+```
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(immunabc)
@@ -189,7 +195,7 @@ immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacu
 
 > **Advertencia**
 >
-> 1. Las funciones de este módulo calculan la edad al momento de la vacunación como `date_vax - date_birth`. Si `data.EIR` contiene registros donde `date_vax` ocurre antes que `date_birth` (es decir, una edad de vacunación negativa), esto señala un error de **consistencia de fechas**. Cuando esto ocurre, las funciones `vt_` emiten una advertencia que remite al [módulo de comparación de consistencia de fechas](date_consistency_comparison_es.html) para identificar y resolver esos registros primero.
+> 1. Las funciones de este módulo calculan la edad al momento de la vacunación como `date_vax - date_birth`. Si `data.EIR` contiene registros donde `date_vax` ocurre antes que `date_birth` (es decir, una edad de vacunación negativa), esto señala un error de **consistencia de fechas**. Cuando esto ocurre, las funciones `vt_` emiten una advertencia que remite al [módulo CD 3.1/3.3 Comparación de consistencia de fechas](date_consistency_comparison_es.html) para identificar y resolver esos registros primero.
 > 2. Las funciones de este módulo cuentan registros de vacunación, no individuos. Si `data.EIR` contiene registros duplicados (el mismo `ID` y `dose` registrados más de una vez), ese individuo se cuenta más de una vez tanto en el numerador como en el denominador. immunABC no elimina duplicados, por lo que usted debe eliminarlos antes de realizar el análisis. Tenga en cuenta que queda a su criterio decidir qué registro conservar para cada `ID` y `dose` (p. ej., el de fecha de vacunación más temprana).
 
 ### Esquema de vacunación

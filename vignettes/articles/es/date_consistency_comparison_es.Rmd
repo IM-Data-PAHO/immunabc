@@ -1,5 +1,6 @@
 ---
 title: "Comparación de consistencia de fechas"
+subtitle: "Indicadores CD 3.1/3.3"
 author: "OPS/CIM"
 date: "2 de junio de 2026"
 output:
@@ -13,7 +14,13 @@ output:
     toc_depth: 2
 ---
 
-<a href="../en/date_consistency_comparison_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../en/date_consistency_comparison_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=36" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Lea el manual de la OPS (CD 3.1)</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=38" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Lea el manual de la OPS (CD 3.3)</a>
+</div>
+```
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(immunabc)

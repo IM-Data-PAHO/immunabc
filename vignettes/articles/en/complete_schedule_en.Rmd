@@ -1,5 +1,6 @@
 ---
 title: "Complete Schedule Coverage"
+subtitle: "Indicator UD 2.4"
 author: "PAHO/CIM"
 date: "April 11, 2025"
 output: 
@@ -13,7 +14,12 @@ output:
     toc_depth: 2
 ---
 
-<a href="../es/complete_schedule_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../es/complete_schedule_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=50" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Read the PAHO manual</a>
+</div>
+```
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(immunabc)

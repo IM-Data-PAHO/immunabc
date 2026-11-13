@@ -1,5 +1,6 @@
 ---
 title: "Dosis duplicadas"
+subtitle: "Indicador CD 5.2"
 author: "OPS/CIM"
 date: "9 de noviembre de 2026"
 output:
@@ -13,7 +14,12 @@ output:
     toc_depth: 2
 ---
 
-<a href="../en/duplicate_doses_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../en/duplicate_doses_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=42" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Lea el manual de la OPS</a>
+</div>
+```
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(immunabc)
@@ -406,13 +412,13 @@ dd_repeat_plot(
 
 La forma del panel inferior da pistas sobre la causa de las repeticiones:
 
-- **Repeticiones a la edad de la siguiente dosis**: si las repeticiones de DTP1 se concentran en la ventana de vacunación de DTP2, como en el ejemplo, lo más probable es que el segundo registro sea una dosis DTP2 registrada como DTP1. Estas personas probablemente aparecerán con una DTP2 saltada en el módulo de [Comparación de secuencia de dosis](dose_sequence_comparison_es.html).
+- **Repeticiones a la edad de la siguiente dosis**: si las repeticiones de DTP1 se concentran en la ventana de vacunación de DTP2, como en el ejemplo, lo más probable es que el segundo registro sea una dosis DTP2 registrada como DTP1. Estas personas probablemente aparecerán con una DTP2 saltada en el módulo de [CD 3.2 Comparación de secuencia de dosis](dose_sequence_comparison_es.html).
 - **Repeticiones poco después del primer registro, dentro de la misma ventana**: la dosis pudo haberse registrado nuevamente en una visita de seguimiento, o haberse administrado dos veces porque no se revisó el historial de vacunación de la persona.
 - **Repeticiones distribuidas en todas las edades**: los registros podrían pertenecer a dos personas distintas vinculadas al mismo ID, lo que es un problema de vinculación de registros.
 
 > **Nota**
 >
-> Los registros sin `date_birth`, o con una `date_vax` anterior a la `date_birth`, no tienen una edad de vacunación válida, por lo que se excluyen de este análisis. El módulo de [Comparación de consistencia de fechas](date_consistency_comparison_es.html) puede ayudar a investigar estos últimos.
+> Los registros sin `date_birth`, o con una `date_vax` anterior a la `date_birth`, no tienen una edad de vacunación válida, por lo que se excluyen de este análisis. El módulo de [CD 3.1/3.3 Comparación de consistencia de fechas](date_consistency_comparison_es.html) puede ayudar a investigar estos últimos.
 
 # Resumen
 

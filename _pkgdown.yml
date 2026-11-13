@@ -13,23 +13,25 @@ navbar:
     articles:
       text: Guides
       menu:
-      - text: Modules
-      - text: Nominal Dropout Rate
+      - text: Data Quality (CD)
+      - text: CD 3.1/3.3 Date Consistency Comparison
+        href: articles/en/date_consistency_comparison_en.html
+      - text: CD 3.2 Dose Sequence Comparison
+        href: articles/en/dose_sequence_comparison_en.html
+      - text: CD 5.2 Duplicate Doses
+        href: articles/en/duplicate_doses_en.html
+      - text: -------
+      - text: Data Usage (UD)
+      - text: UD 2.3 Birth Cohort Coverage
+        href: articles/en/birth_cohort_coverage_en.html
+      - text: UD 2.4 Complete Schedule Coverage
+        href: articles/en/complete_schedule_en.html
+      - text: UD 2.5 Vaccination Timeliness
+        href: articles/en/vaccination_timeliness_en.html
+      - text: UD 2.7 Nominal Dropout Rate
         href: articles/en/nominal_dropout_en.html
       - text: Residence vs. Occurrence Analyses
         href: articles/en/residence_occurrence_en.html
-      - text: Complete Schedule Coverage
-        href: articles/en/complete_schedule_en.html
-      - text: Birth Cohort Coverage
-        href: articles/en/birth_cohort_coverage_en.html
-      - text: Date Consistency Comparison
-        href: articles/en/date_consistency_comparison_en.html
-      - text: Dose Sequence Comparison
-        href: articles/en/dose_sequence_comparison_en.html
-      - text: Duplicate Doses
-        href: articles/en/duplicate_doses_en.html
-      - text: Vaccination Timeliness
-        href: articles/en/vaccination_timeliness_en.html
       - text: -------
       - text: Other guides
       - text: Using our Example Datasets

@@ -1,5 +1,6 @@
 ---
 title: "Vaccination Timeliness"
+subtitle: "Indicator UD 2.5"
 author: "PAHO/CIM"
 date: "October 8, 2026"
 output:
@@ -13,7 +14,12 @@ output:
     toc_depth: 2
 ---
 
-<a href="../es/vaccination_timeliness_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../es/vaccination_timeliness_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=51" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Read the PAHO manual</a>
+</div>
+```
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(immunabc)
@@ -189,7 +195,7 @@ immunABC.EIR %>% head() %>% kable(caption = "Example Electronic Immunization Reg
 
 > **Warning**
 >
-> 1. The functions in this module calculate age at vaccination as `date_vax - date_birth`. If `data.EIR` contains records where `date_vax` occurs before `date_birth` (i.e., a negative age at vaccination), this points to a **date consistency** error. When this happens, `vt_` functions will emit a warning directing you to the [Date Consistency Comparison module](date_consistency_comparison_en.html) to identify and resolve those records first.
+> 1. The functions in this module calculate age at vaccination as `date_vax - date_birth`. If `data.EIR` contains records where `date_vax` occurs before `date_birth` (i.e., a negative age at vaccination), this points to a **date consistency** error. When this happens, `vt_` functions will emit a warning directing you to the [CD 3.1/3.3 Date Consistency Comparison module](date_consistency_comparison_en.html) to identify and resolve those records first.
 > 2. The functions in this module count vaccination records, not individuals. If `data.EIR` contains duplicate records (the same `ID` and `dose` registered more than once), that individual is counted more than once in both the numerator and the denominator. immunABC does not remove duplicates, so make sure to remove them before running the analysis. Note that it is up to you to decide which record to keep for each `ID` and `dose` (e.g., the one with the earliest `date_vax`).
 
 ### Vaccination Schedule

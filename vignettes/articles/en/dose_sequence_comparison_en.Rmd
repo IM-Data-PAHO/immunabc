@@ -1,5 +1,6 @@
 ---
 title: "Dose Sequence Comparison"
+subtitle: "Indicator CD 3.2"
 author: "PAHO/CIM"
 date: "October 30, 2026"
 output:
@@ -13,7 +14,12 @@ output:
     toc_depth: 2
 ---
 
-<a href="../es/dose_sequence_comparison_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../es/dose_sequence_comparison_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=37" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Read the PAHO manual</a>
+</div>
+```
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(immunabc)
@@ -58,7 +64,7 @@ An ordered vector of doses to evaluate, passed to every `sc_` function through t
 
 A sequence is **consistent** when:
 
-1. No earlier dose is skipped, that is, the doses received are the first doses of the sequence. A person who has not finished the sequence yet (e.g., only DTP1, or DTP1 and DTP2) can be consistent: they may simply not have reached the age for the next dose, or may have dropped out (see the [Nominal Dropout Rate](nominal_dropout_en.html) module).
+1. No earlier dose is skipped, that is, the doses received are the first doses of the sequence. A person who has not finished the sequence yet (e.g., only DTP1, or DTP1 and DTP2) can be consistent: they may simply not have reached the age for the next dose, or may have dropped out (see the [UD 2.7 Nominal Dropout Rate](nominal_dropout_en.html) module).
 2. Every dose received was administered after the previous dose received in the sequence. By default, two doses administered on the same day are also considered out of order (see `allow_same_day`).
 
 A sequence is **inconsistent** when it fails either check: a dose is missing before the last dose received, and/or the doses were administered out of chronological order. When a person has at least two doses of the sequence and one of them has no `date_vax`, the chronological order cannot be fully evaluated; if no other problem is found, the sequence is classified as `DATE_MISSING`.
@@ -212,7 +218,7 @@ sc_barplot(
 
 Each bar represents a geographic unit. The `CONSISTENT` segment (blue) is shown at the bottom of each bar, the inconsistent segments stack on top of it, and `DATE_MISSING` (gray) is shown at the top. Areas with a larger share of inconsistent sequences should be prioritized for data quality review. The disaggregated view shows which dose is usually skipped: for example, a large share of `DTP2 + DTP3` (skipped `DTP1`) may indicate that first doses are being registered with the wrong dose number, or that first doses are administered somewhere that does not report to the EIR.
 
-Sequences flagged `(out of order)` are usually rare, so even small percentages deserve attention. They may be caused by typos in `date_vax`, by doses registered with the wrong dose number (e.g., DTP2 registered as DTP1 and vice versa), or by records from two different people linked to the same ID. The [Date Consistency Comparison](date_consistency_comparison_en.html) module can help investigate the dates involved.
+Sequences flagged `(out of order)` are usually rare, so even small percentages deserve attention. They may be caused by typos in `date_vax`, by doses registered with the wrong dose number (e.g., DTP2 registered as DTP1 and vice versa), or by records from two different people linked to the same ID. The [CD 3.1/3.3 Date Consistency Comparison](date_consistency_comparison_en.html) module can help investigate the dates involved.
 
 ### Step 3 — Explore every combination of doses received with `sc_heatmap()`
 

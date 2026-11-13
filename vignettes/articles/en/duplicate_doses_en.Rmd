@@ -1,5 +1,6 @@
 ---
 title: "Duplicate Doses"
+subtitle: "Indicator CD 5.2"
 author: "PAHO/CIM"
 date: "November 9, 2026"
 output:
@@ -13,7 +14,12 @@ output:
     toc_depth: 2
 ---
 
-<a href="../es/duplicate_doses_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../es/duplicate_doses_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=42" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Read the PAHO manual</a>
+</div>
+```
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 library(immunabc)
@@ -406,13 +412,13 @@ dd_repeat_plot(
 
 The shape of the bottom panel hints at the cause of the repeats:
 
-- **Repeats at the age of the next dose**: if the repeats of DTP1 are concentrated in the DTP2 vaccination window, as in the example, the second record is most likely a DTP2 dose registered as DTP1. These people will probably appear with a skipped DTP2 in the [Dose Sequence Comparison](dose_sequence_comparison_en.html) module.
+- **Repeats at the age of the next dose**: if the repeats of DTP1 are concentrated in the DTP2 vaccination window, as in the example, the second record is most likely a DTP2 dose registered as DTP1. These people will probably appear with a skipped DTP2 in the [CD 3.2 Dose Sequence Comparison](dose_sequence_comparison_en.html) module.
 - **Repeats shortly after the first entry, within the same window**: the dose may have been registered again at a follow-up visit, or administered twice because the person's vaccination history was not checked.
 - **Repeats spread over all ages**: the records may belong to two different people linked to the same ID, which is a record linkage problem.
 
 > **Note**
 >
-> Records with no `date_birth`, or with `date_vax` before `date_birth`, have no valid age at vaccination, so they are excluded from this analysis. The [Date Consistency Comparison](date_consistency_comparison_en.html) module can help investigate the latter.
+> Records with no `date_birth`, or with `date_vax` before `date_birth`, have no valid age at vaccination, so they are excluded from this analysis. The [CD 3.1/3.3 Date Consistency Comparison](date_consistency_comparison_en.html) module can help investigate the latter.
 
 # Summary
 

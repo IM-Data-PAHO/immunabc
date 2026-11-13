@@ -1,5 +1,6 @@
 ---
 title: "Tasa de abandono nominal"
+subtitle: "Indicador UD 2.7"
 author: "OPS/CIM"
 date: "22 de abril de 2025"
 output:
@@ -13,7 +14,12 @@ output:
     toc_depth: 2
 ---
 
-<a href="../en/nominal_dropout_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../en/nominal_dropout_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=52" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Lea el manual de la OPS</a>
+</div>
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
