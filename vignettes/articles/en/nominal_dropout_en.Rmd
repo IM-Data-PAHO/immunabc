@@ -151,8 +151,8 @@ At the ADM1 or ADM2 level, `nod_dropout()` needs to match a person's initial and
 
 The `fix_residence` parameter controls how `nod_dropout()` handles this:
 
-- `fix_residence = TRUE` (default): before computing dropout, all of a person's records are corrected to the `ADM1_residence`/`ADM2_residence` tied to their **most recent vaccination**, so their doses are correctly grouped together.
-- `fix_residence = FALSE`: residence values are left as recorded. If inconsistencies are found, `nod_dropout()` will warn you that results may be inaccurate, and that they should either be resolved manually beforehand or `fix_residence` should be set back to `TRUE`.
+- `fix_residence = TRUE` (default): before computing dropout, all of a person's records are corrected to the residence of their **most recent vaccination**, so their doses are correctly grouped together.
+- `fix_residence = FALSE`: residence values are not modified. If inconsistencies are found, `nod_dropout()` stops with an error, since its results would be inaccurate. Resolve them manually beforehand, or set `fix_residence = TRUE`.
 
 The example below constructs a small EIR where person `ID 1` moved from `ADM1_1` to `ADM1_2` between doses, to illustrate both cases.
 
@@ -185,9 +185,9 @@ fixed_result <- nod_dropout(
 fixed_result %>% kable(digits = 3, caption = "Result with fix_residence = TRUE")
 ```
 
-With `fix_residence = FALSE`, `ID 1`'s two doses stay split between `ADM1_1` and `ADM1_2`, so `nod_dropout()` incorrectly reports a dropout in both groups, and warns that the residence inconsistency was not corrected:
+With `fix_residence = FALSE`, `ID 1`'s two doses would stay split between `ADM1_1` and `ADM1_2`, and `nod_dropout()` would incorrectly report a dropout in both groups. To avoid this, `nod_dropout()` stops with an error:
 
-```{r fix-residence-false, warning=TRUE, message=TRUE}
+```{r fix-residence-false, error=TRUE}
 unfixed_result <- nod_dropout(
   data.EIR = residence_example,
   vaccine_init = "DTP1",
@@ -195,8 +195,6 @@ unfixed_result <- nod_dropout(
   geo_level = "ADM1",
   fix_residence = FALSE
 )
-
-unfixed_result %>% kable(digits = 3, caption = "Result with fix_residence = FALSE")
 ```
 
 This output may be fed directly into the `nod_barplot()` function as shown below.

@@ -151,8 +151,8 @@ A nivel ADM1 o ADM2, `nod_dropout()` necesita agrupar la dosis inicial y final d
 
 El parámetro `fix_residence` controla cómo maneja esto `nod_dropout()`:
 
-- `fix_residence = TRUE` (predeterminado): antes de calcular el abandono, todos los registros de una persona se corrigen para usar el `ADM1_residence`/`ADM2_residence` de su **vacunación más reciente**, de modo que sus dosis queden agrupadas correctamente.
-- `fix_residence = FALSE`: los valores de residencia se dejan tal como fueron registrados. Si se detectan inconsistencias, `nod_dropout()` mostrará una advertencia indicando que los resultados podrían ser inexactos, y que deben resolverse manualmente de antemano o volver a establecer `fix_residence` en `TRUE`.
+- `fix_residence = TRUE` (predeterminado): antes de calcular el abandono, todos los registros de una persona se corrigen para usar la residencia de su **vacunación más reciente**, de modo que sus dosis queden agrupadas correctamente.
+- `fix_residence = FALSE`: los valores de residencia no se modifican. Si se detectan inconsistencias, `nod_dropout()` se detiene con un error, ya que sus resultados serían inexactos. Resuélvalas manualmente de antemano, o establezca `fix_residence = TRUE`.
 
 El siguiente ejemplo construye un pequeño RNVe donde la persona `ID 1` se mudó de `ADM1_1` a `ADM1_2` entre dosis, para ilustrar ambos casos.
 
@@ -185,9 +185,9 @@ fixed_result <- nod_dropout(
 fixed_result %>% kable(digits = 3, caption = "Resultado con fix_residence = TRUE")
 ```
 
-Con `fix_residence = FALSE`, las dos dosis de `ID 1` permanecen divididas entre `ADM1_1` y `ADM1_2`, por lo que `nod_dropout()` reporta incorrectamente un abandono en ambos grupos, y advierte que la inconsistencia de residencia no fue corregida:
+Con `fix_residence = FALSE`, las dos dosis de `ID 1` quedarían divididas entre `ADM1_1` y `ADM1_2`, y `nod_dropout()` reportaría incorrectamente un abandono en ambos grupos. Para evitarlo, `nod_dropout()` se detiene con un error:
 
-```{r fix-residence-false, warning=TRUE, message=TRUE}
+```{r fix-residence-false, error=TRUE}
 unfixed_result <- nod_dropout(
   data.EIR = residence_example,
   vaccine_init = "DTP1",
@@ -195,8 +195,6 @@ unfixed_result <- nod_dropout(
   geo_level = "ADM1",
   fix_residence = FALSE
 )
-
-unfixed_result %>% kable(digits = 3, caption = "Resultado con fix_residence = FALSE")
 ```
 
 Esta salida puede pasarse directamente a la función `nod_barplot()` como se muestra a continuación.

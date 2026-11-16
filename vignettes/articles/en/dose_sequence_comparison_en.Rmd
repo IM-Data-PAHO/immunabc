@@ -174,10 +174,10 @@ The output contains the `sequence` category, a `consistent` column (`TRUE`/`FALS
 
 ### Handling residence inconsistencies
 
-Since each person is evaluated as a whole, they must be assigned to a single place of residence. If a person's registered residence is not the same on every record (e.g., they moved between their DTP1 and DTP3 doses, and the older record was never updated), the `sc_` functions warn about it, and the `fix_residence` parameter controls how it is handled:
+Since each person is evaluated as a whole, they must be assigned to a single place of residence. If a person's registered residence is not the same on every record (e.g., they moved between their DTP1 and DTP3 doses, and the older record was never updated), the `fix_residence` parameter controls how it is handled:
 
-- `fix_residence = TRUE` (default): all of a person's records are corrected to the `ADM1_residence`/`ADM2_residence` tied to their **most recent vaccination**.
-- `fix_residence = FALSE`: residence values are left as recorded, and each person is assigned the residence of their first record.
+- `fix_residence = TRUE` (default): a warning is emitted and all of a person's records are corrected to the residence of their **most recent vaccination**.
+- `fix_residence = FALSE`: residence values are not modified and all functions within this module stop with an error. You should correct the residences in your EIR beforehand, or set `fix_residence = TRUE`.
 
 `sc_rate()` and `sc_heatmap()` only check residence when results are disaggregated below `"ADM0"`. `sc_inconsistent()` always checks it, since its output includes the residence of each person.
 
@@ -249,7 +249,7 @@ sc_heatmap(
 - `vaccines`: Ordered character vector of at least two doses.
 - `geo_level`: Geographic level of residence to show as columns: `"ADM0"` (default), `"ADM1"`, or `"ADM2"`.
 - `show_consistent`: Logical, defaults to `TRUE`. Whether to show consistent and `DATE_MISSING` sequences (percentages over all people), or only inconsistent sequences (percentages over inconsistent sequences).
-- `within_ADM1`: Character vector to filter to specific ADM1 units. Default: `NULL`.
+- `within_ADM1`: Character vector to filter to specific ADM1 units when `geo_level` is `"ADM1"` or `"ADM2"`. Default: `NULL`.
 - `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to. Default `NULL` uses all available cohorts.
 - `allow_same_day`: Logical, defaults to `FALSE`.
 - `fix_residence`: Logical, defaults to `TRUE`.

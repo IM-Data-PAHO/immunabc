@@ -24,10 +24,17 @@ nod_dropout(
 
 \item{birth_cohorts}{Birth cohorts to calculate for. As a vector of years.}
 
-\item{fix_residence}{Logical. When geo_level is "ADM1" or "ADM2" and a person's residence differs across their records, whether to correct all of that person's records to the residence of their most recent vaccination (TRUE, default) or leave the data as-is (FALSE), which may cause inaccurate dropout results.}
+\item{fix_residence}{Logical. This function requires each person to have a single place of residence across all their vaccinations when geo_level is "ADM1" or "ADM2". When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.}
 }
 \value{
-A data frame with the calculated coverage for the administrative level selected. Includes the nominal dropout rate, numerator, denominator and completeness rate. based on the administrative level, birth cohorts and vaccines selected.
+A data frame with two rows per geographic unit of residence: one for people who received \code{vaccine_init} but not \code{vaccine_end} (dropout) and one for people who received both (complete). People without \code{vaccine_init} are not counted. Columns:
+\itemize{
+  \item \code{ADM1_residence}, \code{ADM2_residence}: geographic unit of residence (will only appear depending on what is set in \code{geo_level}).
+  \item \code{indicator}: A category: either \code{"dropout"} or \code{"complete"}.
+  \item \code{num}: number of people in that category.
+  \item \code{denom}: number of people who received \code{vaccine_init}.
+  \item \code{percent}: \code{num / denom * 100}.
+}
 }
 \description{
 (No)minal (D)ropout Rate

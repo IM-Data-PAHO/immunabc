@@ -21,7 +21,7 @@ sc_inconsistent(
 
 \item{allow_same_day}{Logical. Whether two consecutive doses administered on the same day are considered chronologically consistent. Default is \code{FALSE}, since doses of the same vaccine series should not be administered on the same day.}
 
-\item{fix_residence}{Logical. When a person's residence differs across their records, whether to correct all of that person's records to the residence of their most recent vaccination (TRUE, default) or leave the data as-is (FALSE), in which case each person is assigned the residence of their first record.}
+\item{fix_residence}{Logical. This function requires each person to have a single place of residence across all their vaccinations. When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.}
 }
 \value{
 A data frame with one row per person with an inconsistent sequence, with the following columns:

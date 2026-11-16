@@ -10,10 +10,10 @@
 #' @param vaccines Character. A character vector of at least two doses with the ordered dose sequence to evaluate, e.g. \code{c("DTP1", "DTP2", "DTP3")}.
 #' @param geo_level Character. The geographic level of residence to show as columns. Must be "ADM0", "ADM1" or "ADM2". If not specified, the default is "ADM0".
 #' @param show_consistent Logical. Whether to show consistent and \code{DATE_MISSING} sequences, with percentages over all people in each area (TRUE, default), or only inconsistent sequences, with percentages over the inconsistent sequences in each area (FALSE).
-#' @param within_ADM1 Character (optional). This optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".
+#' @param within_ADM1 Character (optional). A character vector of one or several "ADM1" areas of residence to filter. Only available when \code{geo_level} is "ADM1" or "ADM2". Default is \code{NULL}, which means no filtering by "ADM1".
 #' @param birth_cohorts Numeric (optional). A vector specifying the birth cohort(s) to evaluate. If \code{NULL} (default), all available cohorts are used.
 #' @param allow_same_day Logical. Whether two consecutive doses administered on the same day are considered chronologically consistent. Default is \code{FALSE}, since doses of the same vaccine series should not be administered on the same day.
-#' @param fix_residence Logical. When a person's residence differs across their records, whether to correct all of that person's records to the residence of their most recent vaccination (TRUE, default) or leave the data as-is (FALSE), in which case each person is assigned the residence of their first record.
+#' @param fix_residence Logical. This function requires each person to have a single place of residence across all their vaccinations when geo_level is "ADM1" or "ADM2". When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.
 #' @param digits The number of digits to show in the labels. Default is 0.
 #'
 #' @return A ggplot object representing the heatmap.
@@ -31,7 +31,7 @@ sc_heatmap <- function(data.EIR, vaccines, geo_level = "ADM0", show_consistent =
   .validate_sequence(vaccines, data.EIR)
   .validate_geo_level(geo_level)
   .validate_logical(show_consistent, "show_consistent")
-  .validate_character(within_ADM1, "within_ADM1", min_len = 1)
+  .validate_within_ADM1(within_ADM1, geo_level)
   .validate_numeric(birth_cohorts, "birth_cohorts", min_len = 1)
   .validate_logical(allow_same_day, "allow_same_day")
   .validate_logical(fix_residence, "fix_residence")
@@ -45,7 +45,7 @@ sc_heatmap <- function(data.EIR, vaccines, geo_level = "ADM0", show_consistent =
     vaccines,
     birth_cohorts,
     fix_residence,
-    check_residence = geo_level != "ADM0" || !is.null(within_ADM1)
+    check_residence = geo_level != "ADM0"
   ) %>%
     .sc_classify_sequence(vaccines, allow_same_day) %>%
     filter(if(!is.null(within_ADM1)) {ADM1 %in% within_ADM1} else {TRUE}) %>%
