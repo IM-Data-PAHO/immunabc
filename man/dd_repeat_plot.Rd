@@ -22,7 +22,7 @@ dd_repeat_plot(
 
 \item{geo_level}{Character. The geographic level of occurrence to split the panels by. Must be "ADM0" (default, no split), "ADM1" or "ADM2".}
 
-\item{within_ADM1}{Character (optional). A character vector of one or several "ADM1" areas of occurrence to filter. Default is \code{NULL}, which means no filtering by "ADM1".}
+\item{within_ADM1}{Character (optional). A character vector of one or several "ADM1" areas to filter (recall this filters by place of occurrence). Only available when \code{geo_level} is "ADM1" or "ADM2". Default is \code{NULL}, which means no filtering by "ADM1".}
 
 \item{binwidth}{Numeric. Width of each bar of the histogram, in days. Default is 7 (one week).}
 

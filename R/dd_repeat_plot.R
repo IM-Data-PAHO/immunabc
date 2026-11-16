@@ -9,7 +9,7 @@
 #' @param data The output from the \code{immunabc::dd_duplicates} function.
 #' @param vaccine Character. The single dose to show, e.g. "DTP1".
 #' @param geo_level Character. The geographic level of occurrence to split the panels by. Must be "ADM0" (default, no split), "ADM1" or "ADM2".
-#' @param within_ADM1 Character (optional). A character vector of one or several "ADM1" areas of occurrence to filter. Default is \code{NULL}, which means no filtering by "ADM1".
+#' @param within_ADM1 Character (optional). A character vector of one or several "ADM1" areas to filter (recall this filters by place of occurrence). Only available when \code{geo_level} is "ADM1" or "ADM2". Default is \code{NULL}, which means no filtering by "ADM1".
 #' @param binwidth Numeric. Width of each bar of the histogram, in days. Default is 7 (one week).
 #' @param max_age Numeric (optional). Maximum age at vaccination, in days, to show on the x-axis. Records after that are not shown but their number is given in the caption. Default is \code{NULL}, which shows all ages.
 #' @param data.schedule Data frame (optional). A data frame defining the vaccination schedule, used to show the vaccination window of the doses in \code{schedule_vaccines}. See \code{immunABC.schedule} for expected structure. Default is \code{NULL}, which shows no schedule.
@@ -42,7 +42,7 @@ dd_repeat_plot <- function(data, vaccine, geo_level = "ADM0", within_ADM1 = NULL
     stop("Error: schedule_vaccines needs data.schedule to know their vaccination window.")
   }
   .validate_geo_level(geo_level)
-  .validate_character(within_ADM1, "within_ADM1", min_len = 1)
+  .validate_within_ADM1(within_ADM1, geo_level)
   .validate_numeric(binwidth, "binwidth", exp_len = 1)
   .validate_numeric(max_age, "max_age", exp_len = 1)
   if(binwidth <= 0 || (!is.null(max_age) && max_age <= 0)) {

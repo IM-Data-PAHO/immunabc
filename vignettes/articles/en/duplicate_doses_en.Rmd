@@ -394,7 +394,7 @@ dd_repeat_plot(
 - `data`: Output of `dd_duplicates()`.
 - `vaccine`: The single dose to show, e.g. `"DTP1"`.
 - `geo_level`: Geographic level of occurrence to split the panels by: `"ADM0"` (default, no split), `"ADM1"`, or `"ADM2"`.
-- `within_ADM1`: Character vector to filter to specific ADM1 units of occurrence. Default: `NULL`.
+- `within_ADM1`: Character vector to filter to specific ADM1 units of occurrence when `geo_level` is `"ADM1"` or `"ADM2"`. Default: `NULL`.
 - `binwidth`: Width of each bar of the histogram, in days. Default: `7` (one week).
 - `max_age`: Maximum age at vaccination to show on the x-axis, in days. The number of records beyond it is given in the caption. Default: `NULL` (all ages shown).
 - `data.schedule`: Vaccination schedule data frame in immunABC format, used to shade vaccination windows. Default: `NULL` (no windows shown).
