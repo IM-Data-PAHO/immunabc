@@ -39,17 +39,54 @@
 
 }
 
-#' Correct residence per ID to the residence of the most recent vaccination record.
+#' Enforce a single residence per ID.
+#'
+#' Validates that all IDs have a single residence. If there are any IDs with
+#' multiple residences, then it decides what to do depending on the value
+#' of fix_residence. If set to FALSE, it stops and emits a message. If set
+#' to TRUE, it warns the user and then sets all records within a given ID to
+#' the residence of their most recent vaccination.
 #'
 #' @import dplyr
 #'
 #' @keywords internal
 #' @noRd
-.fix_residence <- function(data.EIR) {
+.enforce_single_residence <- function(data.EIR, fix_residence) {
 
   residence_cols <- intersect(c("ADM1_residence", "ADM2_residence"), names(data.EIR))
+
+  # count how many individuals have more than one residence
+  n_inconsistent <- data.EIR %>%
+    distinct(across(all_of(c("ID", residence_cols)))) %>%
+    count(ID) %>%
+    filter(n > 1) %>%
+    nrow()
+
+  # if none, then return the data as it was given
+  if(n_inconsistent == 0) {
+    return(data.EIR)
+  }
+
+  # if there is at least one, tell the user
+  inconsistent_msg <- paste0(
+    n_inconsistent, " ID(s) have more than one place of residence across their records."
+  )
+
+  # decide what to do depending on what the user told us
+  if(!fix_residence) {
+    stop(
+      "Error: ", inconsistent_msg, " ",
+      "Correct them in data.EIR, or set fix_residence = TRUE to assign each person the residence of their most recent vaccination."
+    )
+  }
+
+  # if we are fixing the residences ourselves, just emit a warning
+  warning(inconsistent_msg)
+
+  # Corrects all records of each ID to the residence of their most recent vaccination
   latest_cols <- paste0(residence_cols, "_latest")
 
+  # obtain the residence of each individual's most recent vaccination
   latest_residence <- data.EIR %>%
     group_by(ID) %>%
     slice_max(date_vax, n = 1, with_ties = FALSE) %>%
@@ -57,18 +94,22 @@
     select(all_of(c("ID", residence_cols))) %>%
     rename_with(~ latest_cols, all_of(residence_cols))
 
+  # add the latest residence next to each record
   data.EIR <- data.EIR %>%
     left_join(latest_residence, by = "ID")
 
+  # overwrite each residence column with the latest one, flagging the records that change
   changed <- rep(FALSE, nrow(data.EIR))
   for(i in seq_along(residence_cols)) {
     changed <- changed | (data.EIR[[residence_cols[i]]] != data.EIR[[latest_cols[i]]])
     data.EIR[[residence_cols[i]]] <- data.EIR[[latest_cols[i]]]
   }
 
+  # tell the user how many records were modified
   n_modified <- sum(changed)
-  message(paste0(n_modified, " record(s) had residence updated to the most recent vaccination residence."))
+  message(paste0(n_modified, " record(s) updated to the residence of the most recent vaccination."))
 
+  # drop the auxiliary residence columns
   data.EIR <- data.EIR %>%
     select(-all_of(latest_cols))
 
@@ -161,18 +202,11 @@
       filter(year(date_birth) %in% birth_cohorts)
   }
 
-  # Checks residence consistency per ID, since each person is assigned to a single residence
+  # Each person is assigned to a single residence
   if(check_residence) {
-    n_inconsistent <- .validate_residence(data.EIR)
-
-    if(fix_residence) {
-      data.EIR <- .fix_residence(data.EIR)
-    } else if(n_inconsistent > 0) {
-      warning(
-        "Residence inconsistencies were not corrected (fix_residence = FALSE). ",
-        "Each person will be assigned the residence of their first record in data.EIR, or set fix_residence = TRUE."
-      )
-    }
+    # NOTE: this function will stop execution when fix_residence is FALSE and the
+    #       data frame contains more than one residence per person
+    data.EIR <- .enforce_single_residence(data.EIR, fix_residence)
   }
 
   prepare_EIR <- data.EIR %>%

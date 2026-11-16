@@ -78,6 +78,21 @@
   }
 }
 
+#' Validate within_ADM1 for functions with a geo_level parameter.
+#'
+#' within_ADM1 filters the ADM1 areas shown, so it is only allowed when results are
+#' disaggregated by ADM1 or ADM2.
+#'
+#' @keywords internal
+#' @noRd
+.validate_within_ADM1 <- function(within_ADM1, geo_level) {
+  .validate_character(within_ADM1, "within_ADM1", min_len = 1)
+
+  if(!is.null(within_ADM1) && geo_level == "ADM0") {
+    stop("Error: within_ADM1 is only available when geo_level is \"ADM1\" or \"ADM2\".")
+  }
+}
+
 #' Validate x_axis of vt_cdf_plot and vt_pdf_plot.
 #'
 #' @keywords internal
@@ -348,33 +363,6 @@
       )
     )
   }
-}
-
-#' Validate residence consistency per ID.
-#'
-#' @import dplyr
-#'
-#' @keywords internal
-#' @noRd
-.validate_residence <- function(data.EIR) {
-  residence_cols <- intersect(c("ADM1_residence", "ADM2_residence"), names(data.EIR))
-
-  n_inconsistent <- data.EIR %>%
-    distinct(across(all_of(c("ID", residence_cols)))) %>%
-    count(ID) %>%
-    filter(n > 1) %>%
-    nrow()
-
-  if(n_inconsistent > 0) {
-    warning(
-      paste0(
-        n_inconsistent, " ID(s) have inconsistent ", paste(residence_cols, collapse = "/"),
-        " across records, meaning residence is not updated to the person's most recent residence."
-      )
-    )
-  }
-
-  invisible(n_inconsistent)
 }
 
 #' Validate EIR duplicates.

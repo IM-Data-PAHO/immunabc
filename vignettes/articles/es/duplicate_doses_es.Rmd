@@ -400,7 +400,7 @@ dd_repeat_plot(
 - `data`: Resultado de `dd_duplicates()`.
 - `vaccine`: La dosis a mostrar, p. ej. `"DTP1"`.
 - `geo_level`: Nivel geográfico de vacunación por el cual dividir los paneles: `"ADM0"` (por defecto, sin división), `"ADM1"` o `"ADM2"`.
-- `within_ADM1`: Vector de caracteres para filtrar ADM1 de vacunación específicos. Por defecto: `NULL`.
+- `within_ADM1`: Vector de caracteres para filtrar ADM1 de vacunación específicos cuando `geo_level` es `"ADM1"` o `"ADM2"`. Por defecto: `NULL`.
 - `binwidth`: Ancho de cada barra del histograma, en días. Por defecto: `7` (una semana).
 - `max_age`: Edad máxima de vacunación a mostrar en el eje x, en días. El número de registros que la superan se indica en la nota al pie del gráfico. Por defecto: `NULL` (se muestran todas las edades).
 - `data.schedule`: Data frame del esquema de vacunación en formato immunABC, usado para sombrear las ventanas de vacunación. Por defecto: `NULL` (no se muestran ventanas).

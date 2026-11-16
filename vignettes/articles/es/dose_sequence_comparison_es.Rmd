@@ -180,10 +180,10 @@ El resultado contiene la categoría (`sequence`), una columna `consistent` (`TRU
 
 ### Manejo de inconsistencias de residencia
 
-Dado que cada persona se evalúa como un todo, debe asignarse a un único lugar de residencia. Si la residencia registrada de una persona no es la misma en todos sus registros (por ejemplo, se mudó entre su dosis de DTP1 y DTP3, y el registro anterior nunca se actualizó), las funciones `sc_` muestran una advertencia, y el parámetro `fix_residence` controla cómo se maneja:
+Dado que las dosis de una persona se evalúan en conjunto, deben asignarse a un único lugar de residencia. Si la residencia registrada de una persona no es la misma en todos sus registros (por ejemplo, se mudó entre su dosis de DTP1 y DTP3, y el registro anterior nunca se actualizó), el parámetro `fix_residence` controla cómo se maneja:
 
-- `fix_residence = TRUE` (predeterminado): todos los registros de una persona se corrigen para usar el `ADM1_residence`/`ADM2_residence` de su **vacunación más reciente**.
-- `fix_residence = FALSE`: los valores de residencia se dejan tal como fueron registrados, y a cada persona se le asigna la residencia de su primer registro.
+- `fix_residence = TRUE` (predeterminado): se muestra una advertencia y todos los registros de una persona se corrigen para usar la residencia de su **vacunación más reciente**.
+- `fix_residence = FALSE`: los valores de residencia no se modifican y las funciones de este módulo se detienen con un error. Usted deberá corregir las residencias en su RNVe de antemano, o configurar `fix_residence = TRUE`.
 
 `sc_rate()` y `sc_heatmap()` solo verifican la residencia cuando los resultados se desagregan por debajo de `"ADM0"`. `sc_inconsistent()` siempre la verifica, ya que su resultado incluye la residencia de cada persona.
 
@@ -255,7 +255,7 @@ sc_heatmap(
 - `vaccines`: Vector de caracteres ordenado de al menos dos dosis.
 - `geo_level`: Nivel geográfico de residencia que se muestra en las columnas: `"ADM0"` (predeterminado), `"ADM1"` o `"ADM2"`.
 - `show_consistent`: Lógico, con valor predeterminado `TRUE`. Indica si se muestran las secuencias consistentes y `DATE_MISSING` (porcentajes sobre todas las personas), o solo las secuencias inconsistentes (porcentajes sobre las secuencias inconsistentes).
-- `within_ADM1`: Vector de caracteres para filtrar unidades ADM1 específicas. Valor predeterminado: `NULL`.
+- `within_ADM1`: Vector de caracteres para filtrar unidades ADM1 específicas cuando `geo_level` es `"ADM1"` o `"ADM2"`. Valor predeterminado: `NULL`.
 - `birth_cohorts`: Vector numérico con el o los años de cohorte de nacimiento a filtrar. El valor predeterminado `NULL` utiliza todas las cohortes disponibles.
 - `allow_same_day`: Lógico, con valor predeterminado `FALSE`.
 - `fix_residence`: Lógico, con valor predeterminado `TRUE`.

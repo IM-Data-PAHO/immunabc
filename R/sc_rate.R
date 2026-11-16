@@ -16,7 +16,7 @@
 #' @param aggregated Logical. Whether to pool all inconsistent sequences into a single \code{INCONSISTENT} category (TRUE, default), or keep \code{CONSISTENT} as a single category and show every inconsistent combination of doses received (FALSE), e.g. \code{"DTP1 + DTP3"}, flagging the ones administered out of chronological order (e.g. \code{"DTP1 + DTP2 (out of order)"}).
 #' @param birth_cohorts Numeric (optional). A vector specifying the birth cohort(s) for which the rate should be calculated. If \code{NULL} (default), all available cohorts are used.
 #' @param allow_same_day Logical. Whether two consecutive doses administered on the same day are considered chronologically consistent. Default is \code{FALSE}, since doses of the same vaccine series should not be administered on the same day.
-#' @param fix_residence Logical. When a person's residence differs across their records, whether to correct all of that person's records to the residence of their most recent vaccination (TRUE, default) or leave the data as-is (FALSE), in which case each person is assigned the residence of their first record.
+#' @param fix_residence Logical. This function requires each person to have a single place of residence across all their vaccinations when geo_level is "ADM1" or "ADM2". When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.
 #'
 #' @return A data frame with one row per \code{sequence} category for the specified \code{geo_level}, with the following columns:
 #' \itemize{

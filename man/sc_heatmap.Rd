@@ -25,13 +25,13 @@ sc_heatmap(
 
 \item{show_consistent}{Logical. Whether to show consistent and \code{DATE_MISSING} sequences, with percentages over all people in each area (TRUE, default), or only inconsistent sequences, with percentages over the inconsistent sequences in each area (FALSE).}
 
-\item{within_ADM1}{Character (optional). This optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".}
+\item{within_ADM1}{Character (optional). A character vector of one or several "ADM1" areas of residence to filter. Only available when \code{geo_level} is "ADM1" or "ADM2". Default is \code{NULL}, which means no filtering by "ADM1".}
 
 \item{birth_cohorts}{Numeric (optional). A vector specifying the birth cohort(s) to evaluate. If \code{NULL} (default), all available cohorts are used.}
 
 \item{allow_same_day}{Logical. Whether two consecutive doses administered on the same day are considered chronologically consistent. Default is \code{FALSE}, since doses of the same vaccine series should not be administered on the same day.}
 
-\item{fix_residence}{Logical. When a person's residence differs across their records, whether to correct all of that person's records to the residence of their most recent vaccination (TRUE, default) or leave the data as-is (FALSE), in which case each person is assigned the residence of their first record.}
+\item{fix_residence}{Logical. This function requires each person to have a single place of residence across all their vaccinations when geo_level is "ADM1" or "ADM2". When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.}
 
 \item{digits}{The number of digits to show in the labels. Default is 0.}
 }
