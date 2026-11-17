@@ -169,8 +169,8 @@ rate_dose %>%
   kable(digits = 2, caption = "Duplicate records by dose")
 ```
 
-<details>
-<summary><strong>Parameters accepted</strong></summary>
+<details class="params">
+<summary>Parameters accepted</summary>
 
 - `data.EIR`: EIR data frame in immunABC format.
 - `geo_level`: Geographic level of occurrence: `"ADM0"` (default), `"ADM1"`, or `"ADM2"`.
@@ -179,6 +179,15 @@ rate_dose %>%
 - `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to. This is only a filter: use `disaggregate_by = "birth_cohort"` to see results by cohort. Default `NULL` uses all available cohorts.
 
 </details>
+
+#### Output
+
+Besides the grouping columns (`ADM1`, `ADM2`, `dose` or `birth_cohort`, depending on `geo_level` and `disaggregate_by`), the output includes:
+
+- `duplication`: the category of the records, `DUPLICATE` or `REPEATED`.
+- `n`: the number of records in that category.
+- `total`: the total number of evaluated records in the group.
+- `rate`: the percentage of records in that category (`n / total * 100`).
 
 ### Step 2 — Visualize duplicate records with `dd_barplot()`
 
@@ -213,8 +222,8 @@ dd_barplot(
 )
 ```
 
-<details>
-<summary><strong>Parameters accepted</strong></summary>
+<details class="params">
+<summary>Parameters accepted</summary>
 
 - `data`: Output of `dd_rate()`.
 - `value`: What to show on the y-axis: `"rate"` (default) or `"n"`.
@@ -255,8 +264,8 @@ rate_adm1_cohort <- dd_rate(
 dd_heatmap(data = rate_adm1_cohort)
 ```
 
-<details>
-<summary><strong>Parameters accepted</strong></summary>
+<details class="params">
+<summary>Parameters accepted</summary>
 
 - `data`: Output of `dd_rate()` with `geo_level` at `"ADM1"` or `"ADM2"` and a value for `disaggregate_by`.
 - `value`: What to show in the cells: `"rate"` (default) or `"n"`.
@@ -296,8 +305,8 @@ dd_trend_plot(
 )
 ```
 
-<details>
-<summary><strong>Parameters accepted</strong></summary>
+<details class="params">
+<summary>Parameters accepted</summary>
 
 `dd_trend()`:
 
@@ -332,8 +341,8 @@ duplicates_df %>%
   kable(caption = "DTP1 doses registered more than once")
 ```
 
-<details>
-<summary><strong>Parameters accepted</strong></summary>
+<details class="params">
+<summary>Parameters accepted</summary>
 
 - `data.EIR`: EIR data frame in immunABC format.
 - `vaccines`: Character vector of doses to include. Default `NULL` uses all doses.
@@ -394,8 +403,8 @@ dd_repeat_plot(
 )
 ```
 
-<details>
-<summary><strong>Parameters accepted</strong></summary>
+<details class="params">
+<summary>Parameters accepted</summary>
 
 - `data`: Output of `dd_duplicates()`.
 - `vaccine`: The single dose to show, e.g. `"DTP1"`.
