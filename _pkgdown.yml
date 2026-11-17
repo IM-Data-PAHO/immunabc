@@ -30,10 +30,10 @@ navbar:
         href: articles/en/vaccination_timeliness_en.html
       - text: UD 2.7 Nominal Dropout Rate
         href: articles/en/nominal_dropout_en.html
+      - text: -------
+      - text: Others
       - text: Residence vs. Occurrence Analyses
         href: articles/en/residence_occurrence_en.html
-      - text: -------
-      - text: Other guides
       - text: Using our Example Datasets
         href: articles/en/example_datasets_en.html
 

@@ -46,10 +46,13 @@ Currently, immunABC contains eight main modules, grouped as in the manual into d
 4. [**UD 2.7 Nominal Dropout Rate**](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html)  
    Calculates dropout rates between any two vaccine doses using nominal data. This module ensures accurate follow-up tracking across a vaccination schedule.
 
-5. [**Residence vs. Occurrence Analyses**](https://im-data-paho.github.io/immunabc/articles/en/residence_occurrence_en.html)  
-   **This module is currently not included in the manual but remains useful when dealing with data from EIRs**. It includes functions for comparing vaccination coverage and dose distribution based on where people live versus where they were vaccinated. It helps identify population movement and service coverage gaps across geographic areas.
+### Others
 
-Each module works seamlessly with the example datasets provided in the package. These examples make it easy to test out the functionality and serve as a reference when preparing your own data. Learn more about these example datasets [in this vignette](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.html).
+- [**Residence vs. Occurrence Analyses**](https://im-data-paho.github.io/immunabc/articles/en/residence_occurrence_en.html)  
+  **This module is currently not included in the manual but remains useful when dealing with data from EIRs**. It includes functions for comparing vaccination coverage and dose distribution based on where people live versus where they were vaccinated. It helps identify population movement and service coverage gaps across geographic areas.
+
+- [**Example Datasets**](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.html)  
+  Each module works seamlessly with the example datasets provided in the package. These examples make it easy to test out the functionality and serve as a reference when preparing your own data.
 
 > **Note**
 > 

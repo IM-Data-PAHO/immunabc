@@ -46,10 +46,13 @@ Actualmente, immunABC contiene ocho módulos principales, agrupados como en el m
 4. [**UD 2.7 Tasa de abandono nominal**](https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.html)  
    Calcula las tasas de abandono entre cualquier par de dosis de vacunas utilizando datos nominales. Este módulo permite dar seguimiento a la continuidad de las personas dentro de un esquema de vacunación.
 
-5. [**Análisis de residencia vs. lugar de vacunación**](https://im-data-paho.github.io/immunabc/articles/es/residence_occurrence_es.html)  
-   **Este módulo no está incluido actualmente en el manual, pero sigue siendo útil al trabajar con datos de RNVe**. Incluye funciones para comparar la cobertura de vacunación y la distribución de dosis según el lugar donde viven las personas y el lugar donde fueron vacunadas. Ayuda a identificar flujos poblacionales y posibles brechas en la cobertura de los servicios entre áreas geográficas.
+### Otros
 
-Cada módulo funciona con los conjuntos de datos de ejemplo incluidos en el paquete. Estos datos facilitan probar las funciones y sirven de referencia al preparar sus propios datos. Conozca más sobre estos conjuntos de datos de ejemplo [en esta viñeta](https://im-data-paho.github.io/immunabc/articles/es/example_datasets_es.html).
+- [**Análisis de residencia vs. lugar de vacunación**](https://im-data-paho.github.io/immunabc/articles/es/residence_occurrence_es.html)  
+  **Este módulo no está incluido actualmente en el manual, pero sigue siendo útil al trabajar con datos de RNVe**. Incluye funciones para comparar la cobertura de vacunación y la distribución de dosis según el lugar donde viven las personas y el lugar donde fueron vacunadas. Ayuda a identificar flujos poblacionales y posibles brechas en la cobertura de los servicios entre áreas geográficas.
+
+- [**Conjuntos de datos de ejemplo**](https://im-data-paho.github.io/immunabc/articles/es/example_datasets_es.html)  
+  Cada módulo funciona con los conjuntos de datos de ejemplo incluidos en el paquete. Estos datos facilitan probar las funciones y sirven de referencia al preparar sus propios datos.
 
 > **Nota**
 > 
