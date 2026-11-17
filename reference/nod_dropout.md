@@ -41,15 +41,26 @@ nod_dropout(
 
 - fix_residence:
 
-  Logical. When geo_level is "ADM1" or "ADM2" and a person's residence
-  differs across their records, whether to correct all of that person's
-  records to the residence of their most recent vaccination (TRUE,
-  default) or leave the data as-is (FALSE), which may cause inaccurate
-  dropout results.
+  Logical. This function requires each person to have a single place of
+  residence across all their vaccinations when geo_level is "ADM1" or
+  "ADM2". When a person has more than one residence, TRUE (default) sets
+  all their records to the residence of their most recent vaccination,
+  and FALSE stops with an error.
 
 ## Value
 
-A data frame with the calculated coverage for the administrative level
-selected. Includes the nominal dropout rate, numerator, denominator and
-completeness rate. based on the administrative level, birth cohorts and
-vaccines selected.
+A data frame with two rows per geographic unit of residence: one for
+people who received `vaccine_init` but not `vaccine_end` (dropout) and
+one for people who received both (complete). People without
+`vaccine_init` are not counted. Columns:
+
+- `ADM1_residence`, `ADM2_residence`: geographic unit of residence (will
+  only appear depending on what is set in `geo_level`).
+
+- `indicator`: A category: either `"dropout"` or `"complete"`.
+
+- `num`: number of people in that category.
+
+- `denom`: number of people who received `vaccine_init`.
+
+- `percent`: `num / denom * 100`.

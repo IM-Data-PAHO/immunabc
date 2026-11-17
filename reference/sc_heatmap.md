@@ -47,9 +47,10 @@ sc_heatmap(
 
 - within_ADM1:
 
-  Character (optional). This optional character vector lets you specify
-  one or several "ADM1" to filter. Default is `NULL`, which means no
-  filtering by "ADM1".
+  Character (optional). A character vector of one or several "ADM1"
+  areas of residence to filter. Only available when `geo_level` is
+  "ADM1" or "ADM2". Default is `NULL`, which means no filtering by
+  "ADM1".
 
 - birth_cohorts:
 
@@ -65,11 +66,11 @@ sc_heatmap(
 
 - fix_residence:
 
-  Logical. When a person's residence differs across their records,
-  whether to correct all of that person's records to the residence of
-  their most recent vaccination (TRUE, default) or leave the data as-is
-  (FALSE), in which case each person is assigned the residence of their
-  first record.
+  Logical. This function requires each person to have a single place of
+  residence across all their vaccinations when geo_level is "ADM1" or
+  "ADM2". When a person has more than one residence, TRUE (default) sets
+  all their records to the residence of their most recent vaccination,
+  and FALSE stops with an error.
 
 - digits:
 

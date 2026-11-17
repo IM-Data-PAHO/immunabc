@@ -46,11 +46,10 @@ sc_inconsistent(
 
 - fix_residence:
 
-  Logical. When a person's residence differs across their records,
-  whether to correct all of that person's records to the residence of
-  their most recent vaccination (TRUE, default) or leave the data as-is
-  (FALSE), in which case each person is assigned the residence of their
-  first record.
+  Logical. This function requires each person to have a single place of
+  residence across all their vaccinations. When a person has more than
+  one residence, TRUE (default) sets all their records to the residence
+  of their most recent vaccination, and FALSE stops with an error.
 
 ## Value
 

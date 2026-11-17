@@ -4,7 +4,12 @@
 > español**](https://im-data-paho.github.io/immunabc/README.es.html)
 
 immunABC is an R package aimed at immunization (A)nalyses (B)eyond
-(C)overage.
+(C)overage. It is the R implementation of the indicators proposed in
+PAHO’s manual [*Análisis más allá de la cobertura: Indicadores de
+desempeño del Programa Ampliado de Inmunización basados en datos del
+registro nominal de vacunación
+electrónico*](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content)
+(currently available in Spanish only).
 
 immunABC aims to support the Pan American Health Organization’s (PAHO)
 Comprehensive Immunization Unit (CIM) mission by providing advanced data
@@ -31,45 +36,23 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Usage
 
-Currently, immunABC contains eight main modules. Follow the links below
-to explore detailed vignettes with practical examples and guidance on
-how to use each module:
+Currently, immunABC contains eight main modules, grouped as in the
+manual into data quality (CD) and data usage (UD) indicators. The code
+beside each module (for example, CD 3.1) is the code of the indicator it
+implements in the manual. Follow the links below to explore detailed
+vignettes with practical examples and guidance on how to use each
+module:
 
-1.  [**Nominal Dropout
-    Rate**](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html)  
-    Calculates dropout rates between any two vaccine doses using nominal
-    data. This module ensures accurate follow-up tracking across a
-    vaccination schedule.
+### Data quality (CD)
 
-2.  [**Residence vs. Occurrence
-    Analyses**](https://im-data-paho.github.io/immunabc/articles/en/residence_occurrence_en.html)  
-    Functions for comparing vaccination coverage and dose distribution
-    based on where people live versus where they were vaccinated. This
-    module helps identify population movement and service coverage gaps
-    across geographic areas.
-
-3.  [**Complete Schedule
-    Coverage**](https://im-data-paho.github.io/immunabc/articles/en/complete_schedule_en.html)  
-    Evaluates whether individuals have received all required doses in a
-    national immunization schedule (for a specific cohort up to a
-    specified age). This module differs from standard coverage
-    calculation as it evaluates each individual’s compliance of the
-    national immunization schedule.
-
-4.  [**Birth Cohort
-    Coverage**](https://im-data-paho.github.io/immunabc/articles/en/birth_cohort_coverage_en.html)  
-    Lets users track and visualize vaccination status among a specific
-    cohort of newborns. Helps evaluate population-level protection
-    against vaccine-preventable diseases.
-
-5.  [**Date Consistency
+1.  [**CD 3.1/3.3 Date Consistency
     Comparison**](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.html)  
     Identifies and quantifies logical inconsistencies between any two
     date variables in the EIR (e.g., vaccination date before date of
     birth). Helps detect data entry errors and record linkage issues
     before downstream analyses.
 
-6.  [**Dose Sequence
+2.  [**CD 3.2 Dose Sequence
     Comparison**](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.html)  
     Evaluates, person by person, whether the doses of an ordered
     sequence (e.g., DTP1, DTP2 and DTP3) are registered consistently in
@@ -78,7 +61,7 @@ how to use each module:
     Helps detect doses registered with the wrong dose number,
     unregistered doses and record linkage issues.
 
-7.  [**Duplicate
+3.  [**CD 5.2 Duplicate
     Doses**](https://im-data-paho.github.io/immunabc/articles/en/duplicate_doses_en.html)  
     Detects doses registered more than once for the same person in the
     EIR, telling apart duplicate records (the same vaccination event
@@ -87,7 +70,23 @@ how to use each module:
     a different place). Helps clean the EIR before coverage, dropout and
     other analyses that rely on dose counts.
 
-8.  [**Vaccination
+### Data usage (UD)
+
+1.  [**UD 2.3 Birth Cohort
+    Coverage**](https://im-data-paho.github.io/immunabc/articles/en/birth_cohort_coverage_en.html)  
+    Lets users track and visualize vaccination status among a specific
+    cohort of newborns. Helps evaluate population-level protection
+    against vaccine-preventable diseases.
+
+2.  [**UD 2.4 Complete Schedule
+    Coverage**](https://im-data-paho.github.io/immunabc/articles/en/complete_schedule_en.html)  
+    Evaluates whether individuals have received all required doses in a
+    national immunization schedule (for a specific cohort up to a
+    specified age). This module differs from standard coverage
+    calculation as it evaluates each individual’s compliance with the
+    national immunization schedule.
+
+3.  [**UD 2.5 Vaccination
     Timeliness**](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html)  
     Analyzes the vaccination timeliness of the population, that is, the
     time that elapses between the age of eligibility for each dose and
@@ -101,11 +100,27 @@ how to use each module:
     in certain communities and, through actions at different levels,
     prevent future dropouts.
 
-Each module works seamlessly with the example datasets provided in the
-package. These examples make it easy to test out the functionality and
-serve as a reference when preparing your own data. Learn more about
-these example datasets [in this
-vignette](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.html).
+4.  [**UD 2.7 Nominal Dropout
+    Rate**](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html)  
+    Calculates dropout rates between any two vaccine doses using nominal
+    data. This module ensures accurate follow-up tracking across a
+    vaccination schedule.
+
+### Others
+
+- [**Residence vs. Occurrence
+  Analyses**](https://im-data-paho.github.io/immunabc/articles/en/residence_occurrence_en.html)  
+  **This module is currently not included in the manual but remains
+  useful when dealing with data from EIRs**. It includes functions for
+  comparing vaccination coverage and dose distribution based on where
+  people live versus where they were vaccinated. It helps identify
+  population movement and service coverage gaps across geographic areas.
+
+- [**Example
+  Datasets**](https://im-data-paho.github.io/immunabc/articles/en/example_datasets_en.html)  
+  Each module works seamlessly with the example datasets provided in the
+  package. These examples make it easy to test out the functionality and
+  serve as a reference when preparing your own data.
 
 > **Note**
 >

@@ -1,0 +1,24 @@
+/* Box around each collapsible "Parameters accepted" section */
+details.params {
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  margin: 1rem 0;
+}
+
+/* Clickable title row */
+details.params > summary {
+  /* overrides Bootstrap's gap below summaries */
+  margin-bottom: 0;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+}
+
+/* Line separating the title from the expanded contents */
+details.params[open] > summary {
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+/* Keep the expanded contents off the box edges */
+details.params > :not(summary) {
+  margin: 0.75rem;
+}

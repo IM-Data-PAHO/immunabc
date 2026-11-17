@@ -2,6 +2,10 @@
 
 [🌐 Read this in
 English](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.md)
+[📖 Lea el manual de la OPS (CD
+3.1)](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=36)
+[📖 Lea el manual de la OPS (CD
+3.3)](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=38)
 
 ## Fundamento
 

@@ -2,6 +2,8 @@
 
 [🌐 Read this in
 English](https://im-data-paho.github.io/immunabc/articles/en/complete_schedule_en.md)
+[📖 Lea el manual de la
+OPS](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=50)
 
 ## Fundamento
 

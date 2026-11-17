@@ -2,6 +2,8 @@
 
 [🌐 Lea esto en
 español](https://im-data-paho.github.io/immunabc/articles/es/birth_cohort_coverage_es.md)
+[📖 Read the PAHO
+manual](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=49)
 
 ## Rationale
 

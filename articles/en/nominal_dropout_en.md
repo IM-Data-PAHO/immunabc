@@ -2,6 +2,8 @@
 
 [🌐 Lea esto en
 español](https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.md)
+[📖 Read the PAHO
+manual](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=52)
 
 ## Rationale
 
@@ -248,15 +250,13 @@ The `fix_residence` parameter controls how
 handles this:
 
 - `fix_residence = TRUE` (default): before computing dropout, all of a
-  person’s records are corrected to the
-  `ADM1_residence`/`ADM2_residence` tied to their **most recent
+  person’s records are corrected to the residence of their **most recent
   vaccination**, so their doses are correctly grouped together.
-- `fix_residence = FALSE`: residence values are left as recorded. If
+- `fix_residence = FALSE`: residence values are not modified. If
   inconsistencies are found,
   [`nod_dropout()`](https://im-data-paho.github.io/immunabc/reference/nod_dropout.md)
-  will warn you that results may be inaccurate, and that they should
-  either be resolved manually beforehand or `fix_residence` should be
-  set back to `TRUE`.
+  stops with an error, since its results would be inaccurate. Resolve
+  them manually beforehand, or set `fix_residence = TRUE`.
 
 The example below constructs a small EIR where person `ID 1` moved from
 `ADM1_1` to `ADM1_2` between doses, to illustrate both cases.
@@ -301,11 +301,10 @@ fixed_result <- nod_dropout(
 )
 ```
 
-    ## Warning in .validate_residence(data.EIR): 1 ID(s) have inconsistent
-    ## ADM1_residence/ADM2_residence across records, meaning residence is not updated
-    ## to the person's most recent residence.
+    ## Warning in .enforce_single_residence(data.EIR, fix_residence): 1 ID(s) have
+    ## more than one place of residence across their records.
 
-    ## 1 record(s) had residence updated to the most recent vaccination residence.
+    ## 1 record(s) updated to the residence of the most recent vaccination.
 
 ``` r
 
@@ -319,11 +318,12 @@ fixed_result %>% kable(digits = 3, caption = "Result with fix_residence = TRUE")
 
 Result with fix_residence = TRUE {.table}
 
-With `fix_residence = FALSE`, `ID 1`’s two doses stay split between
-`ADM1_1` and `ADM1_2`, so
+With `fix_residence = FALSE`, `ID 1`’s two doses would stay split
+between `ADM1_1` and `ADM1_2`, and
 [`nod_dropout()`](https://im-data-paho.github.io/immunabc/reference/nod_dropout.md)
-incorrectly reports a dropout in both groups, and warns that the
-residence inconsistency was not corrected:
+would incorrectly report a dropout in both groups. To avoid this,
+[`nod_dropout()`](https://im-data-paho.github.io/immunabc/reference/nod_dropout.md)
+stops with an error:
 
 ``` r
 
@@ -336,26 +336,8 @@ unfixed_result <- nod_dropout(
 )
 ```
 
-    ## Warning in .validate_residence(data.EIR): 1 ID(s) have inconsistent
-    ## ADM1_residence/ADM2_residence across records, meaning residence is not updated
-    ## to the person's most recent residence.
-
-    ## Warning in nod_dropout(data.EIR = residence_example, vaccine_init = "DTP1", :
-    ## Residence inconsistencies were not corrected (fix_residence = FALSE). Please
-    ## resolve them manually before trusting nod_dropout results, or set fix_residence
-    ## = TRUE.
-
-``` r
-
-unfixed_result %>% kable(digits = 3, caption = "Result with fix_residence = FALSE")
-```
-
-| ADM1_residence | indicator | num | denom | percent |
-|:---------------|:----------|----:|------:|--------:|
-| ADM1_1         | complete  |   1 |     2 |      50 |
-| ADM1_1         | dropout   |   1 |     2 |      50 |
-
-Result with fix_residence = FALSE {.table}
+    ## Error in `.enforce_single_residence()`:
+    ## ! Error: 1 ID(s) have more than one place of residence across their records. Correct them in data.EIR, or set fix_residence = TRUE to assign each person the residence of their most recent vaccination.
 
 This output may be fed directly into the
 [`nod_barplot()`](https://im-data-paho.github.io/immunabc/reference/nod_barplot.md)

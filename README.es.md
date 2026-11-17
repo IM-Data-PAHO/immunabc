@@ -4,7 +4,12 @@
 > English**](https://im-data-paho.github.io/immunabc/index.html)
 
 immunABC es un paquete de R orientado a análisis de inmunización más
-allá de la cobertura (*(A)nalysis (B)eyond (C)overage*).
+allá de la cobertura (*(A)nalysis (B)eyond (C)overage*). Es la
+implementación en R de los indicadores propuestos en el manual de la OPS
+[*Análisis más allá de la cobertura: Indicadores de desempeño del
+Programa Ampliado de Inmunización basados en datos del registro nominal
+de vacunación
+electrónico*](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content).
 
 immunABC busca apoyar la misión de la Unidad de Inmunización Integral
 (CIM) de la Organización Panamericana de la Salud (OPS) con herramientas
@@ -32,41 +37,16 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Uso
 
-Actualmente, immunABC contiene ocho módulos principales. Siga los
-enlaces a continuación para explorar viñetas detalladas con ejemplos
-prácticos y orientación sobre cómo usar cada módulo:
+Actualmente, immunABC contiene ocho módulos principales, agrupados como
+en el manual en indicadores de calidad del dato (CD) y de uso de los
+datos (UD). El código junto a cada módulo (por ejemplo, CD 3.1) es el
+código que se usa para referenciar al indicador dentro del manual de la
+OPS. Siga los enlaces a continuación para explorar viñetas detalladas
+con ejemplos prácticos y orientación sobre cómo usar cada módulo:
 
-1.  [**Tasa de abandono
-    nominal**](https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.html)  
-    Calcula las tasas de abandono entre cualquier par de dosis de
-    vacunas utilizando datos nominales. Este módulo permite dar
-    seguimiento a la continuidad de las personas dentro de un esquema de
-    vacunación.
+### Calidad del dato (CD)
 
-2.  [**Análisis de residencia vs. lugar de
-    vacunación**](https://im-data-paho.github.io/immunabc/articles/es/residence_occurrence_es.html)  
-    Funciones para comparar la cobertura de vacunación y la distribución
-    de dosis según el lugar donde viven las personas y el lugar donde
-    fueron vacunadas. Este módulo ayuda a identificar flujos
-    poblacionales y posibles brechas en la cobertura de los servicios
-    entre áreas geográficas.
-
-3.  [**Cobertura de esquema
-    completo**](https://im-data-paho.github.io/immunabc/articles/es/complete_schedule_es.html)  
-    Evalúa si las personas han recibido todas las dosis requeridas en un
-    esquema nacional de vacunación, para una cohorte específica hasta
-    una edad determinada. Este módulo se diferencia del cálculo de
-    cobertura estándar porque evalúa el cumplimiento del esquema persona
-    por persona.
-
-4.  [**Cobertura por cohorte de
-    nacimiento**](https://im-data-paho.github.io/immunabc/articles/es/birth_cohort_coverage_es.html)  
-    Permite dar seguimiento y visualizar el estado de vacunación de una
-    cohorte específica de recién nacidos. Ayuda a evaluar la protección
-    de la población frente a las enfermedades prevenibles por
-    vacunación.
-
-5.  [**Comparación de consistencia de
+1.  [**CD 3.1/3.3 Comparación de consistencia de
     fechas**](https://im-data-paho.github.io/immunabc/articles/es/date_consistency_comparison_es.html)  
     Identifica y cuantifica inconsistencias lógicas entre cualquier par
     de variables de fecha en el RNVe (p. ej., fecha de vacunación
@@ -74,7 +54,7 @@ prácticos y orientación sobre cómo usar cada módulo:
     captura y problemas de vinculación de registros antes de los
     análisis posteriores.
 
-6.  [**Comparación de secuencia de
+2.  [**CD 3.2 Comparación de secuencia de
     dosis**](https://im-data-paho.github.io/immunabc/articles/es/dose_sequence_comparison_es.html)  
     Evalúa, persona por persona, si las dosis de una secuencia ordenada
     (p. ej., DTP1, DTP2 y DTP3) están registradas de forma consistente
@@ -84,7 +64,7 @@ prácticos y orientación sobre cómo usar cada módulo:
     dosis equivocado, dosis no registradas y problemas de vinculación de
     registros.
 
-7.  [**Dosis
+3.  [**CD 5.2 Dosis
     duplicadas**](https://im-data-paho.github.io/immunabc/articles/es/duplicate_doses_es.html)  
     Detecta las dosis registradas más de una vez para la misma persona
     en el RNVe, distinguiendo los registros duplicados (el mismo evento
@@ -93,7 +73,24 @@ prácticos y orientación sobre cómo usar cada módulo:
     o en otro lugar). Ayuda a depurar el RNVe antes de los análisis de
     cobertura, abandono y otros que dependen del conteo de dosis.
 
-8.  [**Oportunidad de
+### Uso de los datos (UD)
+
+1.  [**UD 2.3 Cobertura por cohorte de
+    nacimiento**](https://im-data-paho.github.io/immunabc/articles/es/birth_cohort_coverage_es.html)  
+    Permite dar seguimiento y visualizar el estado de vacunación de una
+    cohorte específica de recién nacidos. Ayuda a evaluar la protección
+    de la población frente a las enfermedades prevenibles por
+    vacunación.
+
+2.  [**UD 2.4 Cobertura de esquema
+    completo**](https://im-data-paho.github.io/immunabc/articles/es/complete_schedule_es.html)  
+    Evalúa si las personas han recibido todas las dosis requeridas en un
+    esquema nacional de vacunación, para una cohorte específica hasta
+    una edad determinada. Este módulo se diferencia del cálculo de
+    cobertura estándar porque evalúa el cumplimiento del esquema persona
+    por persona.
+
+3.  [**UD 2.5 Oportunidad de
     vacunación**](https://im-data-paho.github.io/immunabc/articles/es/vaccination_timeliness_es.html)  
     Analiza la oportunidad de vacunación de la población, es decir, el
     tiempo que transcurre entre la edad de elegibilidad para cada dosis
@@ -107,11 +104,29 @@ prácticos y orientación sobre cómo usar cada módulo:
     a vacunar de ciertas comunidades y, a través de acciones a distintos
     niveles, prevenir futuros abandonos.
 
-Cada módulo funciona con los conjuntos de datos de ejemplo incluidos en
-el paquete. Estos datos facilitan probar las funciones y sirven de
-referencia al preparar sus propios datos. Conozca más sobre estos
-conjuntos de datos de ejemplo [en esta
-viñeta](https://im-data-paho.github.io/immunabc/articles/es/example_datasets_es.html).
+4.  [**UD 2.7 Tasa de abandono
+    nominal**](https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.html)  
+    Calcula las tasas de abandono entre cualquier par de dosis de
+    vacunas utilizando datos nominales. Este módulo permite dar
+    seguimiento a la continuidad de las personas dentro de un esquema de
+    vacunación.
+
+### Otros
+
+- [**Análisis de residencia vs. lugar de
+  vacunación**](https://im-data-paho.github.io/immunabc/articles/es/residence_occurrence_es.html)  
+  **Este módulo no está incluido actualmente en el manual, pero sigue
+  siendo útil al trabajar con datos de RNVe**. Incluye funciones para
+  comparar la cobertura de vacunación y la distribución de dosis según
+  el lugar donde viven las personas y el lugar donde fueron vacunadas.
+  Ayuda a identificar flujos poblacionales y posibles brechas en la
+  cobertura de los servicios entre áreas geográficas.
+
+- [**Conjuntos de datos de
+  ejemplo**](https://im-data-paho.github.io/immunabc/articles/es/example_datasets_es.html)  
+  Cada módulo funciona con los conjuntos de datos de ejemplo incluidos
+  en el paquete. Estos datos facilitan probar las funciones y sirven de
+  referencia al preparar sus propios datos.
 
 > **Nota**
 >

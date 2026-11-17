@@ -2,39 +2,46 @@
 
 [🌐 Lea esto en
 español](https://im-data-paho.github.io/immunabc/articles/es/duplicate_doses_es.md)
+[📖 Read the PAHO
+manual](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=42)
 
 ## Rationale
 
-Each dose a person receives should be registered exactly once in the
-Electronic Immunization Registry (EIR). In practice, the same dose is
-often registered more than once for the same person. Every extra record
-inflates the number of doses administered, so it biases dose-based
-coverage upwards, and it distorts any analysis that relies on the dose
-number, such as dose sequence or complete schedule analyses.
+In an Electronic Immunization Registry (EIR), each dose a person
+receives should be registered exactly once. In practice, the same dose
+can be registered more than once for the same person. Every extra record
+inflates the number of doses administered, so it biases traditional
+coverage indicators that typically rely on the “number of doses
+administered” as the numerator.
 
-The duplicate doses module compares all the records of the same person
-and dose, and classifies each extra record according to when and where
-it was registered:
+This module lets users analyze duplicate doses in an EIR. It compares
+all the records that belong to the same person and correspond to the
+same dose, and classifies each extra record into one of the following
+categories:
 
 1.  **Duplicate**: the extra record has the same vaccination date and
     place of occurrence as an earlier record, that is, the same
-    vaccination event registered more than once.
+    vaccination event was registered more than once.
 2.  **Repeated**: the extra record has a different vaccination date or
-    place of occurrence, that is, the same dose registered at a
+    place of occurrence, that is, the same dose was registered at a
     different moment in time or in a different place.
 
-These categories describe how the records match, not why the dose was
-registered more than once. Both can be caused by data entry errors
-(e.g., a record entered twice, data loaded twice when migrating from an
-older system, or a dose registered with the wrong dose number) or by
-programmatic errors (e.g., a dose administered twice because the
-person’s vaccination history was not checked). The plots and the
-record-level table of this module help investigate these possible
-causes.
+These categories help analysts understand the broad possible causes for
+extra records in their EIR. However, the exact reason for each must be
+analyzed at the record level and combined with additional information
+sources if possible. For example, a **Duplicate** record could be caused
+by the data having been entered twice into the system, or by data being
+duplicated after migrating from an older system. As for **Repeated**
+records, a dose may have been truly administered twice (in which case we
+would call this a programmatic error), or it could have been entered
+with the wrong dose number (e.g., a DTP2 dose entered as DTP1). The
+plots and the record-level table of this module help investigate these
+possible causes.
 
-Since duplicate and repeated records are a data quality problem of each
-vaccination event, all results refer to the **place of occurrence** of
-the vaccination event, not to the place of residence.
+Finally, since extra records (whatever their cause) are a data quality
+problem directly related to each vaccination event, this module
+disaggregates results geographically by the **place of occurrence** of
+the vaccination event, not by the place of residence of the individual.
 
 > **Note**
 >
@@ -62,38 +69,35 @@ listed from top to bottom level are: ADM0, ADM1 and ADM2.
 
 ### Duplication Categories
 
-All the records of the same person (`ID`) and dose (`dose`) are compared
-in order of vaccination date. The first record is considered the
-legitimate one, and each later record is classified by comparing it with
-the earlier ones:
+When analyzing extra records, the following categorization applies: all
+the records that belong to the same person and contain the same dose are
+compared in order of vaccination date. The first record is considered
+the legitimate one, and each later record is classified by comparing it
+with the earlier ones:
 
 - `FIRST_ENTRY`: the first record of that person and dose. It is never
   counted as a problem.
-- `DUPLICATE`: same `ID`, `dose`, `date_vax`, `ADM1_occurrence` and
-  `ADM2_occurrence` as an earlier record.
-- `REPEATED`: same `ID` and `dose` as an earlier record, but a different
-  `date_vax` or place of occurrence.
+- `DUPLICATE`: same person, dose, vaccination date and place of
+  occurrence as an earlier record.
+- `REPEATED`: same person and dose as an earlier record, but a different
+  vaccination date or place of occurrence.
 
-Only the extra records are counted, so a dose registered three times
-counts as two. For example, a person with DTP1 registered three times:
+The following is an example of such classifications for a person with
+two extra records:
 
 | `date_vax` | Place of occurrence | Category | Why |
 |----|----|----|----|
-| January 5 | `ADM2_1_1` | `FIRST_ENTRY` | First record of this person and dose. |
+| January 5 | `ADM2_1_1` | `FIRST_ENTRY` | First record of this person and dose. Not counted as extra. |
 | February 10 | `ADM2_1_1` | `REPEATED` | Same dose, but on a different date. |
 | February 10 | `ADM2_1_1` | `DUPLICATE` | Identical to the previous record. |
-
-Note that a record with the same date as an earlier one but a different
-place of occurrence is `REPEATED`, not `DUPLICATE`, since the same dose
-may have been registered by two different vaccination sites.
 
 ### Records Not Evaluated
 
 Records missing `ID`, `dose`, `date_vax`, `ADM1_occurrence` or
 `ADM2_occurrence` do not contain enough information to tell whether they
-match another record, so they are not evaluated (`NA` and empty or
-whitespace-only text count as missing). The functions show a message
-with the number of records excluded.
+match another record, so they are not evaluated. All the functions in
+this module will show a message with the number of records that were
+excluded.
 
 ## Usage
 
@@ -110,7 +114,8 @@ The functions in this module require your **EIR dataset** in the
 standard immunABC format.
 [`dd_repeat_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.md)
 can optionally use a **vaccination schedule** to show the vaccination
-window of each dose.
+window of each dose. The expected format for these datasets is described
+below.
 
 #### EIR
 
@@ -179,11 +184,12 @@ Example vaccination schedule {.table}
 
 #### Expected Workflow
 
-The `dd_` suite contains seven functions, organized in three pipelines:
+The `dd_` suite contains seven functions organized in three pipelines:
 
 1.  [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
-    — computes the percentage of duplicate and repeated records, by
-    geographic level and optionally by dose or birth cohort.
+    — computes the percentage of duplicate and repeated records,
+    permitting disaggregation by geographic level and optionally by dose
+    or birth cohort.
     - [`dd_barplot()`](https://im-data-paho.github.io/immunabc/reference/dd_barplot.md)
       — visualizes the output of
       [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
@@ -203,8 +209,12 @@ The `dd_` suite contains seven functions, organized in three pipelines:
     — lists every record of each dose registered more than once, for
     record-level review and correction.
     - [`dd_repeat_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.md)
-      — compares the age at vaccination of the first entries and the
-      repeated records of a dose.
+      — for **Repeated** records of a dose, this function compares the
+      age at vaccination of the repeats with that of the first entries
+      of the same dose. This helps spot doses registered in the EIR with
+      the wrong dose number (e.g., DTP1 repeats clustering at the age
+      DTP2 is due may point towards DTP2 doses being registered as
+      DTP1).
 
 The figure below shows the expected workflow.
 
@@ -220,8 +230,8 @@ Figure 1. Expected workflow for the duplicate doses analysis.
 [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
 classifies every record and returns, for each group, the number and
 percentage of `DUPLICATE` and `REPEATED` records. The denominator
-(`total`) is every evaluated record in the group, including the first
-entries and records of doses registered only once.
+(`total`) includes every evaluated record in the group. Below we show
+the result at the national level.
 
 ``` r
 
@@ -236,9 +246,10 @@ dd_rate(data.EIR = immunABC.EIR) %>%
 
 Duplicate and repeated records at the national level {.table}
 
-Results can be disaggregated geographically with `geo_level`, and by one
-additional variable with `disaggregate_by`: `"dose"` or `"birth_cohort"`
-(year of birth).
+Results can be disaggregated geographically with `geo_level` and by one
+additional variable with the `disaggregate_by` argument (either `dose`
+or `birth_cohort`). For example, if we disaggregate by the first
+subnational level (ADM1), we obtain the following table:
 
 ``` r
 
@@ -265,6 +276,9 @@ rate_adm1 %>% kable(digits = 2, caption = "Duplicate and repeated records by ADM
 
 Duplicate and repeated records by ADM1 of occurrence {.table}
 
+And disaggregating only by `dose` produces a table at the national level
+where each dose is analyzed separately:
+
 ``` r
 
 rate_dose <- dd_rate(
@@ -288,7 +302,7 @@ rate_dose %>%
 
 Duplicate records by dose {.table}
 
-##### Parameters accepted
+Parameters accepted
 
 - `data.EIR`: EIR data frame in immunABC format.
 - `geo_level`: Geographic level of occurrence: `"ADM0"` (default),
@@ -305,10 +319,16 @@ Duplicate records by dose {.table}
   This is only a filter: use `disaggregate_by = "birth_cohort"` to see
   results by cohort. Default `NULL` uses all available cohorts.
 
-The output contains one row for each `duplication` category (`DUPLICATE`
-and `REPEATED`) in each group, with the number of records in that
-category (`n`), the total number of evaluated records in the group
-(`total`) and the percentage (`rate`).
+##### Output
+
+Besides the grouping columns (`ADM1`, `ADM2`, `dose` or `birth_cohort`,
+depending on `geo_level` and `disaggregate_by`), the output includes:
+
+- `duplication`: the category of the records, `DUPLICATE` or `REPEATED`.
+- `n`: the number of records in that category.
+- `total`: the total number of evaluated records in the group.
+- `rate`: the percentage of records in that category
+  (`n / total * 100`).
 
 #### Step 2 — Visualize duplicate records with `dd_barplot()`
 
@@ -316,10 +336,10 @@ The output of
 [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
 can be passed directly to
 [`dd_barplot()`](https://im-data-paho.github.io/immunabc/reference/dd_barplot.md).
-Geographic areas are shown on the x-axis if present, otherwise doses or
-birth cohorts. When the data has both, doses or birth cohorts become
-panels. When showing rates, a dashed line shows the rate of all groups
-combined.
+Geographic areas are shown on the x-axis if present, otherwise this axis
+will show doses or birth cohorts. When the data has both, doses or birth
+cohorts become panels. When showing rates, a dashed line shows the rate
+of all groups combined.
 
 ``` r
 
@@ -345,7 +365,7 @@ dd_barplot(
 
 At the ADM2 level, `within_ADM1` focuses on the areas of one or several
 ADM1, and `min_total` hides the bars with few records, since their rates
-can be misleading:
+can be misleading due to the small denominators involved:
 
 ``` r
 
@@ -363,7 +383,7 @@ dd_barplot(
 
 ![](duplicate_doses_en_files/figure-html/dd-barplot-adm2-1.png)
 
-##### Parameters accepted
+Parameters accepted
 
 - `data`: Output of
   [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md).
@@ -378,24 +398,21 @@ dd_barplot(
 
 ##### Interpretation
 
-Duplicate records are usually a small percentage of all records, so the
-y-axis is scaled to the data instead of 0 to 100%. Rates and numbers
-answer different questions: `value = "rate"` shows where the problem is
-proportionally worst, which points to registration practices worth
-reviewing, while `value = "n"` shows where most records need correcting,
-which is where a cleanup effort will have the largest impact. Bars well
-above the dashed line are the first candidates for review.
+Rates and raw numbers are both useful but answer different questions.
+With `value = "rate"`, the plots show where the problem is
+proportionally worst, pointing to registration practices worth
+reviewing. With `value = "n"`, they show where the most records need
+correcting, which is where a cleanup effort will have the largest
+impact. When showing rates, a dashed line marks the rate of all groups
+combined and any bars well above it should be the first candidates for
+review.
 
 #### Step 3 — Combine two disaggregations with `dd_heatmap()`
 
 [`dd_heatmap()`](https://im-data-paho.github.io/immunabc/reference/dd_heatmap.md)
-shows the output of
-[`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
-for each geographic area (columns) against each dose or birth cohort
-(rows), so `data` must come from
-[`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
-with `geo_level` at `"ADM1"` or `"ADM2"` and a value for
-`disaggregate_by`.
+helps combine two disaggregations into a single plot. For example, we
+can visualize the percentage of duplicate records for each geographic
+area and dose:
 
 ``` r
 
@@ -410,8 +427,8 @@ dd_heatmap(data = rate_adm1_dose)
 
 ![](duplicate_doses_en_files/figure-html/dd-heatmap-dose-1.png)
 
-By birth cohort, filtering to the most recent cohorts with
-`birth_cohorts`:
+We could visualize the same, but by birth cohort instead of dose, and
+additionally filter only for the most recent cohorts:
 
 ``` r
 
@@ -427,7 +444,7 @@ dd_heatmap(data = rate_adm1_cohort)
 
 ![](duplicate_doses_en_files/figure-html/dd-heatmap-cohort-1.png)
 
-##### Parameters accepted
+Parameters accepted
 
 - `data`: Output of
   [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md)
@@ -450,22 +467,24 @@ dd_heatmap(data = rate_adm1_cohort)
 
 A dark row across all areas points to a problem of that dose or cohort
 everywhere, for example a dose that is systematically registered twice
-by the information system. A dark column points to a problem of that
-area across all doses, which suggests a local registration practice. A
-single dark cell is a problem specific to one area and one dose or
-cohort. In the example, `ADM1_4` has the highest rates for most doses,
-and `BCG RN` and `DTP1` have the highest rates in every area.
+by the information system. A dark column points to a problem in a
+specific area, which suggests a local registration practice. A single
+dark cell is a problem specific to one area and one dose or cohort. In
+the example, `ADM1_4` has the highest rates for most doses, and `BCG RN`
+and `DTP1` have the highest rates in every area.
 
 #### Step 4 — Follow duplicate records over time with `dd_trend()` and `dd_trend_plot()`
 
 [`dd_trend()`](https://im-data-paho.github.io/immunabc/reference/dd_trend.md)
 performs the same calculation as
 [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md),
-but by month of vaccination (`month_vax`, the first day of each month),
-to spot trends over time. Only `DUPLICATE` records are included:
-repeated records are better explored with
+but disaggregates results by month of vaccination to spot trends over
+time. Only `DUPLICATE` records are included: repeated records are better
+explored with
 [`dd_repeat_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.md)
 (see Step 6).
+
+Below we see the summary of duplicate records by month and ADM1.
 
 ``` r
 
@@ -488,10 +507,14 @@ trend_adm1 %>% head() %>% kable(digits = 2, caption = "Duplicate records by ADM1
 
 Duplicate records by ADM1 and month of vaccination {.table}
 
+When results are disaggregated at a subnational level,
 [`dd_trend_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_trend_plot.md)
-draws all areas combined as a highlighted line, and each geographic area
-as a thin grey line for context. Up to 5 areas can be highlighted in
-color with `highlight`:
+draws the total for all areas as a highlighted line, and each
+subnational area as a thin grey line for context. Up to 5 subnational
+areas can be highlighted in color with the `highlight` parameter.
+Exploring the data before selecting the areas to highlight is
+recommended. In this case we are highlighting `ADM1_4` because it is the
+area with the highest rate of duplicate records.
 
 ``` r
 
@@ -503,7 +526,7 @@ dd_trend_plot(
 
 ![](duplicate_doses_en_files/figure-html/dd-trend-plot-1.png)
 
-##### Parameters accepted
+Parameters accepted
 
 [`dd_trend()`](https://im-data-paho.github.io/immunabc/reference/dd_trend.md):
 
@@ -535,46 +558,43 @@ dd_trend_plot(
 
 ##### Interpretation
 
-Data entry errors tend to be spread evenly over time, so when duplicate
-records are concentrated in a few months, the records from those months
-may have been entered twice, for example when loading historical data
-from an older system into the EIR, or when a batch of paper records was
+This analysis helps spot trends in duplicate records over time. If a
+month or set of months has higher duplicate rates than the rest, it may
+point to a systematic error affecting the records from that period. For
+example, records may have been written more than once during a batch
+migration from an older EIR, or a batch of paper records may have been
 digitized twice. In the example, duplicates are clearly concentrated in
-the first half of 2022, particularly in `ADM1_4`, and almost disappear
-afterwards. A sudden increase at a later date, on the other hand, may
-point to a change in the information system or in registration
-practices.
+the first half of 2022, particularly in the `ADM1_4` area, and almost
+disappear afterwards.
 
 #### Step 5 — Inspect individual records with `dd_duplicates()`
 
 [`dd_duplicates()`](https://im-data-paho.github.io/immunabc/reference/dd_duplicates.md)
 returns a record-level table with every record of each dose registered
-more than once for the same person, including the `FIRST_ENTRY`, so that
-later records can be compared against it. Groups with the most copies
-are shown first.
+more than once for the same person. Below we list all the DTP1 doses
+registered more than once:
 
 ``` r
 
-duplicates_df <- dd_duplicates(data.EIR = immunABC.EIR)
+duplicates_df <- dd_duplicates(data.EIR = immunABC.EIR, vaccines = "DTP1")
 
 duplicates_df %>%
-  filter(dose == "DTP1", n_copies == 2) %>%
-  head(6) %>%
-  kable(caption = "Sample of DTP1 doses registered twice")
+  head() %>%
+  kable(caption = "DTP1 doses registered more than once")
 ```
 
 | ID | date_birth | dose | date_vax | ADM1_occurrence | ADM2_occurrence | group | copy | n_copies | days_since_first_entry | duplication |
 |---:|:---|:---|:---|:---|:---|---:|---:|---:|---:|:---|
-| 11254 | 2021-10-07 | DTP1 | 2022-01-05 | ADM1_2 | ADM2_2_5 | 168 | 1 | 2 | NA | FIRST_ENTRY |
-| 11254 | 2021-10-07 | DTP1 | 2022-05-11 | ADM1_3 | ADM2_3_15 | 168 | 2 | 2 | 126 | REPEATED |
-| 12223 | 2021-10-18 | DTP1 | 2022-01-10 | ADM1_3 | ADM2_3_6 | 170 | 1 | 2 | NA | FIRST_ENTRY |
-| 12223 | 2021-10-18 | DTP1 | 2022-06-14 | ADM1_3 | ADM2_3_6 | 170 | 2 | 2 | 155 | REPEATED |
-| 12415 | 2021-10-25 | DTP1 | 2022-01-21 | ADM1_3 | ADM2_3_7 | 171 | 1 | 2 | NA | FIRST_ENTRY |
-| 12415 | 2021-10-25 | DTP1 | 2022-03-17 | ADM1_3 | ADM2_3_7 | 171 | 2 | 2 | 55 | REPEATED |
+| 185280 | 2023-07-07 | DTP1 | 2023-10-04 | ADM1_3 | ADM2_3_14 | 1 | 1 | 6 | NA | FIRST_ENTRY |
+| 185280 | 2023-07-07 | DTP1 | 2023-10-04 | ADM1_3 | ADM2_3_14 | 1 | 2 | 6 | 0 | DUPLICATE |
+| 185280 | 2023-07-07 | DTP1 | 2023-10-04 | ADM1_3 | ADM2_3_14 | 1 | 3 | 6 | 0 | DUPLICATE |
+| 185280 | 2023-07-07 | DTP1 | 2023-10-04 | ADM1_3 | ADM2_3_14 | 1 | 4 | 6 | 0 | DUPLICATE |
+| 185280 | 2023-07-07 | DTP1 | 2023-10-04 | ADM1_3 | ADM2_3_14 | 1 | 5 | 6 | 0 | DUPLICATE |
+| 185280 | 2023-07-07 | DTP1 | 2023-10-04 | ADM1_3 | ADM2_3_14 | 1 | 6 | 6 | 0 | DUPLICATE |
 
-Sample of DTP1 doses registered twice {.table style="width:100%;"}
+DTP1 doses registered more than once {.table}
 
-##### Parameters accepted
+Parameters accepted
 
 - `data.EIR`: EIR data frame in immunABC format.
 - `vaccines`: Character vector of doses to include. Default `NULL` uses
@@ -582,28 +602,62 @@ Sample of DTP1 doses registered twice {.table style="width:100%;"}
 - `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to.
   Default `NULL` uses all available cohorts.
 
-Besides the original columns of each record, the output includes `group`
-(a number identifying all the records of the same person and dose),
-`copy` (the position of the record within its group, in date order),
-`n_copies` (the number of records in the group),
-`days_since_first_entry` (days between the record and the `FIRST_ENTRY`
-of its group, `NA` for the `FIRST_ENTRY` itself) and `duplication`. This
-table can be exported for record-level review and correction workflows.
-For example, `days_since_first_entry` tells apart `REPEATED` records
-registered on the same day in two different places
+##### Output
+
+Note that besides the original columns of each record, the output
+includes:
+
+- `group`: a number identifying all the records of the same person and
+  dose.
+- `copy`: the position of the record within its group, in date order.
+- `n_copies`: the number of records in the group.
+- `days_since_first_entry`: days between the record and the
+  `FIRST_ENTRY` of its group.
+- `duplication`: the category of the record: `FIRST_ENTRY`, `DUPLICATE`
+  or `REPEATED`.
+
+##### Interpretation
+
+This table can be exported for record-level review and correction
+workflows. For example, the `days_since_first_entry` column tells apart
+`REPEATED` records registered on the same day in two different places
 (`days_since_first_entry = 0`) from those registered weeks or months
-after the first entry.
+after the first entry, which may point to different causes (see Step 6).
 
 #### Step 6 — Explore the possible causes of repeated records with `dd_repeat_plot()`
 
+For the sake of example, let’s consider the following hypothetical case
+for a person born on January 10, 2022:
+
+| `dose` | `date_vax` | Age at vaccination | `ADM2_occurrence` | `copy` | `days_since_first_entry` | `duplication` |
+|----|----|----|----|----|----|----|
+| DTP1 | 2022-03-11 | 60 days | `ADM2_1_1` | 1 | `NA` | `FIRST_ENTRY` |
+| DTP1 | 2022-05-12 | 122 days | `ADM2_1_1` | 2 | 62 | `REPEATED` |
+
+The first record falls inside the DTP1 vaccination window (54 to 90 days
+of age, according to `immunABC.schedule`), so it is most likely a
+legitimate DTP1. The second DTP1 record, however, was registered at 122
+days of age, right inside the DTP2 window (116 to 150 days). If we look
+up the rest of this person’s records in the EIR and find a DTP3 at 6
+months but no DTP2, the most likely explanation is that the DTP2 dose
+was registered with the wrong dose number. Rather than an extra dose,
+this person probably has a mislabeled DTP2 dose.
+
+The example above was a single person, but reviewing every group by hand
+is not feasible when an EIR has thousands of them. What we really want
+to know is whether that story is an isolated case or a systematic
+pattern: are the `REPEATED` DTP1 records of the EIR mostly registered at
+the age DTP2 is due?
+
 [`dd_repeat_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.md)
-takes the output of
+answers this question for the whole table at once. It takes the output
+of
 [`dd_duplicates()`](https://im-data-paho.github.io/immunabc/reference/dd_duplicates.md)
-and, for a single dose, compares the age at vaccination of the
-`FIRST_ENTRY` of each group with repeats (top panel) against the age at
-vaccination of the `REPEATED` records (bottom panel). Passing
-`data.schedule` shades the vaccination window of the doses in
-`schedule_vaccines`.
+and, for a single dose, shows the age at vaccination of the
+`FIRST_ENTRY` records (top panel) and of the `REPEATED` records (bottom
+panel). One can also pass `data.schedule` and `schedule_vaccines` to
+shade specific vaccination windows in the plot, and therefore more
+clearly highlight any DTP2 doses being mislabeled as DTP1.
 
 ``` r
 
@@ -618,8 +672,8 @@ dd_repeat_plot(
 
 ![](duplicate_doses_en_files/figure-html/dd-repeat-plot-1.png)
 
-Use `geo_level` to split the panels by geographic area of occurrence,
-which shows whether the pattern is the same everywhere:
+We can also split the results by subnational area using `geo_level`,
+thereby showing whether the pattern is the same everywhere:
 
 ``` r
 
@@ -636,7 +690,7 @@ dd_repeat_plot(
 
 ![](duplicate_doses_en_files/figure-html/dd-repeat-plot-adm1-1.png)
 
-##### Parameters accepted
+Parameters accepted
 
 - `data`: Output of
   [`dd_duplicates()`](https://im-data-paho.github.io/immunabc/reference/dd_duplicates.md).
@@ -644,7 +698,7 @@ dd_repeat_plot(
 - `geo_level`: Geographic level of occurrence to split the panels by:
   `"ADM0"` (default, no split), `"ADM1"`, or `"ADM2"`.
 - `within_ADM1`: Character vector to filter to specific ADM1 units of
-  occurrence. Default: `NULL`.
+  occurrence when `geo_level` is `"ADM1"` or `"ADM2"`. Default: `NULL`.
 - `binwidth`: Width of each bar of the histogram, in days. Default: `7`
   (one week).
 - `max_age`: Maximum age at vaccination to show on the x-axis, in days.
@@ -656,12 +710,6 @@ dd_repeat_plot(
   Only used with `data.schedule`. Default `NULL` shades the window of
   `vaccine`.
 
-Records with no `date_birth`, or with `date_vax` before `date_birth`,
-have no valid age at vaccination, so they are excluded, with a message.
-The [Date Consistency
-Comparison](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.md)
-module can help investigate the latter.
-
 ##### Interpretation
 
 The shape of the bottom panel hints at the cause of the repeats:
@@ -669,7 +717,8 @@ The shape of the bottom panel hints at the cause of the repeats:
 - **Repeats at the age of the next dose**: if the repeats of DTP1 are
   concentrated in the DTP2 vaccination window, as in the example, the
   second record is most likely a DTP2 dose registered as DTP1. These
-  people will probably appear with a skipped DTP2 in the [Dose Sequence
+  people will probably appear with a skipped DTP2 in the [CD 3.2 Dose
+  Sequence
   Comparison](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.md)
   module.
 - **Repeats shortly after the first entry, within the same window**: the
@@ -680,6 +729,14 @@ The shape of the bottom panel hints at the cause of the repeats:
   different people linked to the same ID, which is a record linkage
   problem.
 
+> **Note**
+>
+> Records with no `date_birth`, or with `date_vax` before `date_birth`,
+> have no valid age at vaccination, so they are excluded from this
+> analysis. The [CD 3.1/3.3 Date Consistency
+> Comparison](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.md)
+> module can help investigate the latter.
+
 ## Summary
 
 The `dd_` module provides a complete pipeline for detecting doses
@@ -687,19 +744,21 @@ registered more than once in EIR data, telling apart `DUPLICATE` records
 (the same vaccination event registered more than once, with the same
 date and place) from `REPEATED` records (the same dose registered on a
 different date or in a different place).
-[`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md),
-[`dd_barplot()`](https://im-data-paho.github.io/immunabc/reference/dd_barplot.md)
-and
-[`dd_heatmap()`](https://im-data-paho.github.io/immunabc/reference/dd_heatmap.md)
-give a geographic overview by dose or birth cohort,
-[`dd_trend()`](https://im-data-paho.github.io/immunabc/reference/dd_trend.md)
-and
-[`dd_trend_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_trend_plot.md)
-show when duplicates were registered, and
-[`dd_duplicates()`](https://im-data-paho.github.io/immunabc/reference/dd_duplicates.md)
-and
-[`dd_repeat_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.md)
-allow record-level inspection and help identify the causes of repeated
-records. Since duplicate and repeated records bias coverage, dropout and
-every analysis that relies on dose numbers, we recommend running this
-module before the other modules of immunABC.
+
+- [`dd_rate()`](https://im-data-paho.github.io/immunabc/reference/dd_rate.md),
+  [`dd_barplot()`](https://im-data-paho.github.io/immunabc/reference/dd_barplot.md)
+  and
+  [`dd_heatmap()`](https://im-data-paho.github.io/immunabc/reference/dd_heatmap.md)
+  give a geographic overview by dose or birth cohort,
+- [`dd_trend()`](https://im-data-paho.github.io/immunabc/reference/dd_trend.md)
+  and
+  [`dd_trend_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_trend_plot.md)
+  analyze possible time trends in duplicate records,
+- [`dd_duplicates()`](https://im-data-paho.github.io/immunabc/reference/dd_duplicates.md)
+  allows record-level inspection, and
+- [`dd_repeat_plot()`](https://im-data-paho.github.io/immunabc/reference/dd_repeat_plot.md)
+  helps identify the causes of repeated records.
+
+Since duplicate and repeated records are data quality issues that bias
+many indicators (such as coverage or dropout), we recommend running this
+module early to identify any possible issues with your own EIR.

@@ -9,7 +9,8 @@
 <link href="../../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Comparación de secuencia de dosis">
+<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><link href="../../extra.css" rel="stylesheet">
+<meta property="og:title" content="Comparación de secuencia de dosis">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -19,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,17 +33,19 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-guides" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Guides</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-guides">
-<li><h6 class="dropdown-header" data-toc-skip>Modules</h6></li>
-    <li><a class="dropdown-item" href="../../articles/en/nominal_dropout_en.html">Nominal Dropout Rate</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/residence_occurrence_en.html">Residence vs. Occurrence Analyses</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/complete_schedule_en.html">Complete Schedule Coverage</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/birth_cohort_coverage_en.html">Birth Cohort Coverage</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/date_consistency_comparison_en.html">Date Consistency Comparison</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/dose_sequence_comparison_en.html">Dose Sequence Comparison</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/duplicate_doses_en.html">Duplicate Doses</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/vaccination_timeliness_en.html">Vaccination Timeliness</a></li>
+<li><h6 class="dropdown-header" data-toc-skip>Data Quality (CD)</h6></li>
+    <li><a class="dropdown-item" href="../../articles/en/date_consistency_comparison_en.html">CD 3.1/3.3 Date Consistency Comparison</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/dose_sequence_comparison_en.html">CD 3.2 Dose Sequence Comparison</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/duplicate_doses_en.html">CD 5.2 Duplicate Doses</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Other guides</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Data Usage (UD)</h6></li>
+    <li><a class="dropdown-item" href="../../articles/en/birth_cohort_coverage_en.html">UD 2.3 Birth Cohort Coverage</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/complete_schedule_en.html">UD 2.4 Complete Schedule Coverage</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/vaccination_timeliness_en.html">UD 2.5 Vaccination Timeliness</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/nominal_dropout_en.html">UD 2.7 Nominal Dropout Rate</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Others</h6></li>
+    <li><a class="dropdown-item" href="../../articles/en/residence_occurrence_en.html">Residence vs. Occurrence Analyses</a></li>
     <li><a class="dropdown-item" href="../../articles/en/example_datasets_en.html">Using our Example Datasets</a></li>
   </ul>
 </li>
@@ -66,18 +69,21 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Comparación de secuencia de dosis</h1>
+            <h3 data-toc-skip class="subtitle">Indicador CD 3.2</h3>
                         <h4 data-toc-skip class="author">OPS/CIM</h4>
             
             <h4 data-toc-skip class="date">30 de octubre de 2026</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.13.0/vignettes/articles/es/dose_sequence_comparison_es.Rmd" class="external-link"><code>vignettes/articles/es/dose_sequence_comparison_es.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.13.1/vignettes/articles/es/dose_sequence_comparison_es.Rmd" class="external-link"><code>vignettes/articles/es/dose_sequence_comparison_es.Rmd</code></a></small>
       <div class="d-none name"><code>dose_sequence_comparison_es.Rmd</code></div>
     </div>
 
     
     
-<p><a href="../en/dose_sequence_comparison_en.html" class="btn btn-outline-primary" role="button">🌐
-Read this in English</a></p>
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../en/dose_sequence_comparison_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=37" class="external-link btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Lea el manual de la OPS</a>
+</div>
 <div class="section level2">
 <h2 id="fundamento">Fundamento<a class="anchor" aria-label="anchor" href="#fundamento"></a>
 </h2>
@@ -157,7 +163,8 @@ personas con al menos una dosis de la secuencia.</p>
 son las primeras dosis de la secuencia. Una persona que aún no termina
 la secuencia (p. ej., solo DTP1, o DTP1 y DTP2) puede ser consistente:
 puede que simplemente no haya alcanzado la edad para la siguiente dosis,
-o que haya abandonado el esquema (vea el módulo de <a href="nominal_dropout_es.html">Tasa de abandono nominal</a>).</li>
+o que haya abandonado el esquema (vea el módulo de <a href="nominal_dropout_es.html">UD 2.7 Tasa de abandono
+nominal</a>).</li>
 <li>Cada dosis recibida fue administrada después de la dosis anterior
 recibida en la secuencia. De forma predeterminada, dos dosis
 administradas el mismo día también se consideran fuera de orden (vea
@@ -696,22 +703,22 @@ secuencia (<code>total</code>) y el porcentaje (<code>rate</code>).</p>
 <div class="section level4">
 <h4 id="manejo-de-inconsistencias-de-residencia">Manejo de inconsistencias de residencia<a class="anchor" aria-label="anchor" href="#manejo-de-inconsistencias-de-residencia"></a>
 </h4>
-<p>Dado que cada persona se evalúa como un todo, debe asignarse a un
-único lugar de residencia. Si la residencia registrada de una persona no
-es la misma en todos sus registros (por ejemplo, se mudó entre su dosis
-de DTP1 y DTP3, y el registro anterior nunca se actualizó), las
-funciones <code>sc_</code> muestran una advertencia, y el parámetro
-<code>fix_residence</code> controla cómo se maneja:</p>
+<p>Dado que las dosis de una persona se evalúan en conjunto, deben
+asignarse a un único lugar de residencia. Si la residencia registrada de
+una persona no es la misma en todos sus registros (por ejemplo, se mudó
+entre su dosis de DTP1 y DTP3, y el registro anterior nunca se
+actualizó), el parámetro <code>fix_residence</code> controla cómo se
+maneja:</p>
 <ul>
 <li>
-<code>fix_residence = TRUE</code> (predeterminado): todos los
-registros de una persona se corrigen para usar el
-<code>ADM1_residence</code>/<code>ADM2_residence</code> de su
-<strong>vacunación más reciente</strong>.</li>
+<code>fix_residence = TRUE</code> (predeterminado): se muestra una
+advertencia y todos los registros de una persona se corrigen para usar
+la residencia de su <strong>vacunación más reciente</strong>.</li>
 <li>
-<code>fix_residence = FALSE</code>: los valores de residencia se
-dejan tal como fueron registrados, y a cada persona se le asigna la
-residencia de su primer registro.</li>
+<code>fix_residence = FALSE</code>: los valores de residencia no se
+modifican y las funciones de este módulo se detienen con un error. Usted
+deberá corregir las residencias en su RNVe de antemano, o configurar
+<code>fix_residence = TRUE</code>.</li>
 </ul>
 <p><code><a href="../../reference/sc_rate.html">sc_rate()</a></code> y <code><a href="../../reference/sc_heatmap.html">sc_heatmap()</a></code> solo verifican la
 residencia cuando los resultados se desagregan por debajo de
@@ -780,7 +787,7 @@ atención. Pueden deberse a errores de digitación en la fecha de
 vacunación (<code>date_vax</code>), a dosis registradas con un número de
 dosis equivocado (p. ej., DTP2 registrada como DTP1 y viceversa), o a
 registros de dos personas distintas vinculados al mismo ID. El módulo de
-<a href="date_consistency_comparison_es.html">Comparación de
+<a href="date_consistency_comparison_es.html">CD 3.1/3.3 Comparación de
 consistencia de fechas</a> puede ayudar a investigar las fechas
 involucradas.</p>
 </div>
@@ -851,7 +858,8 @@ las secuencias inconsistentes (porcentajes sobre las secuencias
 inconsistentes).</li>
 <li>
 <code>within_ADM1</code>: Vector de caracteres para filtrar unidades
-ADM1 específicas. Valor predeterminado: <code>NULL</code>.</li>
+ADM1 específicas cuando <code>geo_level</code> es <code>"ADM1"</code> o
+<code>"ADM2"</code>. Valor predeterminado: <code>NULL</code>.</li>
 <li>
 <code>birth_cohorts</code>: Vector numérico con el o los años de
 cohorte de nacimiento a filtrar. El valor predeterminado

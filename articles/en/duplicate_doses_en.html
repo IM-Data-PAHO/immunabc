@@ -9,7 +9,8 @@
 <link href="../../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Duplicate Doses">
+<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><link href="../../extra.css" rel="stylesheet">
+<meta property="og:title" content="Duplicate Doses">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -19,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,17 +33,19 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-guides" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Guides</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-guides">
-<li><h6 class="dropdown-header" data-toc-skip>Modules</h6></li>
-    <li><a class="dropdown-item" href="../../articles/en/nominal_dropout_en.html">Nominal Dropout Rate</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/residence_occurrence_en.html">Residence vs. Occurrence Analyses</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/complete_schedule_en.html">Complete Schedule Coverage</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/birth_cohort_coverage_en.html">Birth Cohort Coverage</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/date_consistency_comparison_en.html">Date Consistency Comparison</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/dose_sequence_comparison_en.html">Dose Sequence Comparison</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/duplicate_doses_en.html">Duplicate Doses</a></li>
-    <li><a class="dropdown-item" href="../../articles/en/vaccination_timeliness_en.html">Vaccination Timeliness</a></li>
+<li><h6 class="dropdown-header" data-toc-skip>Data Quality (CD)</h6></li>
+    <li><a class="dropdown-item" href="../../articles/en/date_consistency_comparison_en.html">CD 3.1/3.3 Date Consistency Comparison</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/dose_sequence_comparison_en.html">CD 3.2 Dose Sequence Comparison</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/duplicate_doses_en.html">CD 5.2 Duplicate Doses</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Other guides</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Data Usage (UD)</h6></li>
+    <li><a class="dropdown-item" href="../../articles/en/birth_cohort_coverage_en.html">UD 2.3 Birth Cohort Coverage</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/complete_schedule_en.html">UD 2.4 Complete Schedule Coverage</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/vaccination_timeliness_en.html">UD 2.5 Vaccination Timeliness</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/nominal_dropout_en.html">UD 2.7 Nominal Dropout Rate</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Others</h6></li>
+    <li><a class="dropdown-item" href="../../articles/en/residence_occurrence_en.html">Residence vs. Occurrence Analyses</a></li>
     <li><a class="dropdown-item" href="../../articles/en/example_datasets_en.html">Using our Example Datasets</a></li>
   </ul>
 </li>
@@ -66,52 +69,60 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Duplicate Doses</h1>
+            <h3 data-toc-skip class="subtitle">Indicator CD 5.2</h3>
                         <h4 data-toc-skip class="author">PAHO/CIM</h4>
             
             <h4 data-toc-skip class="date">November 9, 2026</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.13.0/vignettes/articles/en/duplicate_doses_en.Rmd" class="external-link"><code>vignettes/articles/en/duplicate_doses_en.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.13.1/vignettes/articles/en/duplicate_doses_en.Rmd" class="external-link"><code>vignettes/articles/en/duplicate_doses_en.Rmd</code></a></small>
       <div class="d-none name"><code>duplicate_doses_en.Rmd</code></div>
     </div>
 
     
     
-<p><a href="../es/duplicate_doses_es.html" class="btn btn-outline-primary" role="button">🌐
-Lea esto en español</a></p>
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../es/duplicate_doses_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=42" class="external-link btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Read the PAHO manual</a>
+</div>
 <div class="section level2">
 <h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
-<p>Each dose a person receives should be registered exactly once in the
-Electronic Immunization Registry (EIR). In practice, the same dose is
-often registered more than once for the same person. Every extra record
-inflates the number of doses administered, so it biases dose-based
-coverage upwards, and it distorts any analysis that relies on the dose
-number, such as dose sequence or complete schedule analyses.</p>
-<p>The duplicate doses module compares all the records of the same
-person and dose, and classifies each extra record according to when and
-where it was registered:</p>
+<p>In an Electronic Immunization Registry (EIR), each dose a person
+receives should be registered exactly once. In practice, the same dose
+can be registered more than once for the same person. Every extra record
+inflates the number of doses administered, so it biases traditional
+coverage indicators that typically rely on the “number of doses
+administered” as the numerator.</p>
+<p>This module lets users analyze duplicate doses in an EIR. It compares
+all the records that belong to the same person and correspond to the
+same dose, and classifies each extra record into one of the following
+categories:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Duplicate</strong>: the extra record has the same
 vaccination date and place of occurrence as an earlier record, that is,
-the same vaccination event registered more than once.</li>
+the same vaccination event was registered more than once.</li>
 <li>
 <strong>Repeated</strong>: the extra record has a different
-vaccination date or place of occurrence, that is, the same dose
+vaccination date or place of occurrence, that is, the same dose was
 registered at a different moment in time or in a different place.</li>
 </ol>
-<p>These categories describe how the records match, not why the dose was
-registered more than once. Both can be caused by data entry errors
-(e.g., a record entered twice, data loaded twice when migrating from an
-older system, or a dose registered with the wrong dose number) or by
-programmatic errors (e.g., a dose administered twice because the
-person’s vaccination history was not checked). The plots and the
-record-level table of this module help investigate these possible
-causes.</p>
-<p>Since duplicate and repeated records are a data quality problem of
-each vaccination event, all results refer to the <strong>place of
-occurrence</strong> of the vaccination event, not to the place of
-residence.</p>
+<p>These categories help analysts understand the broad possible causes
+for extra records in their EIR. However, the exact reason for each must
+be analyzed at the record level and combined with additional information
+sources if possible. For example, a <strong>Duplicate</strong> record
+could be caused by the data having been entered twice into the system,
+or by data being duplicated after migrating from an older system. As for
+<strong>Repeated</strong> records, a dose may have been truly
+administered twice (in which case we would call this a programmatic
+error), or it could have been entered with the wrong dose number (e.g.,
+a DTP2 dose entered as DTP1). The plots and the record-level table of
+this module help investigate these possible causes.</p>
+<p>Finally, since extra records (whatever their cause) are a data
+quality problem directly related to each vaccination event, this module
+disaggregates results geographically by the <strong>place of
+occurrence</strong> of the vaccination event, not by the place of
+residence of the individual.</p>
 <blockquote>
 <p><strong>Note</strong></p>
 <p>All functions used for duplicate dose analyses within immunABC begin
@@ -142,26 +153,24 @@ contains several ADM2 subdivisions.</li>
 <div class="section level3">
 <h3 id="duplication-categories">Duplication Categories<a class="anchor" aria-label="anchor" href="#duplication-categories"></a>
 </h3>
-<p>All the records of the same person (<code>ID</code>) and dose
-(<code>dose</code>) are compared in order of vaccination date. The first
-record is considered the legitimate one, and each later record is
-classified by comparing it with the earlier ones:</p>
+<p>When analyzing extra records, the following categorization applies:
+all the records that belong to the same person and contain the same dose
+are compared in order of vaccination date. The first record is
+considered the legitimate one, and each later record is classified by
+comparing it with the earlier ones:</p>
 <ul>
 <li>
 <code>FIRST_ENTRY</code>: the first record of that person and dose.
 It is never counted as a problem.</li>
 <li>
-<code>DUPLICATE</code>: same <code>ID</code>, <code>dose</code>,
-<code>date_vax</code>, <code>ADM1_occurrence</code> and
-<code>ADM2_occurrence</code> as an earlier record.</li>
+<code>DUPLICATE</code>: same person, dose, vaccination date and
+place of occurrence as an earlier record.</li>
 <li>
-<code>REPEATED</code>: same <code>ID</code> and <code>dose</code> as
-an earlier record, but a different <code>date_vax</code> or place of
-occurrence.</li>
+<code>REPEATED</code>: same person and dose as an earlier record,
+but a different vaccination date or place of occurrence.</li>
 </ul>
-<p>Only the extra records are counted, so a dose registered three times
-counts as two. For example, a person with DTP1 registered three
-times:</p>
+<p>The following is an example of such classifications for a person with
+two extra records:</p>
 <table class="table">
 <colgroup>
 <col width="25%">
@@ -180,7 +189,7 @@ times:</p>
 <td>January 5</td>
 <td><code>ADM2_1_1</code></td>
 <td><code>FIRST_ENTRY</code></td>
-<td>First record of this person and dose.</td>
+<td>First record of this person and dose. Not counted as extra.</td>
 </tr>
 <tr class="even">
 <td>February 10</td>
@@ -196,10 +205,6 @@ times:</p>
 </tr>
 </tbody>
 </table>
-<p>Note that a record with the same date as an earlier one but a
-different place of occurrence is <code>REPEATED</code>, not
-<code>DUPLICATE</code>, since the same dose may have been registered by
-two different vaccination sites.</p>
 </div>
 <div class="section level3">
 <h3 id="records-not-evaluated">Records Not Evaluated<a class="anchor" aria-label="anchor" href="#records-not-evaluated"></a>
@@ -207,9 +212,9 @@ two different vaccination sites.</p>
 <p>Records missing <code>ID</code>, <code>dose</code>,
 <code>date_vax</code>, <code>ADM1_occurrence</code> or
 <code>ADM2_occurrence</code> do not contain enough information to tell
-whether they match another record, so they are not evaluated
-(<code>NA</code> and empty or whitespace-only text count as missing).
-The functions show a message with the number of records excluded.</p>
+whether they match another record, so they are not evaluated. All the
+functions in this module will show a message with the number of records
+that were excluded.</p>
 </div>
 </div>
 <div class="section level2">
@@ -227,7 +232,8 @@ The functions show a message with the number of records excluded.</p>
 <p>The functions in this module require your <strong>EIR
 dataset</strong> in the standard immunABC format.
 <code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> can optionally use a <strong>vaccination
-schedule</strong> to show the vaccination window of each dose.</p>
+schedule</strong> to show the vaccination window of each dose. The
+expected format for these datasets is described below.</p>
 <div class="section level4">
 <h4 id="eir">EIR<a class="anchor" aria-label="anchor" href="#eir"></a>
 </h4>
@@ -414,13 +420,13 @@ Lower and upper limits of the vaccination window, in days.</li>
 <div class="section level4">
 <h4 id="expected-workflow">Expected Workflow<a class="anchor" aria-label="anchor" href="#expected-workflow"></a>
 </h4>
-<p>The <code>dd_</code> suite contains seven functions, organized in
+<p>The <code>dd_</code> suite contains seven functions organized in
 three pipelines:</p>
 <ol style="list-style-type: decimal">
 <li>
 <code><a href="../../reference/dd_rate.html">dd_rate()</a></code> — computes the percentage of duplicate and
-repeated records, by geographic level and optionally by dose or birth
-cohort.
+repeated records, permitting disaggregation by geographic level and
+optionally by dose or birth cohort.
 <ul>
 <li>
 <code><a href="../../reference/dd_barplot.html">dd_barplot()</a></code> — visualizes the output of
@@ -445,8 +451,12 @@ records by month of vaccination.
 registered more than once, for record-level review and correction.
 <ul>
 <li>
-<code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> — compares the age at vaccination of
-the first entries and the repeated records of a dose.</li>
+<code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> — for <strong>Repeated</strong>
+records of a dose, this function compares the age at vaccination of the
+repeats with that of the first entries of the same dose. This helps spot
+doses registered in the EIR with the wrong dose number (e.g., DTP1
+repeats clustering at the age DTP2 is due may point towards DTP2 doses
+being registered as DTP1).</li>
 </ul>
 </li>
 </ol>
@@ -463,9 +473,9 @@ doses analysis.</div>
 </h4>
 <p><code><a href="../../reference/dd_rate.html">dd_rate()</a></code> classifies every record and returns, for each
 group, the number and percentage of <code>DUPLICATE</code> and
-<code>REPEATED</code> records. The denominator (<code>total</code>) is
-every evaluated record in the group, including the first entries and
-records of doses registered only once.</p>
+<code>REPEATED</code> records. The denominator (<code>total</code>)
+includes every evaluated record in the group. Below we show the result
+at the national level.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/dd_rate.html">dd_rate</a></span><span class="op">(</span>data.EIR <span class="op">=</span> <span class="va">immunABC.EIR</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">kable</span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span>, caption <span class="op">=</span> <span class="st">"Duplicate and repeated records at the national level"</span><span class="op">)</span></span></code></pre></div>
@@ -493,9 +503,10 @@ records of doses registered only once.</p>
 </tbody>
 </table>
 <p>Results can be disaggregated geographically with
-<code>geo_level</code>, and by one additional variable with
-<code>disaggregate_by</code>: <code>"dose"</code> or
-<code>"birth_cohort"</code> (year of birth).</p>
+<code>geo_level</code> and by one additional variable with the
+<code>disaggregate_by</code> argument (either <code>dose</code> or
+<code>birth_cohort</code>). For example, if we disaggregate by the first
+subnational level (ADM1), we obtain the following table:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rate_adm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dd_rate.html">dd_rate</a></span><span class="op">(</span></span>
 <span>  data.EIR  <span class="op">=</span> <span class="va">immunABC.EIR</span>,</span>
@@ -585,6 +596,8 @@ records of doses registered only once.</p>
 </tr>
 </tbody>
 </table>
+<p>And disaggregating only by <code>dose</code> produces a table at the
+national level where each dose is analyzed separately:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rate_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dd_rate.html">dd_rate</a></span><span class="op">(</span></span>
 <span>  data.EIR        <span class="op">=</span> <span class="va">immunABC.EIR</span>,</span>
@@ -648,10 +661,9 @@ records of doses registered only once.</p>
 </tr>
 </tbody>
 </table>
-<div class="section level5">
-<h5 id="parameters-accepted">Parameters accepted<a class="anchor" aria-label="anchor" href="#parameters-accepted"></a>
-</h5>
-<ul>
+<details class="params"><summary>
+Parameters accepted
+</summary><ul>
 <li>
 <code>data.EIR</code>: EIR data frame in immunABC format.</li>
 <li>
@@ -674,12 +686,26 @@ e.g. <code>c("DTP1", "DTP2", "DTP3")</code>. This is only a filter: use
 to filter to. This is only a filter: use
 <code>disaggregate_by = "birth_cohort"</code> to see results by cohort.
 Default <code>NULL</code> uses all available cohorts.</li>
+</ul></details><div class="section level5">
+<h5 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a>
+</h5>
+<p>Besides the grouping columns (<code>ADM1</code>, <code>ADM2</code>,
+<code>dose</code> or <code>birth_cohort</code>, depending on
+<code>geo_level</code> and <code>disaggregate_by</code>), the output
+includes:</p>
+<ul>
+<li>
+<code>duplication</code>: the category of the records,
+<code>DUPLICATE</code> or <code>REPEATED</code>.</li>
+<li>
+<code>n</code>: the number of records in that category.</li>
+<li>
+<code>total</code>: the total number of evaluated records in the
+group.</li>
+<li>
+<code>rate</code>: the percentage of records in that category
+(<code>n / total * 100</code>).</li>
 </ul>
-<p>The output contains one row for each <code>duplication</code>
-category (<code>DUPLICATE</code> and <code>REPEATED</code>) in each
-group, with the number of records in that category (<code>n</code>), the
-total number of evaluated records in the group (<code>total</code>) and
-the percentage (<code>rate</code>).</p>
 </div>
 </div>
 <div class="section level4">
@@ -688,9 +714,9 @@ the percentage (<code>rate</code>).</p>
 </h4>
 <p>The output of <code><a href="../../reference/dd_rate.html">dd_rate()</a></code> can be passed directly to
 <code><a href="../../reference/dd_barplot.html">dd_barplot()</a></code>. Geographic areas are shown on the x-axis if
-present, otherwise doses or birth cohorts. When the data has both, doses
-or birth cohorts become panels. When showing rates, a dashed line shows
-the rate of all groups combined.</p>
+present, otherwise this axis will show doses or birth cohorts. When the
+data has both, doses or birth cohorts become panels. When showing rates,
+a dashed line shows the rate of all groups combined.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/dd_barplot.html">dd_barplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rate_adm1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="duplicate_doses_en_files/figure-html/dd-barplot-adm1-1.png" class="r-plt" alt="" width="960"></p>
@@ -707,7 +733,8 @@ show the number of records instead of their percentage:</p>
 <p><img src="duplicate_doses_en_files/figure-html/dd-barplot-dose-1.png" class="r-plt" alt="" width="960"></p>
 <p>At the ADM2 level, <code>within_ADM1</code> focuses on the areas of
 one or several ADM1, and <code>min_total</code> hides the bars with few
-records, since their rates can be misleading:</p>
+records, since their rates can be misleading due to the small
+denominators involved:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rate_adm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dd_rate.html">dd_rate</a></span><span class="op">(</span></span>
 <span>  data.EIR  <span class="op">=</span> <span class="va">immunABC.EIR</span>,</span>
@@ -720,10 +747,9 @@ records, since their rates can be misleading:</p>
 <span>  min_total   <span class="op">=</span> <span class="fl">1000</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="duplicate_doses_en_files/figure-html/dd-barplot-adm2-1.png" class="r-plt" alt="" width="960"></p>
-<div class="section level5">
-<h5 id="parameters-accepted-1">Parameters accepted<a class="anchor" aria-label="anchor" href="#parameters-accepted-1"></a>
-</h5>
-<ul>
+<details class="params"><summary>
+Parameters accepted
+</summary><ul>
 <li>
 <code>data</code>: Output of <code><a href="../../reference/dd_rate.html">dd_rate()</a></code>.</li>
 <li>
@@ -740,30 +766,26 @@ ADM1 units when <code>geo_level = "ADM2"</code>. Default:
 <code>min_total</code>: Minimum number of records for a bar to be
 shown. Hidden bars still count towards the dashed line. Default:
 <code>NULL</code> (all bars shown).</li>
-</ul>
-</div>
-<div class="section level5">
+</ul></details><div class="section level5">
 <h5 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
 </h5>
-<p>Duplicate records are usually a small percentage of all records, so
-the y-axis is scaled to the data instead of 0 to 100%. Rates and numbers
-answer different questions: <code>value = "rate"</code> shows where the
-problem is proportionally worst, which points to registration practices
-worth reviewing, while <code>value = "n"</code> shows where most records
-need correcting, which is where a cleanup effort will have the largest
-impact. Bars well above the dashed line are the first candidates for
-review.</p>
+<p>Rates and raw numbers are both useful but answer different questions.
+With <code>value = "rate"</code>, the plots show where the problem is
+proportionally worst, pointing to registration practices worth
+reviewing. With <code>value = "n"</code>, they show where the most
+records need correcting, which is where a cleanup effort will have the
+largest impact. When showing rates, a dashed line marks the rate of all
+groups combined and any bars well above it should be the first
+candidates for review.</p>
 </div>
 </div>
 <div class="section level4">
 <h4 id="step-3-combine-two-disaggregations-with-dd_heatmap">Step 3 — Combine two disaggregations with
 <code>dd_heatmap()</code><a class="anchor" aria-label="anchor" href="#step-3-combine-two-disaggregations-with-dd_heatmap"></a>
 </h4>
-<p><code><a href="../../reference/dd_heatmap.html">dd_heatmap()</a></code> shows the output of <code><a href="../../reference/dd_rate.html">dd_rate()</a></code>
-for each geographic area (columns) against each dose or birth cohort
-(rows), so <code>data</code> must come from <code><a href="../../reference/dd_rate.html">dd_rate()</a></code> with
-<code>geo_level</code> at <code>"ADM1"</code> or <code>"ADM2"</code> and
-a value for <code>disaggregate_by</code>.</p>
+<p><code><a href="../../reference/dd_heatmap.html">dd_heatmap()</a></code> helps combine two disaggregations into a
+single plot. For example, we can visualize the percentage of duplicate
+records for each geographic area and dose:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rate_adm1_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dd_rate.html">dd_rate</a></span><span class="op">(</span></span>
 <span>  data.EIR        <span class="op">=</span> <span class="va">immunABC.EIR</span>,</span>
@@ -773,8 +795,8 @@ a value for <code>disaggregate_by</code>.</p>
 <span></span>
 <span><span class="fu"><a href="../../reference/dd_heatmap.html">dd_heatmap</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rate_adm1_dose</span><span class="op">)</span></span></code></pre></div>
 <p><img src="duplicate_doses_en_files/figure-html/dd-heatmap-dose-1.png" class="r-plt" alt="" width="960"></p>
-<p>By birth cohort, filtering to the most recent cohorts with
-<code>birth_cohorts</code>:</p>
+<p>We could visualize the same, but by birth cohort instead of dose, and
+additionally filter only for the most recent cohorts:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rate_adm1_cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dd_rate.html">dd_rate</a></span><span class="op">(</span></span>
 <span>  data.EIR        <span class="op">=</span> <span class="va">immunABC.EIR</span>,</span>
@@ -785,10 +807,9 @@ a value for <code>disaggregate_by</code>.</p>
 <span></span>
 <span><span class="fu"><a href="../../reference/dd_heatmap.html">dd_heatmap</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rate_adm1_cohort</span><span class="op">)</span></span></code></pre></div>
 <p><img src="duplicate_doses_en_files/figure-html/dd-heatmap-cohort-1.png" class="r-plt" alt="" width="960"></p>
-<div class="section level5">
-<h5 id="parameters-accepted-2">Parameters accepted<a class="anchor" aria-label="anchor" href="#parameters-accepted-2"></a>
-</h5>
-<ul>
+<details class="params"><summary>
+Parameters accepted
+</summary><ul>
 <li>
 <code>data</code>: Output of <code><a href="../../reference/dd_rate.html">dd_rate()</a></code> with
 <code>geo_level</code> at <code>"ADM1"</code> or <code>"ADM2"</code> and
@@ -815,19 +836,17 @@ cells filled).</li>
 Whether to show the number in each cell, or a color legend instead. Set
 it to <code>FALSE</code> when there are too many cells to read (e.g., at
 the ADM2 level).</li>
-</ul>
-</div>
-<div class="section level5">
+</ul></details><div class="section level5">
 <h5 id="interpretation-1">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation-1"></a>
 </h5>
 <p>A dark row across all areas points to a problem of that dose or
 cohort everywhere, for example a dose that is systematically registered
-twice by the information system. A dark column points to a problem of
-that area across all doses, which suggests a local registration
-practice. A single dark cell is a problem specific to one area and one
-dose or cohort. In the example, <code>ADM1_4</code> has the highest
-rates for most doses, and <code>BCG RN</code> and <code>DTP1</code> have
-the highest rates in every area.</p>
+twice by the information system. A dark column points to a problem in a
+specific area, which suggests a local registration practice. A single
+dark cell is a problem specific to one area and one dose or cohort. In
+the example, <code>ADM1_4</code> has the highest rates for most doses,
+and <code>BCG RN</code> and <code>DTP1</code> have the highest rates in
+every area.</p>
 </div>
 </div>
 <div class="section level4">
@@ -835,11 +854,11 @@ the highest rates in every area.</p>
 <code>dd_trend()</code> and <code>dd_trend_plot()</code><a class="anchor" aria-label="anchor" href="#step-4-follow-duplicate-records-over-time-with-dd_trend-and-dd_trend_plot"></a>
 </h4>
 <p><code><a href="../../reference/dd_trend.html">dd_trend()</a></code> performs the same calculation as
-<code><a href="../../reference/dd_rate.html">dd_rate()</a></code>, but by month of vaccination
-(<code>month_vax</code>, the first day of each month), to spot trends
-over time. Only <code>DUPLICATE</code> records are included: repeated
-records are better explored with <code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> (see Step
-6).</p>
+<code><a href="../../reference/dd_rate.html">dd_rate()</a></code>, but disaggregates results by month of
+vaccination to spot trends over time. Only <code>DUPLICATE</code>
+records are included: repeated records are better explored with
+<code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> (see Step 6).</p>
+<p>Below we see the summary of duplicate records by month and ADM1.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trend_adm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dd_trend.html">dd_trend</a></span><span class="op">(</span></span>
 <span>  data.EIR  <span class="op">=</span> <span class="va">immunABC.EIR</span>,</span>
@@ -908,20 +927,23 @@ records are better explored with <code><a href="../../reference/dd_repeat_plot.h
 </tr>
 </tbody>
 </table>
-<p><code><a href="../../reference/dd_trend_plot.html">dd_trend_plot()</a></code> draws all areas combined as a
-highlighted line, and each geographic area as a thin grey line for
-context. Up to 5 areas can be highlighted in color with
-<code>highlight</code>:</p>
+<p>When results are disaggregated at a subnational level,
+<code><a href="../../reference/dd_trend_plot.html">dd_trend_plot()</a></code> draws the total for all areas as a
+highlighted line, and each subnational area as a thin grey line for
+context. Up to 5 subnational areas can be highlighted in color with the
+<code>highlight</code> parameter. Exploring the data before selecting
+the areas to highlight is recommended. In this case we are highlighting
+<code>ADM1_4</code> because it is the area with the highest rate of
+duplicate records.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/dd_trend_plot.html">dd_trend_plot</a></span><span class="op">(</span></span>
 <span>  data      <span class="op">=</span> <span class="va">trend_adm1</span>,</span>
 <span>  highlight <span class="op">=</span> <span class="st">"ADM1_4"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="duplicate_doses_en_files/figure-html/dd-trend-plot-1.png" class="r-plt" alt="" width="960"></p>
-<div class="section level5">
-<h5 id="parameters-accepted-3">Parameters accepted<a class="anchor" aria-label="anchor" href="#parameters-accepted-3"></a>
-</h5>
-<p><code><a href="../../reference/dd_trend.html">dd_trend()</a></code>:</p>
+<details class="params"><summary>
+Parameters accepted
+</summary><p><code><a href="../../reference/dd_trend.html">dd_trend()</a></code>:</p>
 <ul>
 <li>
 <code>data.EIR</code>: EIR data frame in immunABC format.</li>
@@ -958,20 +980,17 @@ refers to those areas only. Default: <code>NULL</code>.</li>
 shown in a given month, leaving gaps in the lines otherwise. Useful
 because rates based on few records can be misleading and stretch the
 y-axis. Default: <code>NULL</code> (all months shown).</li>
-</ul>
-</div>
-<div class="section level5">
+</ul></details><div class="section level5">
 <h5 id="interpretation-2">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation-2"></a>
 </h5>
-<p>Data entry errors tend to be spread evenly over time, so when
-duplicate records are concentrated in a few months, the records from
-those months may have been entered twice, for example when loading
-historical data from an older system into the EIR, or when a batch of
-paper records was digitized twice. In the example, duplicates are
-clearly concentrated in the first half of 2022, particularly in
-<code>ADM1_4</code>, and almost disappear afterwards. A sudden increase
-at a later date, on the other hand, may point to a change in the
-information system or in registration practices.</p>
+<p>This analysis helps spot trends in duplicate records over time. If a
+month or set of months has higher duplicate rates than the rest, it may
+point to a systematic error affecting the records from that period. For
+example, records may have been written more than once during a batch
+migration from an older EIR, or a batch of paper records may have been
+digitized twice. In the example, duplicates are clearly concentrated in
+the first half of 2022, particularly in the <code>ADM1_4</code> area,
+and almost disappear afterwards.</p>
 </div>
 </div>
 <div class="section level4">
@@ -979,18 +998,16 @@ information system or in registration practices.</p>
 <code>dd_duplicates()</code><a class="anchor" aria-label="anchor" href="#step-5-inspect-individual-records-with-dd_duplicates"></a>
 </h4>
 <p><code><a href="../../reference/dd_duplicates.html">dd_duplicates()</a></code> returns a record-level table with every
-record of each dose registered more than once for the same person,
-including the <code>FIRST_ENTRY</code>, so that later records can be
-compared against it. Groups with the most copies are shown first.</p>
+record of each dose registered more than once for the same person. Below
+we list all the DTP1 doses registered more than once:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">duplicates_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dd_duplicates.html">dd_duplicates</a></span><span class="op">(</span>data.EIR <span class="op">=</span> <span class="va">immunABC.EIR</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">duplicates_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dd_duplicates.html">dd_duplicates</a></span><span class="op">(</span>data.EIR <span class="op">=</span> <span class="va">immunABC.EIR</span>, vaccines <span class="op">=</span> <span class="st">"DTP1"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">duplicates_df</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="st">"DTP1"</span>, <span class="va">n_copies</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Sample of DTP1 doses registered twice"</span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
-<caption>Sample of DTP1 doses registered twice</caption>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"DTP1 doses registered more than once"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>DTP1 doses registered more than once</caption>
 <colgroup>
 <col width="5%">
 <col width="9%">
@@ -998,11 +1015,11 @@ compared against it. Groups with the most copies are shown first.</p>
 <col width="9%">
 <col width="13%">
 <col width="13%">
-<col width="5%">
+<col width="4%">
 <col width="4%">
 <col width="7%">
 <col width="19%">
-<col width="10%">
+<col width="9%">
 </colgroup>
 <thead><tr class="header">
 <th align="right">ID</th>
@@ -1019,89 +1036,88 @@ compared against it. Groups with the most copies are shown first.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">11254</td>
-<td align="left">2021-10-07</td>
+<td align="right">185280</td>
+<td align="left">2023-07-07</td>
 <td align="left">DTP1</td>
-<td align="left">2022-01-05</td>
-<td align="left">ADM1_2</td>
-<td align="left">ADM2_2_5</td>
-<td align="right">168</td>
+<td align="left">2023-10-04</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_14</td>
 <td align="right">1</td>
-<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">6</td>
 <td align="right">NA</td>
 <td align="left">FIRST_ENTRY</td>
 </tr>
 <tr class="even">
-<td align="right">11254</td>
-<td align="left">2021-10-07</td>
+<td align="right">185280</td>
+<td align="left">2023-07-07</td>
 <td align="left">DTP1</td>
-<td align="left">2022-05-11</td>
+<td align="left">2023-10-04</td>
 <td align="left">ADM1_3</td>
-<td align="left">ADM2_3_15</td>
-<td align="right">168</td>
+<td align="left">ADM2_3_14</td>
+<td align="right">1</td>
 <td align="right">2</td>
-<td align="right">2</td>
-<td align="right">126</td>
-<td align="left">REPEATED</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="left">DUPLICATE</td>
 </tr>
 <tr class="odd">
-<td align="right">12223</td>
-<td align="left">2021-10-18</td>
+<td align="right">185280</td>
+<td align="left">2023-07-07</td>
 <td align="left">DTP1</td>
-<td align="left">2022-01-10</td>
+<td align="left">2023-10-04</td>
 <td align="left">ADM1_3</td>
-<td align="left">ADM2_3_6</td>
-<td align="right">170</td>
+<td align="left">ADM2_3_14</td>
 <td align="right">1</td>
-<td align="right">2</td>
-<td align="right">NA</td>
-<td align="left">FIRST_ENTRY</td>
+<td align="right">3</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="left">DUPLICATE</td>
 </tr>
 <tr class="even">
-<td align="right">12223</td>
-<td align="left">2021-10-18</td>
+<td align="right">185280</td>
+<td align="left">2023-07-07</td>
 <td align="left">DTP1</td>
-<td align="left">2022-06-14</td>
+<td align="left">2023-10-04</td>
 <td align="left">ADM1_3</td>
-<td align="left">ADM2_3_6</td>
-<td align="right">170</td>
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="right">155</td>
-<td align="left">REPEATED</td>
+<td align="left">ADM2_3_14</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="left">DUPLICATE</td>
 </tr>
 <tr class="odd">
-<td align="right">12415</td>
-<td align="left">2021-10-25</td>
+<td align="right">185280</td>
+<td align="left">2023-07-07</td>
 <td align="left">DTP1</td>
-<td align="left">2022-01-21</td>
+<td align="left">2023-10-04</td>
 <td align="left">ADM1_3</td>
-<td align="left">ADM2_3_7</td>
-<td align="right">171</td>
+<td align="left">ADM2_3_14</td>
 <td align="right">1</td>
-<td align="right">2</td>
-<td align="right">NA</td>
-<td align="left">FIRST_ENTRY</td>
+<td align="right">5</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="left">DUPLICATE</td>
 </tr>
 <tr class="even">
-<td align="right">12415</td>
-<td align="left">2021-10-25</td>
+<td align="right">185280</td>
+<td align="left">2023-07-07</td>
 <td align="left">DTP1</td>
-<td align="left">2022-03-17</td>
+<td align="left">2023-10-04</td>
 <td align="left">ADM1_3</td>
-<td align="left">ADM2_3_7</td>
-<td align="right">171</td>
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="right">55</td>
-<td align="left">REPEATED</td>
+<td align="left">ADM2_3_14</td>
+<td align="right">1</td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="left">DUPLICATE</td>
 </tr>
 </tbody>
 </table>
-<div class="section level5">
-<h5 id="parameters-accepted-4">Parameters accepted<a class="anchor" aria-label="anchor" href="#parameters-accepted-4"></a>
-</h5>
-<ul>
+<details class="params"><summary>
+Parameters accepted
+</summary><ul>
 <li>
 <code>data.EIR</code>: EIR data frame in immunABC format.</li>
 <li>
@@ -1110,31 +1126,107 @@ compared against it. Groups with the most copies are shown first.</p>
 <li>
 <code>birth_cohorts</code>: Numeric vector of birth cohort year(s)
 to filter to. Default <code>NULL</code> uses all available cohorts.</li>
+</ul></details><div class="section level5">
+<h5 id="output-1">Output<a class="anchor" aria-label="anchor" href="#output-1"></a>
+</h5>
+<p>Note that besides the original columns of each record, the output
+includes:</p>
+<ul>
+<li>
+<code>group</code>: a number identifying all the records of the same
+person and dose.</li>
+<li>
+<code>copy</code>: the position of the record within its group, in
+date order.</li>
+<li>
+<code>n_copies</code>: the number of records in the group.</li>
+<li>
+<code>days_since_first_entry</code>: days between the record and the
+<code>FIRST_ENTRY</code> of its group.</li>
+<li>
+<code>duplication</code>: the category of the record:
+<code>FIRST_ENTRY</code>, <code>DUPLICATE</code> or
+<code>REPEATED</code>.</li>
 </ul>
-<p>Besides the original columns of each record, the output includes
-<code>group</code> (a number identifying all the records of the same
-person and dose), <code>copy</code> (the position of the record within
-its group, in date order), <code>n_copies</code> (the number of records
-in the group), <code>days_since_first_entry</code> (days between the
-record and the <code>FIRST_ENTRY</code> of its group, <code>NA</code>
-for the <code>FIRST_ENTRY</code> itself) and <code>duplication</code>.
-This table can be exported for record-level review and correction
-workflows. For example, <code>days_since_first_entry</code> tells apart
-<code>REPEATED</code> records registered on the same day in two
-different places (<code>days_since_first_entry = 0</code>) from those
-registered weeks or months after the first entry.</p>
+</div>
+<div class="section level5">
+<h5 id="interpretation-3">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation-3"></a>
+</h5>
+<p>This table can be exported for record-level review and correction
+workflows. For example, the <code>days_since_first_entry</code> column
+tells apart <code>REPEATED</code> records registered on the same day in
+two different places (<code>days_since_first_entry = 0</code>) from
+those registered weeks or months after the first entry, which may point
+to different causes (see Step 6).</p>
 </div>
 </div>
 <div class="section level4">
 <h4 id="step-6-explore-the-possible-causes-of-repeated-records-with-dd_repeat_plot">Step 6 — Explore the possible causes of repeated records with
 <code>dd_repeat_plot()</code><a class="anchor" aria-label="anchor" href="#step-6-explore-the-possible-causes-of-repeated-records-with-dd_repeat_plot"></a>
 </h4>
-<p><code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> takes the output of
-<code><a href="../../reference/dd_duplicates.html">dd_duplicates()</a></code> and, for a single dose, compares the age at
-vaccination of the <code>FIRST_ENTRY</code> of each group with repeats
-(top panel) against the age at vaccination of the <code>REPEATED</code>
-records (bottom panel). Passing <code>data.schedule</code> shades the
-vaccination window of the doses in <code>schedule_vaccines</code>.</p>
+<p>For the sake of example, let’s consider the following hypothetical
+case for a person born on January 10, 2022:</p>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+</colgroup>
+<thead><tr class="header">
+<th><code>dose</code></th>
+<th><code>date_vax</code></th>
+<th>Age at vaccination</th>
+<th><code>ADM2_occurrence</code></th>
+<th><code>copy</code></th>
+<th><code>days_since_first_entry</code></th>
+<th><code>duplication</code></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>DTP1</td>
+<td>2022-03-11</td>
+<td>60 days</td>
+<td><code>ADM2_1_1</code></td>
+<td>1</td>
+<td><code>NA</code></td>
+<td><code>FIRST_ENTRY</code></td>
+</tr>
+<tr class="even">
+<td>DTP1</td>
+<td>2022-05-12</td>
+<td>122 days</td>
+<td><code>ADM2_1_1</code></td>
+<td>2</td>
+<td>62</td>
+<td><code>REPEATED</code></td>
+</tr>
+</tbody>
+</table>
+<p>The first record falls inside the DTP1 vaccination window (54 to 90
+days of age, according to <code>immunABC.schedule</code>), so it is most
+likely a legitimate DTP1. The second DTP1 record, however, was
+registered at 122 days of age, right inside the DTP2 window (116 to 150
+days). If we look up the rest of this person’s records in the EIR and
+find a DTP3 at 6 months but no DTP2, the most likely explanation is that
+the DTP2 dose was registered with the wrong dose number. Rather than an
+extra dose, this person probably has a mislabeled DTP2 dose.</p>
+<p>The example above was a single person, but reviewing every group by
+hand is not feasible when an EIR has thousands of them. What we really
+want to know is whether that story is an isolated case or a systematic
+pattern: are the <code>REPEATED</code> DTP1 records of the EIR mostly
+registered at the age DTP2 is due?</p>
+<p><code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> answers this question for the whole
+table at once. It takes the output of <code><a href="../../reference/dd_duplicates.html">dd_duplicates()</a></code> and,
+for a single dose, shows the age at vaccination of the
+<code>FIRST_ENTRY</code> records (top panel) and of the
+<code>REPEATED</code> records (bottom panel). One can also pass
+<code>data.schedule</code> and <code>schedule_vaccines</code> to shade
+specific vaccination windows in the plot, and therefore more clearly
+highlight any DTP2 doses being mislabeled as DTP1.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot</a></span><span class="op">(</span></span>
 <span>  data              <span class="op">=</span> <span class="va">duplicates_df</span>,</span>
@@ -1144,8 +1236,9 @@ vaccination window of the doses in <code>schedule_vaccines</code>.</p>
 <span>  schedule_vaccines <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DTP1"</span>, <span class="st">"DTP2"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="duplicate_doses_en_files/figure-html/dd-repeat-plot-1.png" class="r-plt" alt="" width="960"></p>
-<p>Use <code>geo_level</code> to split the panels by geographic area of
-occurrence, which shows whether the pattern is the same everywhere:</p>
+<p>We can also split the results by subnational area using
+<code>geo_level</code>, thereby showing whether the pattern is the same
+everywhere:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot</a></span><span class="op">(</span></span>
 <span>  data              <span class="op">=</span> <span class="va">duplicates_df</span>,</span>
@@ -1157,10 +1250,9 @@ occurrence, which shows whether the pattern is the same everywhere:</p>
 <span>  schedule_vaccines <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DTP1"</span>, <span class="st">"DTP2"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="duplicate_doses_en_files/figure-html/dd-repeat-plot-adm1-1.png" class="r-plt" alt="" width="1152"></p>
-<div class="section level5">
-<h5 id="parameters-accepted-5">Parameters accepted<a class="anchor" aria-label="anchor" href="#parameters-accepted-5"></a>
-</h5>
-<ul>
+<details class="params"><summary>
+Parameters accepted
+</summary><ul>
 <li>
 <code>data</code>: Output of <code><a href="../../reference/dd_duplicates.html">dd_duplicates()</a></code>.</li>
 <li>
@@ -1172,7 +1264,9 @@ panels by: <code>"ADM0"</code> (default, no split), <code>"ADM1"</code>,
 or <code>"ADM2"</code>.</li>
 <li>
 <code>within_ADM1</code>: Character vector to filter to specific
-ADM1 units of occurrence. Default: <code>NULL</code>.</li>
+ADM1 units of occurrence when <code>geo_level</code> is
+<code>"ADM1"</code> or <code>"ADM2"</code>. Default:
+<code>NULL</code>.</li>
 <li>
 <code>binwidth</code>: Width of each bar of the histogram, in days.
 Default: <code>7</code> (one week).</li>
@@ -1188,14 +1282,8 @@ immunABC format, used to shade vaccination windows. Default:
 <code>schedule_vaccines</code>: Up to 3 doses whose vaccination
 window is shaded. Only used with <code>data.schedule</code>. Default
 <code>NULL</code> shades the window of <code>vaccine</code>.</li>
-</ul>
-<p>Records with no <code>date_birth</code>, or with
-<code>date_vax</code> before <code>date_birth</code>, have no valid age
-at vaccination, so they are excluded, with a message. The <a href="date_consistency_comparison_en.html">Date Consistency
-Comparison</a> module can help investigate the latter.</p>
-</div>
-<div class="section level5">
-<h5 id="interpretation-3">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation-3"></a>
+</ul></details><div class="section level5">
+<h5 id="interpretation-4">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation-4"></a>
 </h5>
 <p>The shape of the bottom panel hints at the cause of the repeats:</p>
 <ul>
@@ -1203,8 +1291,8 @@ Comparison</a> module can help investigate the latter.</p>
 <strong>Repeats at the age of the next dose</strong>: if the repeats
 of DTP1 are concentrated in the DTP2 vaccination window, as in the
 example, the second record is most likely a DTP2 dose registered as
-DTP1. These people will probably appear with a skipped DTP2 in the <a href="dose_sequence_comparison_en.html">Dose Sequence Comparison</a>
-module.</li>
+DTP1. These people will probably appear with a skipped DTP2 in the <a href="dose_sequence_comparison_en.html">CD 3.2 Dose Sequence
+Comparison</a> module.</li>
 <li>
 <strong>Repeats shortly after the first entry, within the same
 window</strong>: the dose may have been registered again at a follow-up
@@ -1215,6 +1303,13 @@ was not checked.</li>
 belong to two different people linked to the same ID, which is a record
 linkage problem.</li>
 </ul>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Records with no <code>date_birth</code>, or with
+<code>date_vax</code> before <code>date_birth</code>, have no valid age
+at vaccination, so they are excluded from this analysis. The <a href="date_consistency_comparison_en.html">CD 3.1/3.3 Date Consistency
+Comparison</a> module can help investigate the latter.</p>
+</blockquote>
 </div>
 </div>
 </div>
@@ -1227,15 +1322,25 @@ detecting doses registered more than once in EIR data, telling apart
 <code>DUPLICATE</code> records (the same vaccination event registered
 more than once, with the same date and place) from <code>REPEATED</code>
 records (the same dose registered on a different date or in a different
-place). <code><a href="../../reference/dd_rate.html">dd_rate()</a></code>, <code><a href="../../reference/dd_barplot.html">dd_barplot()</a></code> and
+place).</p>
+<ul>
+<li>
+<code><a href="../../reference/dd_rate.html">dd_rate()</a></code>, <code><a href="../../reference/dd_barplot.html">dd_barplot()</a></code> and
 <code><a href="../../reference/dd_heatmap.html">dd_heatmap()</a></code> give a geographic overview by dose or birth
-cohort, <code><a href="../../reference/dd_trend.html">dd_trend()</a></code> and <code><a href="../../reference/dd_trend_plot.html">dd_trend_plot()</a></code> show
-when duplicates were registered, and <code><a href="../../reference/dd_duplicates.html">dd_duplicates()</a></code> and
-<code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> allow record-level inspection and help
-identify the causes of repeated records. Since duplicate and repeated
-records bias coverage, dropout and every analysis that relies on dose
-numbers, we recommend running this module before the other modules of
-immunABC.</p>
+cohort,</li>
+<li>
+<code><a href="../../reference/dd_trend.html">dd_trend()</a></code> and <code><a href="../../reference/dd_trend_plot.html">dd_trend_plot()</a></code> analyze
+possible time trends in duplicate records,</li>
+<li>
+<code><a href="../../reference/dd_duplicates.html">dd_duplicates()</a></code> allows record-level inspection,
+and</li>
+<li>
+<code><a href="../../reference/dd_repeat_plot.html">dd_repeat_plot()</a></code> helps identify the causes of repeated
+records.</li>
+</ul>
+<p>Since duplicate and repeated records are data quality issues that
+bias many indicators (such as coverage or dropout), we recommend running
+this module early to identify any possible issues with your own EIR.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

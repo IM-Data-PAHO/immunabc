@@ -2,6 +2,8 @@
 
 [🌐 Read this in
 English](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.md)
+[📖 Lea el manual de la
+OPS](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=51)
 
 ## Fundamento
 
@@ -320,8 +322,8 @@ style="width:100%;"}
 >     registros donde `date_vax` ocurre antes que `date_birth` (es
 >     decir, una edad de vacunación negativa), esto señala un error de
 >     **consistencia de fechas**. Cuando esto ocurre, las funciones
->     `vt_` emiten una advertencia que remite al [módulo de comparación
->     de consistencia de
+>     `vt_` emiten una advertencia que remite al [módulo CD 3.1/3.3
+>     Comparación de consistencia de
 >     fechas](https://im-data-paho.github.io/immunabc/articles/es/date_consistency_comparison_es.md)
 >     para identificar y resolver esos registros primero.
 > 2.  Las funciones de este módulo cuentan registros de vacunación, no

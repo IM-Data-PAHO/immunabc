@@ -43,8 +43,9 @@ dd_repeat_plot(
 - within_ADM1:
 
   Character (optional). A character vector of one or several "ADM1"
-  areas of occurrence to filter. Default is `NULL`, which means no
-  filtering by "ADM1".
+  areas to filter (recall this filters by place of occurrence). Only
+  available when `geo_level` is "ADM1" or "ADM2". Default is `NULL`,
+  which means no filtering by "ADM1".
 
 - binwidth:
 

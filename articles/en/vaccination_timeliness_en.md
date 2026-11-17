@@ -2,6 +2,8 @@
 
 [🌐 Lea esto en
 español](https://im-data-paho.github.io/immunabc/articles/es/vaccination_timeliness_es.md)
+[📖 Read the PAHO
+manual](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=51)
 
 ## Rationale
 
@@ -315,7 +317,7 @@ Example Electronic Immunization Registry {.table style="width:100%;"}
 >     `date_vax` occurs before `date_birth` (i.e., a negative age at
 >     vaccination), this points to a **date consistency** error. When
 >     this happens, `vt_` functions will emit a warning directing you to
->     the [Date Consistency Comparison
+>     the [CD 3.1/3.3 Date Consistency Comparison
 >     module](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.md)
 >     to identify and resolve those records first.
 > 2.  The functions in this module count vaccination records, not

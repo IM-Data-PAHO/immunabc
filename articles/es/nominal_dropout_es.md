@@ -2,6 +2,8 @@
 
 [🌐 Read this in
 English](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.md)
+[📖 Lea el manual de la
+OPS](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=52)
 
 ## Fundamento
 
@@ -248,15 +250,15 @@ El parámetro `fix_residence` controla cómo maneja esto
 [`nod_dropout()`](https://im-data-paho.github.io/immunabc/reference/nod_dropout.md):
 
 - `fix_residence = TRUE` (predeterminado): antes de calcular el
-  abandono, todos los registros de una persona se corrigen para usar el
-  `ADM1_residence`/`ADM2_residence` de su **vacunación más reciente**,
-  de modo que sus dosis queden agrupadas correctamente.
-- `fix_residence = FALSE`: los valores de residencia se dejan tal como
-  fueron registrados. Si se detectan inconsistencias,
+  abandono, todos los registros de una persona se corrigen para usar la
+  residencia de su **vacunación más reciente**, de modo que sus dosis
+  queden agrupadas correctamente.
+- `fix_residence = FALSE`: los valores de residencia no se modifican. Si
+  se detectan inconsistencias,
   [`nod_dropout()`](https://im-data-paho.github.io/immunabc/reference/nod_dropout.md)
-  mostrará una advertencia indicando que los resultados podrían ser
-  inexactos, y que deben resolverse manualmente de antemano o volver a
-  establecer `fix_residence` en `TRUE`.
+  se detiene con un error, ya que sus resultados serían inexactos.
+  Resuélvalas manualmente de antemano, o establezca
+  `fix_residence = TRUE`.
 
 El siguiente ejemplo construye un pequeño RNVe donde la persona `ID 1`
 se mudó de `ADM1_1` a `ADM1_2` entre dosis, para ilustrar ambos casos.
@@ -301,11 +303,10 @@ fixed_result <- nod_dropout(
 )
 ```
 
-    ## Warning in .validate_residence(data.EIR): 1 ID(s) have inconsistent
-    ## ADM1_residence/ADM2_residence across records, meaning residence is not updated
-    ## to the person's most recent residence.
+    ## Warning in .enforce_single_residence(data.EIR, fix_residence): 1 ID(s) have
+    ## more than one place of residence across their records.
 
-    ## 1 record(s) had residence updated to the most recent vaccination residence.
+    ## 1 record(s) updated to the residence of the most recent vaccination.
 
 ``` r
 
@@ -319,11 +320,12 @@ fixed_result %>% kable(digits = 3, caption = "Resultado con fix_residence = TRUE
 
 Resultado con fix_residence = TRUE {.table}
 
-Con `fix_residence = FALSE`, las dos dosis de `ID 1` permanecen
-divididas entre `ADM1_1` y `ADM1_2`, por lo que
+Con `fix_residence = FALSE`, las dos dosis de `ID 1` quedarían divididas
+entre `ADM1_1` y `ADM1_2`, y
 [`nod_dropout()`](https://im-data-paho.github.io/immunabc/reference/nod_dropout.md)
-reporta incorrectamente un abandono en ambos grupos, y advierte que la
-inconsistencia de residencia no fue corregida:
+reportaría incorrectamente un abandono en ambos grupos. Para evitarlo,
+[`nod_dropout()`](https://im-data-paho.github.io/immunabc/reference/nod_dropout.md)
+se detiene con un error:
 
 ``` r
 
@@ -336,26 +338,8 @@ unfixed_result <- nod_dropout(
 )
 ```
 
-    ## Warning in .validate_residence(data.EIR): 1 ID(s) have inconsistent
-    ## ADM1_residence/ADM2_residence across records, meaning residence is not updated
-    ## to the person's most recent residence.
-
-    ## Warning in nod_dropout(data.EIR = residence_example, vaccine_init = "DTP1", :
-    ## Residence inconsistencies were not corrected (fix_residence = FALSE). Please
-    ## resolve them manually before trusting nod_dropout results, or set fix_residence
-    ## = TRUE.
-
-``` r
-
-unfixed_result %>% kable(digits = 3, caption = "Resultado con fix_residence = FALSE")
-```
-
-| ADM1_residence | indicator | num | denom | percent |
-|:---------------|:----------|----:|------:|--------:|
-| ADM1_1         | complete  |   1 |     2 |      50 |
-| ADM1_1         | dropout   |   1 |     2 |      50 |
-
-Resultado con fix_residence = FALSE {.table}
+    ## Error in `.enforce_single_residence()`:
+    ## ! Error: 1 ID(s) have more than one place of residence across their records. Correct them in data.EIR, or set fix_residence = TRUE to assign each person the residence of their most recent vaccination.
 
 Esta salida puede pasarse directamente a la función
 [`nod_barplot()`](https://im-data-paho.github.io/immunabc/reference/nod_barplot.md)

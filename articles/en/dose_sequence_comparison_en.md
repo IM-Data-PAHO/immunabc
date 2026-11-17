@@ -2,6 +2,8 @@
 
 [🌐 Lea esto en
 español](https://im-data-paho.github.io/immunabc/articles/es/dose_sequence_comparison_es.md)
+[📖 Read the PAHO
+manual](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=37)
 
 ## Rationale
 
@@ -73,7 +75,7 @@ A sequence is **consistent** when:
     first doses of the sequence. A person who has not finished the
     sequence yet (e.g., only DTP1, or DTP1 and DTP2) can be consistent:
     they may simply not have reached the age for the next dose, or may
-    have dropped out (see the [Nominal Dropout
+    have dropped out (see the [UD 2.7 Nominal Dropout
     Rate](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.md)
     module).
 2.  Every dose received was administered after the previous dose
@@ -296,14 +298,15 @@ the total number of people with at least one dose of the sequence
 Since each person is evaluated as a whole, they must be assigned to a
 single place of residence. If a person’s registered residence is not the
 same on every record (e.g., they moved between their DTP1 and DTP3
-doses, and the older record was never updated), the `sc_` functions warn
-about it, and the `fix_residence` parameter controls how it is handled:
+doses, and the older record was never updated), the `fix_residence`
+parameter controls how it is handled:
 
-- `fix_residence = TRUE` (default): all of a person’s records are
-  corrected to the `ADM1_residence`/`ADM2_residence` tied to their
-  **most recent vaccination**.
-- `fix_residence = FALSE`: residence values are left as recorded, and
-  each person is assigned the residence of their first record.
+- `fix_residence = TRUE` (default): a warning is emitted and all of a
+  person’s records are corrected to the residence of their **most recent
+  vaccination**.
+- `fix_residence = FALSE`: residence values are not modified and all
+  functions within this module stop with an error. You should correct
+  the residences in your EIR beforehand, or set `fix_residence = TRUE`.
 
 [`sc_rate()`](https://im-data-paho.github.io/immunabc/reference/sc_rate.md)
 and
@@ -371,7 +374,7 @@ Sequences flagged `(out of order)` are usually rare, so even small
 percentages deserve attention. They may be caused by typos in
 `date_vax`, by doses registered with the wrong dose number (e.g., DTP2
 registered as DTP1 and vice versa), or by records from two different
-people linked to the same ID. The [Date Consistency
+people linked to the same ID. The [CD 3.1/3.3 Date Consistency
 Comparison](https://im-data-paho.github.io/immunabc/articles/en/date_consistency_comparison_en.md)
 module can help investigate the dates involved.
 
@@ -433,8 +436,8 @@ sc_heatmap(
   consistent and `DATE_MISSING` sequences (percentages over all people),
   or only inconsistent sequences (percentages over inconsistent
   sequences).
-- `within_ADM1`: Character vector to filter to specific ADM1 units.
-  Default: `NULL`.
+- `within_ADM1`: Character vector to filter to specific ADM1 units when
+  `geo_level` is `"ADM1"` or `"ADM2"`. Default: `NULL`.
 - `birth_cohorts`: Numeric vector of birth cohort year(s) to filter to.
   Default `NULL` uses all available cohorts.
 - `allow_same_day`: Logical, defaults to `FALSE`.

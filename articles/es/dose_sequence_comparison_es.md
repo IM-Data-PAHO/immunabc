@@ -2,6 +2,8 @@
 
 [🌐 Read this in
 English](https://im-data-paho.github.io/immunabc/articles/en/dose_sequence_comparison_en.md)
+[📖 Lea el manual de la
+OPS](https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=37)
 
 ## Fundamento
 
@@ -76,7 +78,7 @@ Una secuencia es **consistente** cuando:
     termina la secuencia (p. ej., solo DTP1, o DTP1 y DTP2) puede ser
     consistente: puede que simplemente no haya alcanzado la edad para la
     siguiente dosis, o que haya abandonado el esquema (vea el módulo de
-    [Tasa de abandono
+    [UD 2.7 Tasa de abandono
     nominal](https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.md)).
 2.  Cada dosis recibida fue administrada después de la dosis anterior
     recibida en la secuencia. De forma predeterminada, dos dosis
@@ -306,19 +308,19 @@ secuencia (`total`) y el porcentaje (`rate`).
 
 #### Manejo de inconsistencias de residencia
 
-Dado que cada persona se evalúa como un todo, debe asignarse a un único
-lugar de residencia. Si la residencia registrada de una persona no es la
-misma en todos sus registros (por ejemplo, se mudó entre su dosis de
-DTP1 y DTP3, y el registro anterior nunca se actualizó), las funciones
-`sc_` muestran una advertencia, y el parámetro `fix_residence` controla
-cómo se maneja:
+Dado que las dosis de una persona se evalúan en conjunto, deben
+asignarse a un único lugar de residencia. Si la residencia registrada de
+una persona no es la misma en todos sus registros (por ejemplo, se mudó
+entre su dosis de DTP1 y DTP3, y el registro anterior nunca se
+actualizó), el parámetro `fix_residence` controla cómo se maneja:
 
-- `fix_residence = TRUE` (predeterminado): todos los registros de una
-  persona se corrigen para usar el `ADM1_residence`/`ADM2_residence` de
-  su **vacunación más reciente**.
-- `fix_residence = FALSE`: los valores de residencia se dejan tal como
-  fueron registrados, y a cada persona se le asigna la residencia de su
-  primer registro.
+- `fix_residence = TRUE` (predeterminado): se muestra una advertencia y
+  todos los registros de una persona se corrigen para usar la residencia
+  de su **vacunación más reciente**.
+- `fix_residence = FALSE`: los valores de residencia no se modifican y
+  las funciones de este módulo se detienen con un error. Usted deberá
+  corregir las residencias en su RNVe de antemano, o configurar
+  `fix_residence = TRUE`.
 
 [`sc_rate()`](https://im-data-paho.github.io/immunabc/reference/sc_rate.md)
 y
@@ -390,8 +392,8 @@ frecuentes, por lo que incluso porcentajes pequeños merecen atención.
 Pueden deberse a errores de digitación en la fecha de vacunación
 (`date_vax`), a dosis registradas con un número de dosis equivocado
 (p. ej., DTP2 registrada como DTP1 y viceversa), o a registros de dos
-personas distintas vinculados al mismo ID. El módulo de [Comparación de
-consistencia de
+personas distintas vinculados al mismo ID. El módulo de [CD 3.1/3.3
+Comparación de consistencia de
 fechas](https://im-data-paho.github.io/immunabc/articles/es/date_consistency_comparison_es.md)
 puede ayudar a investigar las fechas involucradas.
 
@@ -454,7 +456,8 @@ sc_heatmap(
   sobre todas las personas), o solo las secuencias inconsistentes
   (porcentajes sobre las secuencias inconsistentes).
 - `within_ADM1`: Vector de caracteres para filtrar unidades ADM1
-  específicas. Valor predeterminado: `NULL`.
+  específicas cuando `geo_level` es `"ADM1"` o `"ADM2"`. Valor
+  predeterminado: `NULL`.
 - `birth_cohorts`: Vector numérico con el o los años de cohorte de
   nacimiento a filtrar. El valor predeterminado `NULL` utiliza todas las
   cohortes disponibles.
