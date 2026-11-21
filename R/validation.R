@@ -105,6 +105,26 @@
   }
 }
 
+#' Validate data.pop_ids, the individual population records. Both residence
+#' columns are required at every geo_level because denominators read both.
+#'
+#' @keywords internal
+#' @noRd
+.validate_data.pop_ids <- function(
+  data.pop_ids,
+  required_columns = c(
+    "ID",
+    "name",
+    "date_birth",
+    "ADM1_residence",
+    "ADM2_residence"
+  )
+) {
+  if(!is.null(data.pop_ids)) {
+    .validate_data_columns(data.pop_ids, required_columns, data_name = "data.pop_ids")
+  }
+}
+
 #' Validate data.pop according to geo_level.
 #'
 #' @keywords internal
@@ -235,6 +255,18 @@
     data,
     c("dose", "birth_cohort", "numerator", "population", "coverage"),
     "bc_coverage"
+  )
+}
+
+#' Validate input data to zd_barplot.
+#'
+#' @keywords internal
+#' @noRd
+.validate_zd_barplot_data <- function(data) {
+  .validate_data_columns(
+    data,
+    c("dose", "birth_cohort", "numerator", "population", "zd_rate"),
+    "zd_rate"
   )
 }
 

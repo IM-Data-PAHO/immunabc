@@ -9,6 +9,38 @@
   switch(geo_level, ADM0 = character(0), ADM1 = "ADM1", ADM2 = c("ADM1", "ADM2"))
 }
 
+#' Compute a data frame of denominators by group from a data frame of population
+#' records.
+#' NOTE: Does not validate population data. Callers must validate it before
+#' calling.
+#'
+#' @keywords internal
+#' @noRd
+.extract_denominators_from_population_data <- function(pop_data, groups, birth_cohorts = NULL) {
+  line_list_denominator <- pop_data %>%
+    select(
+      ID,
+      date_birth,
+      ADM1 = ADM1_residence,
+      ADM2 = ADM2_residence
+    ) %>%
+    mutate(birth_cohort = year(date_birth))
+
+  if(!is.null(birth_cohorts)) {
+    line_list_denominator <- line_list_denominator %>%
+      filter(birth_cohort %in% birth_cohorts)
+  }
+
+  line_list_denominator <- line_list_denominator %>%
+    distinct(ID, across(all_of(groups)))
+
+  denominator <- line_list_denominator %>%
+    group_by(across(all_of(groups))) %>%
+    summarise(population = n(), .groups = "drop")
+
+  return(denominator)
+}
+
 #' Detect the smallest admin level in a data frame.
 #'
 #' @keywords internal

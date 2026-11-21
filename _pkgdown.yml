@@ -30,6 +30,8 @@ navbar:
         href: articles/en/vaccination_timeliness_en.html
       - text: UD 2.7 Nominal Dropout Rate
         href: articles/en/nominal_dropout_en.html
+      - text: UD 2.9 Zero-Dose Rate
+        href: articles/en/zero_dose_en.html
       - text: -------
       - text: Others
       - text: Residence vs. Occurrence Analyses
@@ -113,6 +115,12 @@ reference:
       - bc_coverage
       - bc_barplot
 
+  - title: Zero-Dose Rate
+    desc: Functions for calculating and visualizing the zero-dose rate and listing zero-dose people.
+    contents:
+      - zd_rate
+      - zd_barplot
+
   - title: Example Data
     desc: Example data frames to understand how the package works and what it expects.
     contents:
@@ -120,4 +128,6 @@ reference:
       - immunABC.pop.ADM0
       - immunABC.pop.ADM1
       - immunABC.pop.ADM2
+      - immunABC.pop_ids
+      - immunABC.pop_ids_expanded_to_pop
       - immunABC.schedule

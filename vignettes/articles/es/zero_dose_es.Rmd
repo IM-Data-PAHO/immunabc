@@ -1,0 +1,331 @@
+---
+title: "Tasa de cero dosis"
+subtitle: "Indicador UD 2.9"
+author: "OPS/CIM"
+date: "20 de noviembre de 2026"
+output:
+  html_document:
+    self_contained: true
+    theme: cosmo
+    highlight: tango
+    code_folding: show
+    code_download: true
+    toc: true
+    toc_depth: 2
+---
+
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../en/zero_dose_en.html" class="btn btn-outline-primary" role="button">🌐 Read this in English</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=45" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Lea el manual de la OPS</a>
+</div>
+```
+
+```{r setup, include = FALSE, message = FALSE, warning = FALSE}
+library(immunabc)
+library(dplyr)
+library(knitr)
+```
+
+# Fundamento
+
+El objetivo de este indicador es identificar a las personas que no tienen registro de haber recibido un conjunto determinado de vacunas, conocidas como personas cero dosis. Son las más expuestas a las enfermedades prevenibles por vacunación y suelen pertenecer a comunidades a las que el programa de inmunización no está llegando. Saber cuántas son, dónde viven y, cuando se dispone de registros individuales, quiénes son, permite al programa planificar estrategias focalizadas para alcanzarlas.
+
+La tasa de cero dosis es el complemento de la cobertura para una cohorte de nacimiento específica:
+
+$$
+\text{Tasa de cero dosis (\%)} = 100 - \text{Cobertura (\%)} = 100 - \frac{\text{# de personas con registro de la vacuna en una cohorte de nacimiento específica}}{\text{Total de personas en esa cohorte de nacimiento}} \times 100
+$$
+
+El total de personas en la cohorte de nacimiento (el denominador) se toma de la fuente más detallada disponible:
+
+1. Los registros poblacionales individuales (`data.pop_ids`), si se proporcionan. Estos tienen prioridad sobre cualquier otra fuente.
+2. En su defecto, una tabla de población (`data.pop`), si se proporciona.
+3. En su defecto, las personas que figuran en el propio RNVe.
+
+> **Nota**
+>
+> Todas las funciones utilizadas para los análisis de cero dosis dentro de immunABC comienzan con el prefijo `zd_`.
+
+# Glosario
+
+## Cero dosis
+
+Una persona cero dosis es aquella que no tiene registro de haber recibido una vacuna determinada. Cuando el análisis abarca varias vacunas a la vez, una persona cero dosis es aquella que no tiene registro de ninguna de ellas.
+
+## Cohorte de nacimiento
+
+Una cohorte de nacimiento es el grupo de todas las personas nacidas dentro de un mismo período de tiempo, normalmente un único año calendario. Por ejemplo, la cohorte de nacimiento de 2022 comprende a todas las personas nacidas durante el año 2022.
+
+## Divisiones político-geográficas
+
+A lo largo de esta viñeta se hace referencia a distintos niveles de división político-geográfica. Estos niveles son definidos por cada país o territorio y pueden recibir nombres diferentes. immunABC no depende de esos nombres locales; por eso, el usuario debe recodificar sus variables para ajustarlas a la estructura que utiliza el paquete.
+
+En concreto, immunABC puede distinguir tres niveles administrativos que, listados del nivel superior al inferior, son: ADM0, ADM1 y ADM2.
+
+1. ADM0: El país. Este es el nivel administrativo más alto.
+2. ADM1: La primera subdivisión geográfica del país. ADM0 contiene varias subdivisiones ADM1.
+3. ADM2: La segunda subdivisión geográfica del país. Cada ADM1 contiene varias subdivisiones ADM2.
+
+## Nombres de vacunas
+
+Los conjuntos de datos de ejemplo utilizan una convención específica para nombrar las dosis de vacunas. Es posible que esta convención no coincida con la que usa su país o institución, pero esto no afecta el uso del paquete si los nombres se aplican de manera consistente.
+
+Por ejemplo, los nombres de las vacunas utilizados en el paquete immunABC son:
+
+| Abreviatura  | Nombre completo                                                  |
+|--------------|------------------------------------------------------------------|
+| SRP1         | Vacuna contra sarampión, rubéola y paperas (1.ª dosis)           |
+| DTP1         | Vacuna contra difteria, tétanos y tos ferina (1.ª dosis)         |
+| DTP2         | Vacuna contra difteria, tétanos y tos ferina (2.ª dosis)         |
+| DTP3         | Vacuna contra difteria, tétanos y tos ferina (3.ª dosis)         |
+| BCG RN       | Vacuna Bacillus Calmette–Guérin (al nacer)                       |
+| YFV1         | Vacuna contra la fiebre amarilla (1.ª dosis)                     |
+
+# Uso
+
+## Instalar el paquete
+
+El primer paso para ejecutar los análisis de cero dosis es instalar el paquete immunABC disponible en GitHub.
+
+```{r, install_package, eval=FALSE}
+devtools::install_github("IM-Data-PAHO/immunabc")
+```
+
+## Cargar los datos
+
+Las funciones de este módulo trabajan con hasta tres conjuntos de datos en un formato específico.
+
+1. Su RNVe.
+2. Opcionalmente, una tabla con denominadores poblacionales al mismo nivel geográfico de desagregación que su análisis.
+3. Opcionalmente, una tabla de registros poblacionales individuales, como un registro civil, que pueda cruzarse con el RNVe.
+
+Para facilitar la prueba de immunABC y la comprensión de la estructura requerida, a continuación se presentan los conjuntos de datos de ejemplo que utiliza este módulo.
+
+### RNVe
+
+El conjunto de datos `immunabc::immunABC.EIR` proporciona un ejemplo de Registro Nominal de Vacunación electrónico (RNVe). Es una tabla nominal simulada con eventos individuales de vacunación. Cada fila corresponde a una vacunación e incluye información sobre la residencia de la persona, el lugar donde fue vacunada (ocurrencia), su fecha de nacimiento y la dosis recibida.
+
+```{r immunABC-EIR, message=FALSE}
+immunABC.EIR %>% head() %>% kable(caption = "Ejemplo de Registro Nominal de Vacunación electrónico")
+```
+
+- `ID`: Número único de identificación de la persona.
+- Fecha de nacimiento (`date_birth`): Fecha de nacimiento de la persona.
+- Fecha de vacunación (`date_vax`): Fecha del evento de vacunación.
+- ADM1: Primer nivel administrativo geográfico del país.
+- ADM2: Segundo nivel administrativo geográfico del país.
+- Lugar de residencia (`Residence`): Lugar donde vive la persona.
+- Lugar de vacunación (`Occurrence`): Lugar donde ocurrió la vacunación.
+- Dosis (`dose`): Variable combinada que representa el tipo de vacuna y su número de dosis correspondiente. Por ejemplo, DTP1 se refiere a la primera dosis de una vacuna que contiene componentes de difteria, tétanos y tos ferina.
+
+### Denominadores poblacionales
+
+Aunque no es obligatorio, este módulo permite usar una tabla de población como denominador. El nivel geográfico de esta tabla debe coincidir con el nivel geográfico del análisis. Por ejemplo, para un análisis a nivel ADM1, la tabla de denominadores poblacionales debe tener la siguiente estructura.
+
+```{r immunABC-pop-ADM1, message=FALSE}
+immunABC.pop.ADM1 %>% head() %>% kable(caption = "Ejemplo de población a nivel ADM1")
+```
+
+Esta tabla está en formato largo y contiene la población (`population`) de niños de una edad (`age`) específica durante un año (`year`) determinado para un nivel `ADM1`.
+
+> **Nota**
+>
+> Como este análisis se realiza con cohortes de nacimiento, solo se usan las filas donde la edad (`age`) es igual a 0 en la tabla de población. Estas filas representan el número de niños que pertenecen a esa cohorte de nacimiento.
+
+### Registros poblacionales individuales
+
+También de forma opcional, este módulo permite usar una tabla de registros poblacionales individuales. Como cada fila es una persona, el módulo puede contar a las personas que faltan en el RNVe y listar a cada una de ellas. El conjunto de datos `immunabc::immunABC.pop_ids_expanded_to_pop` contiene a todas las personas de `immunABC.EIR`, más personas simuladas sin registros de vacunación, de modo que cada cohorte de nacimiento coincide con la población de `immunABC.pop.ADM2`.
+
+```{r immunABC-pop-ids, message=FALSE}
+immunABC.pop_ids_expanded_to_pop %>% head() %>% kable(caption = "Ejemplo de registros poblacionales individuales")
+```
+
+- `ID`: Número único de identificación de la persona. Debe coincidir con el `ID` utilizado en el RNVe.
+- Nombre (`name`): Nombre de la persona.
+- Fecha de nacimiento (`date_birth`): Fecha de nacimiento de la persona.
+- `ADM1_residence` / `ADM2_residence`: Primer y segundo nivel administrativo geográfico de residencia de la persona.
+
+## Análisis de cero dosis
+
+Este módulo permite estimar la tasa de cero dosis por cohorte de nacimiento para cualquier vacuna, o para un conjunto de vacunas a la vez. El indicador representa el porcentaje de personas nacidas en un año específico que no tienen registro de la vacuna, independientemente de cuándo debieron haber sido vacunadas. Los resultados pueden agregarse a nivel nacional o subnacional (`ADM1` o `ADM2`).
+
+Cuando se dispone de registros individuales (solo el RNVe, o `data.pop_ids`), el módulo también devuelve una salida operativa: una fila por persona, con la fecha de cada vacuna y una columna `Vaccinated` (`YES` si la persona tiene al menos una de las vacunas analizadas, `NO` en caso contrario). Al filtrar esta tabla por `NO` se obtiene la lista de personas cero dosis a las que dar seguimiento.
+
+### Flujo de trabajo esperado
+
+Las funciones `zd_rate()` y `zd_barplot()` permiten analizar y visualizar la tasa de cero dosis. Su relación se mostrará en la Figura 1.
+
+```{=html}
+<div class="alert alert-secondary" role="note">
+  <strong>Figura 1. Flujo de trabajo esperado para el análisis de cero dosis.</strong><br>
+  Este diagrama está pendiente y se agregará próximamente.
+</div>
+```
+
+<br>
+
+`zd_rate()` devuelve una lista de dos elementos:
+
+1. La tasa de cero dosis por vacuna, cohorte de nacimiento y área geográfica. Cuando no se especifican vacunas (`vaccines`), también incluye las filas con `dose` "All", que cuentan como vacunadas a las personas con al menos una vacuna.
+2. La salida operativa, o `NULL` cuando los denominadores provienen de `data.pop`.
+
+`zd_barplot()` recibe la lista completa (o solo la tabla de tasas) y muestra un panel por vacuna. Cuando `zd_rate()` se ejecutó sin especificar vacunas, muestra en su lugar la tasa combinada "All". Si un grupo tiene más personas vacunadas que población, su tasa es negativa; la barra muestra su valor absoluto con un contorno rojo.
+
+### Ejemplo 1: Solo el RNVe
+
+A continuación se calcula la tasa de cero dosis para la primera y la tercera dosis de DTP y la primera dosis de la vacuna que contiene sarampión, para las cohortes de nacimiento de 2015 a 2020, usando solo el RNVe. Por lo tanto, el denominador son las personas que figuran en el RNVe.
+
+```{r zd-eir-example, message=FALSE, warning=FALSE}
+
+# calcular la tasa de cero dosis
+zd_eir <- zd_rate(
+  data.EIR = immunABC.EIR,
+  geo_level = "ADM1",
+  vaccines = c("DTP1", "DTP3", "SRP1"), # esto puede ser una sola vacuna
+  birth_cohorts = 2015:2020 # esto puede ser un solo año
+)
+
+# mostrar la tasa en una tabla
+zd_eir[[1]] %>%
+  kable(digits = 2, caption = "Tasa de cero dosis a nivel ADM1")
+```
+
+Estos resultados se pueden visualizar con la función `zd_barplot()`, como se muestra a continuación.
+
+```{r zd-eir-viz, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+
+# visualizar el resultado de zd_rate()
+zd_eir_plot <- zd_barplot(data = zd_eir)
+
+# mostrar
+zd_eir_plot
+```
+
+Como todas las personas del RNVe tienen al menos un registro de vacunación, las tasas muestran a quién le falta cada vacuna específica, no quién no tiene ninguna vacuna. La comparación entre paneles muestra qué vacunas dejan atrás a más personas en cada área.
+
+Las tasas de DTP son muy altas en estas cohortes. Todos los registros de vacunación del RNVe de ejemplo son de 2022 y 2023, por lo que los niños nacidos entre 2015 y 2020 solo aparecen en él si recibieron una dosis posterior, como SRP1 o YFV1. Sus dosis de DTP, aplicadas cuando eran lactantes, ocurrieron antes del período que cubre el registro. Por lo tanto, una tasa de cero dosis alta puede reflejar historia faltante en el RNVe, y no solo personas sin vacunar, y debe interpretarse junto con el período que cubre el RNVe.
+
+La salida operativa lista a cada persona del RNVe con la fecha de cada vacuna analizada.
+
+```{r zd-eir-op, message=FALSE}
+zd_eir[[2]] %>% head(10) %>% kable(caption = "Salida operativa")
+```
+
+### Ejemplo 2: RNVe y denominadores poblacionales
+
+A continuación se calculan las tasas para las mismas vacunas, pero los denominadores se toman de la tabla de población a nivel ADM1. Esta tabla solo cubre las cohortes de nacimiento de 2022 y 2023, por lo que se seleccionan esas. Como no tiene registros individuales, no hay salida operativa.
+
+```{r zd-pop-example, message=FALSE, warning=FALSE}
+
+# calcular la tasa de cero dosis
+zd_pop <- zd_rate(
+  data.EIR = immunABC.EIR,
+  geo_level = "ADM1",
+  vaccines = c("DTP1", "DTP3", "SRP1"),
+  birth_cohorts = c(2022, 2023),
+  data.pop = immunABC.pop.ADM1
+)
+
+# mostrar la tasa en una tabla
+zd_pop[[1]] %>%
+  kable(digits = 2, caption = "Tasa de cero dosis a nivel ADM1, con denominadores poblacionales")
+```
+
+```{r zd-pop-viz, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+
+# visualizar el resultado de zd_rate()
+zd_pop_plot <- zd_barplot(data = zd_pop)
+
+# mostrar
+zd_pop_plot
+```
+
+A diferencia del Ejemplo 1, las tasas ahora incluyen a los niños que forman parte de la población pero no figuran en el RNVe, por lo que estiman mejor cuántas personas no está alcanzando el programa.
+
+### Ejemplo 3: RNVe y registros poblacionales individuales
+
+A continuación, se usan los registros poblacionales individuales como denominadores, sin especificar vacunas. La tasa incluye entonces las filas combinadas "All", y la salida operativa lista a cada persona de los registros poblacionales.
+
+```{r zd-ids-example, message=FALSE, warning=FALSE}
+
+# calcular la tasa de cero dosis
+zd_ids <- zd_rate(
+  data.EIR = immunABC.EIR,
+  geo_level = "ADM1",
+  birth_cohorts = c(2022, 2023),
+  data.pop_ids = immunABC.pop_ids_expanded_to_pop
+)
+
+# mostrar la tasa combinada en una tabla
+zd_ids[[1]] %>%
+  filter(dose == "All") %>%
+  kable(digits = 2, caption = "Tasa de cero dosis para todas las vacunas a nivel ADM1, con registros poblacionales individuales")
+```
+
+```{r zd-ids-viz, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+
+# visualizar el resultado de zd_rate()
+zd_ids_plot <- zd_barplot(data = zd_ids)
+
+# mostrar
+zd_ids_plot
+```
+
+La salida operativa ahora incluye el nombre de cada persona y a las personas sin ningún registro de vacunación.
+
+```{r zd-ids-op, message=FALSE}
+zd_ids[[2]] %>% head(10) %>% kable(caption = "Salida operativa")
+```
+
+Al filtrarla por `Vaccinated == "NO"` se obtiene la lista de personas cero dosis a las que dar seguimiento.
+
+```{r zd-ids-op-no, message=FALSE}
+zd_ids[[2]] %>%
+  filter(Vaccinated == "NO") %>%
+  head(10) %>%
+  kable(caption = "Salida operativa: personas cero dosis")
+```
+
+### Ejemplo 4: Registros poblacionales individuales sin seleccionar cohortes de nacimiento
+
+`birth_cohorts` es opcional. Cuando no se especifica, se incluye a todas las personas, independientemente de cuándo nacieron. A continuación se repite el Ejemplo 3 sin este argumento.
+
+```{r zd-all-example, message=FALSE, warning=FALSE}
+
+# calcular la tasa de cero dosis para todas las cohortes de nacimiento
+zd_all <- zd_rate(
+  data.EIR = immunABC.EIR,
+  geo_level = "ADM1",
+  data.pop_ids = immunABC.pop_ids_expanded_to_pop
+)
+
+# comparar el tamaño de los resultados con el Ejemplo 3
+tibble(
+  Ejemplo = c("3: cohortes de nacimiento 2022 y 2023", "4: todas las cohortes de nacimiento"),
+  `Cohortes de nacimiento` = c(n_distinct(zd_ids[[1]]$birth_cohort), n_distinct(zd_all[[1]]$birth_cohort)),
+  `Filas de la tasa` = c(nrow(zd_ids[[1]]), nrow(zd_all[[1]])),
+  `Filas de la salida operativa` = c(nrow(zd_ids[[2]]), nrow(zd_all[[2]])),
+  `Personas cero dosis` = c(sum(zd_ids[[2]]$Vaccinated == "NO"), sum(zd_all[[2]]$Vaccinated == "NO"))
+) %>%
+  kable(caption = "Tamaño de los resultados con y sin selección de cohortes de nacimiento")
+```
+
+La tasa y la salida operativa ahora abarcan a todas las personas de los registros poblacionales. El número de personas cero dosis no cambia en este ejemplo, porque las personas sin registros de vacunación de `immunABC.pop_ids_expanded_to_pop` solo se agregaron a las cohortes de nacimiento de 2022 y 2023. Por la misma razón, las cohortes anteriores muestran una tasa de cero dosis de 0 en el gráfico siguiente: todas sus personas provienen del RNVe.
+
+La lista de cohortes de nacimiento también incluye años inverosímiles, muy lejanos en el pasado o en el futuro. Provienen de errores de digitación en las fechas de nacimiento del RNVe de ejemplo, que pueden detectarse con el módulo de [Comparación de consistencia de fechas](date_consistency_comparison_es.html).
+
+`zd_barplot()` muestra como máximo 9 cohortes de nacimiento y, por defecto, conserva las más recientes, que aquí incluirían algunos de esos años inverosímiles. Su argumento `birth_cohorts` permite seleccionar cuáles mostrar.
+
+```{r zd-all-viz, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+
+# visualizar una selección de cohortes de nacimiento de zd_rate()
+zd_all_plot <- zd_barplot(data = zd_all, birth_cohorts = 2018:2023)
+
+# mostrar
+zd_all_plot
+```
+
+# Resumen
+
+Al medir la tasa de cero dosis, immunABC ayuda a las autoridades de salud a identificar dónde el programa de inmunización no está llegando a las personas y cuántas son. Cuando se dispone de registros poblacionales individuales, también les indica quiénes son, lo que convierte al indicador en una lista para la acción: visitas de seguimiento, campañas de vacunación y estrategias para alcanzar a las comunidades que se han quedado atrás.

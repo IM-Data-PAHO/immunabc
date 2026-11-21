@@ -1,0 +1,331 @@
+---
+title: "Zero-Dose Rate"
+subtitle: "Indicator UD 2.9"
+author: "PAHO/CIM"
+date: "November 20, 2026"
+output: 
+  html_document:
+    self_contained: true
+    theme: cosmo
+    highlight: tango
+    code_folding: show
+    code_download: true
+    toc: true
+    toc_depth: 2
+---
+
+```{=html}
+<div class="d-grid gap-2 d-sm-flex mb-3">
+  <a href="../es/zero_dose_es.html" class="btn btn-outline-primary" role="button">🌐 Lea esto en español</a>
+  <a href="https://iris.paho.org/server/api/core/bitstreams/21114cb1-8b3e-4ac5-afcf-016635313c14/content#page=45" class="btn btn-outline-primary" role="button" target="_blank" rel="noopener">📖 Read the PAHO manual</a>
+</div>
+```
+
+```{r setup, include = FALSE, message = FALSE, warning = FALSE}
+library(immunabc)
+library(dplyr)
+library(knitr)
+```
+
+# Rationale
+
+The objective of this indicator is to identify the people who have no record of receiving a given set of vaccines, known as zero-dose people. They are the most exposed to vaccine-preventable diseases and usually belong to communities that the immunization program is not reaching. Knowing how many there are, where they live and, when individual records are available, who they are, allows the program to plan targeted strategies to reach them.
+
+The zero-dose rate is the complement of coverage for a specific birth cohort:
+
+$$
+\text{Zero-dose rate (\%)} = 100 - \text{Coverage (\%)} = 100 - \frac{\text{# of people with a record of the vaccine in a specific birth cohort}}{\text{Total people in the specific birth cohort}} \times 100
+$$
+
+The total people in the birth cohort (the denominator) is taken from the most detailed source provided:
+
+1. Individual population records (`data.pop_ids`), if given. These take priority over any other source.
+2. Otherwise, a population table (`data.pop`), if given.
+3. Otherwise, the people found in the EIR itself.
+
+> **Note**
+> 
+> All functions used for zero-dose analyses within immunABC begin with the `zd_` prefix.
+
+# Glossary
+
+## Zero-Dose
+
+A zero-dose person is someone with no record of receiving a given vaccine. When the analysis covers several vaccines at once, a zero-dose person is someone with no record of any of them.
+
+## Birth Cohort
+
+A birth cohort is the group of all individuals born within the same period of time, typically a single calendar year. For example, the 2022 birth cohort comprises everyone born during the year 2022.
+
+## Political Geographic Boundaries
+
+Throughout this vignette, we will make reference to different levels of political geographic boundaries. These levels are defined by the country/territory and can have different names from country to country. immunABC is agnostic to these names and requires the user to recode their variable names to fit the immunABC structure.
+
+Namely, immunABC can distinguish three administrative levels, which listed from top to bottom level are: ADM0, ADM1 and ADM2.
+
+1. ADM0: The country. This is the top-most administrative level.
+2. ADM1: The first geographic subdivision in the country. ADM0 contains several ADM1 subdivisions.
+3. ADM2: The second geographic subdivision in the country. Each ADM1 contains several ADM2 subdivisions.
+
+## Vaccine Names
+
+Our example datasets use a specific naming convention for the vaccine doses. This might not match your own naming schemes, but it will not affect the usage of the package as long as you make sure to be consistent when naming vaccine doses.
+
+For example, the vaccine names used in the immunABC package are:
+
+| Abbreviation | Full Name                                                        |
+|--------------|------------------------------------------------------------------|
+| SRP1         | Measles, Rubella, and Mumps Vaccine (1st dose)                   |
+| DTP1         | Diphtheria, Tetanus, and Pertussis Vaccine (1st dose)            |
+| DTP2         | Diphtheria, Tetanus, and Pertussis Vaccine (2nd dose)            |
+| DTP3         | Diphtheria, Tetanus, and Pertussis Vaccine (3rd dose)            |
+| BCG RN       | Bacillus Calmette–Guérin Vaccine (at birth)                      |
+| YFV1         | Yellow Fever Vaccine (1st dose)                                  |
+
+# Usage
+
+## Install Package
+
+The first step to run the zero-dose analyses is to install the immunABC package available on GitHub.
+
+```{r, install_package, eval=FALSE}
+devtools::install_github("IM-Data-PAHO/immunabc")
+```
+
+## Load Data
+
+The functions in this module work with up to three datasets in a specific format.
+
+1. Your EIR.
+2. Optionally, a table with population denominators at the same geographic level of disaggregation as your analysis.
+3. Optionally, a table of individual population records, such as a civil registry, that can be cross-referenced with the EIR.
+
+To make it easy for you to test out immunABC's functionality and understand the structure we require for your datasets, we will now explore the example datasets provided by immunABC that are used by this module.
+
+### EIR
+
+The `immunabc::immunABC.EIR` data frame provides a simulated, nominal-level table representing individual vaccination events from an Electronic Immunization Registry (EIR). Each row corresponds to a single vaccination act for a person, including information on their residence, where they were vaccinated (occurrence), their date of birth, and the vaccine dose received.
+
+```{r immunABC-EIR, message=FALSE}
+immunABC.EIR %>% head() %>% kable(caption = "Example Electronic Immunization Registry")
+```
+
+- `ID`: Unique person identification number.
+- `date_birth`: Date of birth of person. 
+- `date_vax`: Date of vaccination event. 
+- ADM1: Refers to the first geographic administrative level of the country.
+- ADM2: Refers to the second geographic administrative level of the country.
+- Residence: Refers to the place where the person lives.  
+- Occurrence: Refers to the place where the vaccination event occurred.  
+- `dose`: A combined variable representing the vaccine type and its corresponding dose number. For example, DTP1 refers to the first dose of a vaccine containing diphtheria, tetanus, and pertussis components.
+
+### Population Denominators
+
+While not mandatory, this module lets you provide a population table to use as denominator. The geographic level of this table will be directly dependent on the geographic level of your analysis. For example, if you were to perform an analysis at ADM1 level, the required population denominator table must contain the following.
+
+```{r immunABC-pop-ADM1, message=FALSE}
+immunABC.pop.ADM1 %>% head() %>% kable(caption = "Example Population at ADM1")
+```
+
+Note that this table is in long format and contains the `population` of children of a specific `age` during a given `year` for a certain `ADM1` level. 
+
+> **Note**
+> 
+> Please take into account that since this analysis is performed with birth cohorts, only the rows with `age`=0 are of interest in the population table, since these represent the number of children that belong to that specific birth cohort (year).
+
+### Individual Population Records
+
+Also optional, this module lets you provide a table of individual population records. Since each row is a person, it allows the module to count the people missing from the EIR and to list each of them. The `immunabc::immunABC.pop_ids_expanded_to_pop` data frame contains every person in `immunABC.EIR`, plus simulated people with no vaccination records, so that each birth cohort matches the population in `immunABC.pop.ADM2`.
+
+```{r immunABC-pop-ids, message=FALSE}
+immunABC.pop_ids_expanded_to_pop %>% head() %>% kable(caption = "Example Individual Population Records")
+```
+
+- `ID`: Unique person identification number. It must match the `ID` used in the EIR.
+- `name`: Name of the person.
+- `date_birth`: Date of birth of person.
+- `ADM1_residence` / `ADM2_residence`: First and second geographic administrative levels of the person's residence.
+
+## Zero-dose analysis
+
+This module lets users estimate the zero-dose rate by birth cohort for any vaccine, or for a set of vaccines at once. It represents the percentage of people of a specific year of birth with no record of the vaccine, regardless of when they would have been vaccinated. Results can be aggregated at the national level or subnational levels (`ADM1` or `ADM2`).
+
+When individual records are available (the EIR alone, or `data.pop_ids`), the module also returns an operative output: one row per person, with the date of each vaccine and a `Vaccinated` column (`YES` if the person has at least one of the vaccines analyzed, `NO` otherwise). Filtering this table for `NO` gives the list of zero-dose people to follow up.
+
+### Expected Workflow
+
+The `zd_rate()` and `zd_barplot()` functions provide a way of analyzing and visualizing the zero-dose rate. Their relationships will be shown in Figure 1.
+
+```{=html}
+<div class="alert alert-secondary" role="note">
+  <strong>Figure 1. Expected workflow for the zero-dose analysis.</strong><br>
+  This diagram is pending and will be added soon.
+</div>
+```
+
+<br>
+
+`zd_rate()` returns a list of two elements:
+
+1. The zero-dose rate for each vaccine, birth cohort and geographic area. When no `vaccines` are specified, it also includes the rows with `dose` "All", which count as vaccinated the people with at least one vaccine.
+2. The operative output, or `NULL` when the denominators come from `data.pop`.
+
+`zd_barplot()` takes the entire list (or the rate data frame alone) and plots one panel per vaccine. When `zd_rate()` was run without `vaccines`, it plots the combined "All" rate instead. If a group has more vaccinated people than population, its rate is negative; the bar shows its absolute value with a red outline.
+
+### Example 1: EIR only
+
+Here we compute the zero-dose rate for the first and third doses of DTP and the first dose of the measles-containing vaccine, for the 2015 to 2020 birth cohorts, using only the EIR. The denominator is therefore the people found in the EIR.
+
+```{r zd-eir-example, message=FALSE, warning=FALSE}
+
+# compute zero-dose rate
+zd_eir <- zd_rate(
+  data.EIR = immunABC.EIR,
+  geo_level = "ADM1",
+  vaccines = c("DTP1", "DTP3", "SRP1"), # this can be a single vaccine
+  birth_cohorts = 2015:2020 # this can be a single year
+)
+
+# show rate in table
+zd_eir[[1]] %>%
+  kable(digits = 2, caption = "Zero-dose rate by ADM1 level")
+```
+
+We can visually observe these results by calling the `zd_barplot()` function as shown below.
+
+```{r zd-eir-viz, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+
+# visualize output from zd_rate()
+zd_eir_plot <- zd_barplot(data = zd_eir)
+
+# show
+zd_eir_plot
+```
+
+Since everyone in the EIR has at least one vaccination record, the rates show who is missing each specific vaccine, not who has no vaccines at all. Comparing panels shows which vaccines leave more people behind in each area.
+
+The rates for DTP are very high in these cohorts. All the vaccination records in the example EIR are from 2022 and 2023, so children born between 2015 and 2020 only appear in it if they received a later dose, such as SRP1 or YFV1. Their DTP doses, given as infants, happened before the period covered by the registry. A high zero-dose rate can therefore reflect missing history in the EIR, not only unvaccinated people, and should be read together with the period the EIR covers.
+
+The operative output lists every person in the EIR with the date of each vaccine analyzed.
+
+```{r zd-eir-op, message=FALSE}
+zd_eir[[2]] %>% head(10) %>% kable(caption = "Operative output")
+```
+
+### Example 2: EIR and population denominators
+
+Here we compute the rates for the same vaccines, but take the denominators from the population table at ADM1 level. This table only covers the 2022 and 2023 birth cohorts, so we select those. Since it has no individual records, there is no operative output.
+
+```{r zd-pop-example, message=FALSE, warning=FALSE}
+
+# compute zero-dose rate
+zd_pop <- zd_rate(
+  data.EIR = immunABC.EIR,
+  geo_level = "ADM1",
+  vaccines = c("DTP1", "DTP3", "SRP1"),
+  birth_cohorts = c(2022, 2023),
+  data.pop = immunABC.pop.ADM1
+)
+
+# show rate in table
+zd_pop[[1]] %>%
+  kable(digits = 2, caption = "Zero-dose rate by ADM1 level, using population denominators")
+```
+
+```{r zd-pop-viz, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+
+# visualize output from zd_rate()
+zd_pop_plot <- zd_barplot(data = zd_pop)
+
+# show
+zd_pop_plot
+```
+
+Unlike Example 1, the rates now include the children who are in the population but missing from the EIR, so they are a better estimate of how many people the program is not reaching.
+
+### Example 3: EIR and individual population records
+
+Next, we use the individual population records as denominators, without specifying any vaccines. The rate then includes the combined "All" rows, and the operative output lists each person in the population records.
+
+```{r zd-ids-example, message=FALSE, warning=FALSE}
+
+# compute zero-dose rate
+zd_ids <- zd_rate(
+  data.EIR = immunABC.EIR,
+  geo_level = "ADM1",
+  birth_cohorts = c(2022, 2023),
+  data.pop_ids = immunABC.pop_ids_expanded_to_pop
+)
+
+# show combined rate in table
+zd_ids[[1]] %>%
+  filter(dose == "All") %>%
+  kable(digits = 2, caption = "Zero-dose rate for all vaccines by ADM1 level, using individual population records")
+```
+
+```{r zd-ids-viz, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+
+# visualize output from zd_rate()
+zd_ids_plot <- zd_barplot(data = zd_ids)
+
+# show
+zd_ids_plot
+```
+
+The operative output now includes the name of each person, and the people with no vaccination records at all.
+
+```{r zd-ids-op, message=FALSE}
+zd_ids[[2]] %>% head(10) %>% kable(caption = "Operative output")
+```
+
+Filtering it for `Vaccinated == "NO"` gives the list of zero-dose people to follow up.
+
+```{r zd-ids-op-no, message=FALSE}
+zd_ids[[2]] %>%
+  filter(Vaccinated == "NO") %>%
+  head(10) %>%
+  kable(caption = "Operative output: zero-dose people")
+```
+
+### Example 4: Individual population records without selecting birth cohorts
+
+`birth_cohorts` is optional. When it is not specified, every person is included regardless of when they were born. Here we repeat Example 3 without it.
+
+```{r zd-all-example, message=FALSE, warning=FALSE}
+
+# compute zero-dose rate for every birth cohort
+zd_all <- zd_rate(
+  data.EIR = immunABC.EIR,
+  geo_level = "ADM1",
+  data.pop_ids = immunABC.pop_ids_expanded_to_pop
+)
+
+# compare the size of the results with Example 3
+tibble(
+  Example = c("3: 2022 and 2023 birth cohorts", "4: every birth cohort"),
+  `Birth cohorts` = c(n_distinct(zd_ids[[1]]$birth_cohort), n_distinct(zd_all[[1]]$birth_cohort)),
+  `Rate rows` = c(nrow(zd_ids[[1]]), nrow(zd_all[[1]])),
+  `Operative output rows` = c(nrow(zd_ids[[2]]), nrow(zd_all[[2]])),
+  `Zero-dose people` = c(sum(zd_ids[[2]]$Vaccinated == "NO"), sum(zd_all[[2]]$Vaccinated == "NO"))
+) %>%
+  kable(caption = "Size of the results with and without selecting birth cohorts")
+```
+
+The rate and the operative output now cover every person in the population records. The number of zero-dose people does not change in this example, because the people without vaccination records in `immunABC.pop_ids_expanded_to_pop` were only added to the 2022 and 2023 birth cohorts. For the same reason, earlier birth cohorts show a zero-dose rate of 0 in the plot below: everyone in them comes from the EIR.
+
+The list of birth cohorts also includes implausible years, such as years far in the past or in the future. They come from data entry errors in the birth dates of the example EIR, which can be detected with the [Date Consistency Comparison](date_consistency_comparison_en.html) module.
+
+`zd_barplot()` shows at most 9 birth cohorts and, by default, keeps the latest ones, which here would include some of those implausible years. Its `birth_cohorts` argument selects which ones to plot.
+
+```{r zd-all-viz, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+
+# visualize a selection of birth cohorts from zd_rate()
+zd_all_plot <- zd_barplot(data = zd_all, birth_cohorts = 2018:2023)
+
+# show
+zd_all_plot
+```
+
+# Summary
+
+By measuring the zero-dose rate, immunABC helps public health officials identify where the immunization program is not reaching people and how many of them there are. When individual population records are available, it also tells them who those people are, turning the indicator into a list for action: follow-up visits, vaccination campaigns and strategies to reach communities that have been left behind.
