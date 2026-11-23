@@ -2,7 +2,7 @@
 #'
 #' Generates a bar plot of the zero-dose rate, grouped by geographic area and colored by birth cohort year. When several vaccines are plotted, each one is shown in its own panel.
 #'
-#' @param data List or data frame. The output from the \code{immunabc::zd_rate} function. If a list is provided, its first element (the rate) is used; otherwise \code{data} is taken as the rate data frame itself.
+#' @param data Data frame. The output from the \code{immunabc::zd_rate} function.
 #' @param vaccine Character (optional). A vector specifying the vaccine(s) to plot, one panel per vaccine. If \code{NULL} (default), the combined "All" rate is plotted when present in \code{data} (that is, when \code{zd_rate} was run without \code{vaccines}); otherwise every vaccine in \code{data} is plotted.
 #' @param birth_cohorts Numeric (optional). A vector specifying the birth cohort(s) to plot. If \code{NULL} (default), all years are plotted.
 #' @param within_ADM1 Character (optional). When analyzing data at the "ADM2" level, this optional character vector lets you specify one or several "ADM1" to filter. Default is \code{NULL}, which means no filtering by "ADM1".
@@ -15,10 +15,6 @@
 #'
 #' @export
 zd_barplot <- function(data, vaccine = NULL, birth_cohorts = NULL, within_ADM1 = NULL, palette = "YlOrBr") {
-
-  if(is.list(data) && !is.data.frame(data)) {
-    data <- data[[1]]
-  }
 
   .validate_zd_barplot_data(data)
   .validate_character(vaccine, "vaccine", min_len = 1)

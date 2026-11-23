@@ -22,12 +22,12 @@ zd_rate(
 
 \item{birth_cohorts}{Numeric (optional). A vector specifying the birth cohort(s) for which the zero-dose rate should be calculated. If \code{NULL} (default), every person is included regardless of birth year. With \code{data.pop}, this also means every year in the population table; years with no records in \code{data.EIR} will show a zero-dose rate of 100.}
 
-\item{data.pop}{Data frame (optional). A data frame with population denominators. See \code{immunABC.pop.ADMX} for structure examples. If \code{NULL} (default) and no \code{pop_ids} is provided, the denominator is computed from \code{data.EIR}.}
+\item{data.pop}{Data frame (optional). A data frame with population denominators. See \code{immunABC.pop.ADMX} for structure examples. If \code{NULL} (default) and no \code{data.pop_ids} is provided, the denominator is computed from \code{data.EIR}.}
 
-\item{data.pop_ids}{Data frame (optional). A data frame with civil records that allow cross-referencing identities with the EIR.population denominators. If provided, denominators are computed from it instead of the EIR or the population data frame.}
+\item{data.pop_ids}{Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, denominators are computed from it instead of \code{data.pop} or \code{data.EIR}.}
 }
 \value{
-A list of two elements. The first is a data frame containing the rate of zero-dose patients in the EIR for each of the \code{vaccines} provided, including groups where nobody was vaccinated. When \code{vaccines} is \code{NULL}, it also contains rows with \code{dose} "All", counting as vaccinated the people with at least one vaccine. A warning is raised when a group has more vaccinated people than population (negative \code{zd_rate}). The second is a data frame with one row per person, the earliest date of each of the \code{vaccines} and a \code{Vaccinated} column ("YES" if the person has at least one of them, "NO" otherwise); it includes \code{name} when \code{data.pop_ids} is provided, and is \code{NULL} when \code{data.pop} is used instead.
+A data frame containing the zero-dose rate for each of the \code{vaccines}, birth cohort and geographic area, including groups where nobody was vaccinated. When \code{vaccines} is \code{NULL}, it also contains rows with \code{dose} "All", counting as vaccinated the people with at least one vaccine. A warning is raised when a group has more vaccinated people than population (negative \code{zd_rate}). To list each person and their vaccines, see \code{zd_list}.
 }
 \description{
 This function computes the proportion of people that have no record of receiving a given set of vaccines using data from the electronic immunization registry (EIR).

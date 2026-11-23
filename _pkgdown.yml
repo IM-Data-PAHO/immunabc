@@ -120,6 +120,7 @@ reference:
     contents:
       - zd_rate
       - zd_barplot
+      - zd_list
 
   - title: Example Data
     desc: Example data frames to understand how the package works and what it expects.

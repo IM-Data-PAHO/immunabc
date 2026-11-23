@@ -41,6 +41,48 @@
   return(denominator)
 }
 
+#' Pick the doses to analyze: the given vaccines, or every dose in data.EIR
+#' when vaccines is NULL.
+#' NOTE: Does not validate vaccines. Callers must validate them before calling.
+#'
+#' @keywords internal
+#' @noRd
+.doses_to_use <- function(data.EIR, vaccines = NULL) {
+  if(!is.null(vaccines)) {
+    return(vaccines)
+  }
+
+  data.EIR %>%
+    pull(dose) %>%
+    unique()
+}
+
+#' Keep the EIR records of the given doses, with residence renamed to ADM1/ADM2
+#' and the birth_cohort of each person, filtered to birth_cohorts when provided.
+#' NOTE: Does not validate data.EIR. Callers must validate it before calling.
+#'
+#' @keywords internal
+#' @noRd
+.prepare_EIR_doses <- function(data.EIR, doses, birth_cohorts = NULL) {
+  prepare_EIR <- data.EIR %>%
+    select(
+      ID,
+      date_birth,
+      date_vax,
+      ADM1 = ADM1_residence,
+      ADM2 = ADM2_residence,
+      dose
+    ) %>%
+    filter(dose %in% doses) %>%
+    mutate(birth_cohort = year(date_birth))
+
+  if(!is.null(birth_cohorts)) {
+    prepare_EIR <- prepare_EIR %>% filter(birth_cohort %in% birth_cohorts)
+  }
+
+  return(prepare_EIR)
+}
+
 #' Detect the smallest admin level in a data frame.
 #'
 #' @keywords internal

@@ -13,7 +13,7 @@ zd_barplot(
 )
 }
 \arguments{
-\item{data}{List or data frame. The output from the \code{immunabc::zd_rate} function. If a list is provided, its first element (the rate) is used; otherwise \code{data} is taken as the rate data frame itself.}
+\item{data}{Data frame. The output from the \code{immunabc::zd_rate} function.}
 
 \item{vaccine}{Character (optional). A vector specifying the vaccine(s) to plot, one panel per vaccine. If \code{NULL} (default), the combined "All" rate is plotted when present in \code{data} (that is, when \code{zd_rate} was run without \code{vaccines}); otherwise every vaccine in \code{data} is plotted.}
 
