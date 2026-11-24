@@ -11,6 +11,7 @@
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/residence_occurrence_en.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/articles/en/zero_dose_en.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/birth_cohort_coverage_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/complete_schedule_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/date_consistency_comparison_es.html</loc></url>
@@ -20,6 +21,7 @@
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/residence_occurrence_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/es/vaccination_timeliness_es.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/articles/es/zero_dose_es.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/articles/index.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/authors.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/index.html</loc></url>
@@ -43,6 +45,8 @@
 <url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM0.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM1.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM2.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.pop_ids.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.pop_ids_expanded_to_pop.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/index.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/nod_barplot.html</loc></url>
@@ -65,5 +69,8 @@
 <url><loc>https://im-data-paho.github.io/immunabc/reference/vt_percentile.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/vt_percentile_plot.html</loc></url>
 <url><loc>https://im-data-paho.github.io/immunabc/reference/vt_rate.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/zd_barplot.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/zd_list.html</loc></url>
+<url><loc>https://im-data-paho.github.io/immunabc/reference/zd_rate.html</loc></url>
 </urlset>
 

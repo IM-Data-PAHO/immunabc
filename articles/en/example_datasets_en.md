@@ -220,6 +220,80 @@ Note that this table is in long format and contains the corresponding
 `population` of children of a specific `age` during a given `year` at
 the `ADM2` level.
 
+### Individual Population Records
+
+Unlike the population datasets above, which hold aggregated estimates,
+individual population records hold one row per person, as in a civil
+registry or a census. Since each row is a person, they can be
+cross-referenced with the EIR through the `ID` column to find the people
+with no vaccination records and list each of them (mainly for zero-dose
+analyses).
+
+Both datasets share the same columns:
+
+- `ID`: Unique person identification number. It must match the `ID` used
+  in the EIR.
+- `name`: Name of the person.
+- `date_birth`: Date of birth of person.
+- `ADM1_residence` / `ADM2_residence`: First and second geographic
+  administrative levels of the person’s residence.
+
+#### immunABC.pop_ids
+
+The
+[`immunabc::immunABC.pop_ids`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop_ids.md)
+dataset contains exactly the same people as `immunABC.EIR`, one row per
+person. Since every person in it has at least one vaccination record, it
+is useful as a baseline for tests.
+
+``` r
+
+immunABC.pop_ids %>% head() %>% kable(caption = "Example Individual Population Records")
+```
+
+| ID | date_birth | ADM1_residence | ADM2_residence | name |
+|---:|:---|:---|:---|:---|
+| 1 | 2013-12-14 | ADM1_2 | ADM2_2_5 | Dion Rodriguez-Martinez Romo-Hernandez |
+| 2 | 1998-12-21 | ADM1_3 | ADM2_3_8 | Henry Hernandez Contreras |
+| 3 | 1986-12-02 | ADM1_3 | ADM2_3_16 | Moses Torres Martinez |
+| 4 | 1986-06-07 | ADM1_3 | ADM2_3_17 | Keylian Saldana Wilson-Sandoval |
+| 5 | 1958-09-10 | ADM1_3 | ADM2_3_13 | Berenise Salazar Bautista Rubio |
+| 6 | 2017-09-18 | ADM1_2 | ADM2_2_5 | Rocela Cazares Medina |
+
+Example Individual Population Records {.table}
+
+#### immunABC.pop_ids_expanded_to_pop
+
+The
+[`immunabc::immunABC.pop_ids_expanded_to_pop`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop_ids_expanded_to_pop.md)
+dataset contains every person in `immunABC.EIR`, plus simulated people
+with no vaccination records, so that each birth cohort matches the
+population in `immunABC.pop.ADM2`.
+
+``` r
+
+immunABC.pop_ids_expanded_to_pop %>% head() %>% kable(caption = "Example Individual Population Records Expanded to Population")
+```
+
+|  ID | date_birth | ADM1_residence | ADM2_residence | name                            |
+|----:|:-----------|:---------------|:---------------|:--------------------------------|
+|   1 | 2013-12-14 | ADM1_2         | ADM2_2_5       | Dion Rodriguez Romo             |
+|   2 | 1998-12-21 | ADM1_3         | ADM2_3_8       | Henry Hernandez Contreras       |
+|   3 | 1986-12-02 | ADM1_3         | ADM2_3_16      | Moses Torres Martinez           |
+|   4 | 1986-06-07 | ADM1_3         | ADM2_3_17      | Keylian Saldana Wilson          |
+|   5 | 1958-09-10 | ADM1_3         | ADM2_3_13      | Berenise Salazar Bautista Rubio |
+|   6 | 2017-09-18 | ADM1_2         | ADM2_2_5       | Rocela Cazares Medina           |
+
+Example Individual Population Records Expanded to Population {.table}
+
+> **Note**
+>
+> The simulated people with no vaccination records were only added to
+> the 2022 and 2023 birth cohorts, since the example population tables
+> only hold the population of those two birth cohorts. People born in
+> any other year come only from the EIR, so all of them have at least
+> one vaccination record.
+
 ## Summary
 
 All example datasets are loaded automatically with the package. You can
@@ -230,10 +304,12 @@ test and understand each module with minimal setup.
 
 Here is a summary of the available datasets for your reference.
 
-| Dataset             | Description                                    |
-|---------------------|------------------------------------------------|
-| `immunABC.EIR`      | Electronic Immunization Registry               |
-| `immunABC.schedule` | Vaccination schedule with dose names and ages  |
+| Dataset | Description |
+|----|----|
+| `immunABC.EIR` | Electronic Immunization Registry |
+| `immunABC.schedule` | Vaccination schedule with dose names and ages |
 | `immunABC.pop.ADM0` | Aggregated national-level population estimates |
-| `immunABC.pop.ADM1` | ADM1-level population estimates                |
-| `immunABC.pop.ADM2` | ADM2-level population estimates                |
+| `immunABC.pop.ADM1` | ADM1-level population estimates |
+| `immunABC.pop.ADM2` | ADM2-level population estimates |
+| `immunABC.pop_ids` | Individual population records of the people in the EIR |
+| `immunABC.pop_ids_expanded_to_pop` | Individual population records expanded to match `immunABC.pop.ADM2` |

@@ -221,6 +221,82 @@ Esta tabla está en formato largo y contiene la población (`population`)
 de niños de una edad (`age`) específica durante un año (`year`)
 determinado a nivel `ADM2`.
 
+### Registros poblacionales individuales
+
+A diferencia de los conjuntos de datos poblacionales anteriores, que
+contienen estimaciones agregadas, los registros poblacionales
+individuales contienen una fila por persona, como en un registro civil o
+un censo. Como cada fila es una persona, pueden cruzarse con el RNVe
+mediante la columna `ID` para encontrar a las personas sin registros de
+vacunación y listar a cada una de ellas (principalmente para los
+análisis de cero dosis).
+
+Ambos conjuntos de datos tienen las mismas columnas:
+
+- `ID`: Número único de identificación de la persona. Debe coincidir con
+  el `ID` utilizado en el RNVe.
+- Nombre (`name`): Nombre de la persona.
+- Fecha de nacimiento (`date_birth`): Fecha de nacimiento de la persona.
+- `ADM1_residence` / `ADM2_residence`: Primer y segundo nivel
+  administrativo geográfico de residencia de la persona.
+
+#### immunABC.pop_ids
+
+El conjunto de datos
+[`immunabc::immunABC.pop_ids`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop_ids.md)
+contiene exactamente a las mismas personas que `immunABC.EIR`, una fila
+por persona. Como todas sus personas tienen al menos un registro de
+vacunación, resulta útil como línea base para pruebas.
+
+``` r
+
+immunABC.pop_ids %>% head() %>% kable(caption = "Ejemplo de registros poblacionales individuales")
+```
+
+| ID | date_birth | ADM1_residence | ADM2_residence | name |
+|---:|:---|:---|:---|:---|
+| 1 | 2013-12-14 | ADM1_2 | ADM2_2_5 | Dion Rodriguez-Martinez Romo-Hernandez |
+| 2 | 1998-12-21 | ADM1_3 | ADM2_3_8 | Henry Hernandez Contreras |
+| 3 | 1986-12-02 | ADM1_3 | ADM2_3_16 | Moses Torres Martinez |
+| 4 | 1986-06-07 | ADM1_3 | ADM2_3_17 | Keylian Saldana Wilson-Sandoval |
+| 5 | 1958-09-10 | ADM1_3 | ADM2_3_13 | Berenise Salazar Bautista Rubio |
+| 6 | 2017-09-18 | ADM1_2 | ADM2_2_5 | Rocela Cazares Medina |
+
+Ejemplo de registros poblacionales individuales {.table}
+
+#### immunABC.pop_ids_expanded_to_pop
+
+El conjunto de datos
+[`immunabc::immunABC.pop_ids_expanded_to_pop`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop_ids_expanded_to_pop.md)
+contiene a todas las personas de `immunABC.EIR`, más personas simuladas
+sin registros de vacunación, de modo que cada cohorte de nacimiento
+coincide con la población de `immunABC.pop.ADM2`.
+
+``` r
+
+immunABC.pop_ids_expanded_to_pop %>% head() %>% kable(caption = "Ejemplo de registros poblacionales individuales ampliados a la población")
+```
+
+|  ID | date_birth | ADM1_residence | ADM2_residence | name                            |
+|----:|:-----------|:---------------|:---------------|:--------------------------------|
+|   1 | 2013-12-14 | ADM1_2         | ADM2_2_5       | Dion Rodriguez Romo             |
+|   2 | 1998-12-21 | ADM1_3         | ADM2_3_8       | Henry Hernandez Contreras       |
+|   3 | 1986-12-02 | ADM1_3         | ADM2_3_16      | Moses Torres Martinez           |
+|   4 | 1986-06-07 | ADM1_3         | ADM2_3_17      | Keylian Saldana Wilson          |
+|   5 | 1958-09-10 | ADM1_3         | ADM2_3_13      | Berenise Salazar Bautista Rubio |
+|   6 | 2017-09-18 | ADM1_2         | ADM2_2_5       | Rocela Cazares Medina           |
+
+Ejemplo de registros poblacionales individuales ampliados a la población
+{.table}
+
+> **Nota**
+>
+> Las personas simuladas sin registros de vacunación solo se agregaron a
+> las cohortes de nacimiento de 2022 y 2023, ya que las tablas de
+> población de ejemplo solo contienen la población de esas dos cohortes.
+> Las personas nacidas en cualquier otro año provienen solo del RNVe,
+> por lo que todas tienen al menos un registro de vacunación.
+
 ## Resumen
 
 Todos los conjuntos de datos de ejemplo se cargan automáticamente con el
@@ -232,10 +308,12 @@ permite probar y comprender cada módulo con una configuración mínima.
 A continuación se presenta un resumen de los conjuntos de datos
 disponibles para su referencia.
 
-| Conjunto de datos   | Descripción                                           |
-|---------------------|-------------------------------------------------------|
-| `immunABC.EIR`      | Registro Nominal de Vacunación electrónico (RNVe)     |
-| `immunABC.schedule` | Esquema de vacunación con nombres de dosis y edades   |
+| Conjunto de datos | Descripción |
+|----|----|
+| `immunABC.EIR` | Registro Nominal de Vacunación electrónico (RNVe) |
+| `immunABC.schedule` | Esquema de vacunación con nombres de dosis y edades |
 | `immunABC.pop.ADM0` | Estimaciones poblacionales agregadas a nivel nacional |
-| `immunABC.pop.ADM1` | Estimaciones poblacionales a nivel ADM1               |
-| `immunABC.pop.ADM2` | Estimaciones poblacionales a nivel ADM2               |
+| `immunABC.pop.ADM1` | Estimaciones poblacionales a nivel ADM1 |
+| `immunABC.pop.ADM2` | Estimaciones poblacionales a nivel ADM2 |
+| `immunABC.pop_ids` | Registros poblacionales individuales de las personas del RNVe |
+| `immunABC.pop_ids_expanded_to_pop` | Registros poblacionales individuales ampliados para coincidir con `immunABC.pop.ADM2` |

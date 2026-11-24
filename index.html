@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,7 @@
     <li><a class="dropdown-item" href="articles/en/complete_schedule_en.html">UD 2.4 Complete Schedule Coverage</a></li>
     <li><a class="dropdown-item" href="articles/en/vaccination_timeliness_en.html">UD 2.5 Vaccination Timeliness</a></li>
     <li><a class="dropdown-item" href="articles/en/nominal_dropout_en.html">UD 2.7 Nominal Dropout Rate</a></li>
+    <li><a class="dropdown-item" href="articles/en/zero_dose_en.html">UD 2.9 Zero-Dose Rate</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Others</h6></li>
     <li><a class="dropdown-item" href="articles/en/residence_occurrence_en.html">Residence vs. Occurrence Analyses</a></li>
@@ -84,7 +85,7 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Currently, immunABC contains eight main modules, grouped as in the manual into data quality (CD) and data usage (UD) indicators. The code beside each module (for example, CD 3.1) is the code of the indicator it implements in the manual. Follow the links below to explore detailed vignettes with practical examples and guidance on how to use each module:</p>
+<p>Currently, immunABC contains nine main modules, grouped as in the manual into data quality (CD) and data usage (UD) indicators. The code beside each module (for example, CD 3.1) is the code of the indicator it implements in the manual. Follow the links below to explore detailed vignettes with practical examples and guidance on how to use each module:</p>
 <div class="section level3">
 <h3 id="data-quality-cd">Data quality (CD)<a class="anchor" aria-label="anchor" href="#data-quality-cd"></a>
 </h3>
@@ -109,6 +110,8 @@ Evaluates whether individuals have received all required doses in a national imm
 Analyzes the vaccination timeliness of the population, that is, the time that elapses between the age of eligibility for each dose and its administration, using nominal data from the electronic immunization registry. Vaccinating on time, and not only completing the schedule, is key to protecting each individual before they reach the period of highest risk for the disease. Furthermore, analyzing vaccination timeliness allows us to understand coverage and its impact on the epidemiology of the disease, monitor the vaccine supply chain, investigate access problems or vaccination willingness in certain communities and, through actions at different levels, prevent future dropouts.</p></li>
 <li><p><a href="https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html"><strong>UD 2.7 Nominal Dropout Rate</strong></a><br>
 Calculates dropout rates between any two vaccine doses using nominal data. This module ensures accurate follow-up tracking across a vaccination schedule.</p></li>
+<li><p><a href="https://im-data-paho.github.io/immunabc/articles/en/zero_dose_en.html"><strong>UD 2.9 Zero-Dose Rate</strong></a><br>
+Identifies zero-dose people, those with no record of receiving a given set of vaccines, and calculates the zero-dose rate (the complement of coverage) by birth cohort and geographic area. It also lists each person with the vaccines they received, so the program can plan targeted strategies to reach the communities it is missing.</p></li>
 </ol>
 </div>
 <div class="section level3">

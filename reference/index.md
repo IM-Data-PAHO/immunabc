@@ -121,6 +121,18 @@ Functions for calculating and visualizing birth cohort coverage.
 - [`bc_barplot()`](https://im-data-paho.github.io/immunabc/reference/bc_barplot.md)
   : (B)irth (C)ohort Coverage Bar Plot
 
+## Zero-Dose Rate
+
+Functions for calculating and visualizing the zero-dose rate and listing
+zero-dose people.
+
+- [`zd_rate()`](https://im-data-paho.github.io/immunabc/reference/zd_rate.md)
+  : (Z)ero (D)ose Rate
+- [`zd_barplot()`](https://im-data-paho.github.io/immunabc/reference/zd_barplot.md)
+  : (Z)ero (D)ose Rate Bar Plot
+- [`zd_list()`](https://im-data-paho.github.io/immunabc/reference/zd_list.md)
+  : (Z)ero (D)ose List
+
 ## Example Data
 
 Example data frames to understand how the package works and what it
@@ -134,5 +146,9 @@ expects.
   : immunABC Aggregated Population Data by ADM1
 - [`immunABC.pop.ADM2`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop.ADM2.md)
   : immunABC Aggregated Population Data by ADM1 and ADM2
+- [`immunABC.pop_ids`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop_ids.md)
+  : immunABC population individualized records
+- [`immunABC.pop_ids_expanded_to_pop`](https://im-data-paho.github.io/immunabc/reference/immunABC.pop_ids_expanded_to_pop.md)
+  : immunABC population individualized records
 - [`immunABC.schedule`](https://im-data-paho.github.io/immunabc/reference/immunABC.schedule.md)
   : immunABC Vaccination Schedule

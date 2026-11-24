@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,7 @@
     <li><a class="dropdown-item" href="../../articles/en/complete_schedule_en.html">UD 2.4 Complete Schedule Coverage</a></li>
     <li><a class="dropdown-item" href="../../articles/en/vaccination_timeliness_en.html">UD 2.5 Vaccination Timeliness</a></li>
     <li><a class="dropdown-item" href="../../articles/en/nominal_dropout_en.html">UD 2.7 Nominal Dropout Rate</a></li>
+    <li><a class="dropdown-item" href="../../articles/en/zero_dose_en.html">UD 2.9 Zero-Dose Rate</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Others</h6></li>
     <li><a class="dropdown-item" href="../../articles/en/residence_occurrence_en.html">Residence vs. Occurrence Analyses</a></li>
@@ -73,7 +74,7 @@
             
             <h4 data-toc-skip class="date">April 14, 2025</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.13.1/vignettes/articles/en/example_datasets_en.Rmd" class="external-link"><code>vignettes/articles/en/example_datasets_en.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.0/vignettes/articles/en/example_datasets_en.Rmd" class="external-link"><code>vignettes/articles/en/example_datasets_en.Rmd</code></a></small>
       <div class="d-none name"><code>example_datasets_en.Rmd</code></div>
     </div>
 
@@ -537,6 +538,180 @@ at a finer geographic resolution.</p>
 during a given <code>year</code> at the <code>ADM2</code> level.</p>
 </div>
 </div>
+<div class="section level3">
+<h3 id="individual-population-records">Individual Population Records<a class="anchor" aria-label="anchor" href="#individual-population-records"></a>
+</h3>
+<p>Unlike the population datasets above, which hold aggregated
+estimates, individual population records hold one row per person, as in
+a civil registry or a census. Since each row is a person, they can be
+cross-referenced with the EIR through the <code>ID</code> column to find
+the people with no vaccination records and list each of them (mainly for
+zero-dose analyses).</p>
+<p>Both datasets share the same columns:</p>
+<ul>
+<li>
+<code>ID</code>: Unique person identification number. It must match
+the <code>ID</code> used in the EIR.</li>
+<li>
+<code>name</code>: Name of the person.</li>
+<li>
+<code>date_birth</code>: Date of birth of person.</li>
+<li>
+<code>ADM1_residence</code> / <code>ADM2_residence</code>: First and
+second geographic administrative levels of the person’s residence.</li>
+</ul>
+<div class="section level4">
+<h4 id="immunabc-pop_ids">immunABC.pop_ids<a class="anchor" aria-label="anchor" href="#immunabc-pop_ids"></a>
+</h4>
+<p>The <code><a href="../../reference/immunABC.pop_ids.html">immunabc::immunABC.pop_ids</a></code> dataset contains exactly
+the same people as <code>immunABC.EIR</code>, one row per person. Since
+every person in it has at least one vaccination record, it is useful as
+a baseline for tests.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">immunABC.pop_ids</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Example Individual Population Records"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Example Individual Population Records</caption>
+<colgroup>
+<col width="3%">
+<col width="13%">
+<col width="18%">
+<col width="18%">
+<col width="46%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">ID</th>
+<th align="left">date_birth</th>
+<th align="left">ADM1_residence</th>
+<th align="left">ADM2_residence</th>
+<th align="left">name</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">2013-12-14</td>
+<td align="left">ADM1_2</td>
+<td align="left">ADM2_2_5</td>
+<td align="left">Dion Rodriguez-Martinez Romo-Hernandez</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">1998-12-21</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_8</td>
+<td align="left">Henry Hernandez Contreras</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">1986-12-02</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_16</td>
+<td align="left">Moses Torres Martinez</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">1986-06-07</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_17</td>
+<td align="left">Keylian Saldana Wilson-Sandoval</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">1958-09-10</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_13</td>
+<td align="left">Berenise Salazar Bautista Rubio</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">2017-09-18</td>
+<td align="left">ADM1_2</td>
+<td align="left">ADM2_2_5</td>
+<td align="left">Rocela Cazares Medina</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level4">
+<h4 id="immunabc-pop_ids_expanded_to_pop">immunABC.pop_ids_expanded_to_pop<a class="anchor" aria-label="anchor" href="#immunabc-pop_ids_expanded_to_pop"></a>
+</h4>
+<p>The <code><a href="../../reference/immunABC.pop_ids_expanded_to_pop.html">immunabc::immunABC.pop_ids_expanded_to_pop</a></code> dataset
+contains every person in <code>immunABC.EIR</code>, plus simulated
+people with no vaccination records, so that each birth cohort matches
+the population in <code>immunABC.pop.ADM2</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">immunABC.pop_ids_expanded_to_pop</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Example Individual Population Records Expanded to Population"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Example Individual Population Records Expanded to
+Population</caption>
+<colgroup>
+<col width="3%">
+<col width="14%">
+<col width="19%">
+<col width="19%">
+<col width="42%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">ID</th>
+<th align="left">date_birth</th>
+<th align="left">ADM1_residence</th>
+<th align="left">ADM2_residence</th>
+<th align="left">name</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">2013-12-14</td>
+<td align="left">ADM1_2</td>
+<td align="left">ADM2_2_5</td>
+<td align="left">Dion Rodriguez Romo</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">1998-12-21</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_8</td>
+<td align="left">Henry Hernandez Contreras</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">1986-12-02</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_16</td>
+<td align="left">Moses Torres Martinez</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">1986-06-07</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_17</td>
+<td align="left">Keylian Saldana Wilson</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">1958-09-10</td>
+<td align="left">ADM1_3</td>
+<td align="left">ADM2_3_13</td>
+<td align="left">Berenise Salazar Bautista Rubio</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">2017-09-18</td>
+<td align="left">ADM1_2</td>
+<td align="left">ADM2_2_5</td>
+<td align="left">Rocela Cazares Medina</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>The simulated people with no vaccination records were only added to
+the 2022 and 2023 birth cohorts, since the example population tables
+only hold the population of those two birth cohorts. People born in any
+other year come only from the EIR, so all of them have at least one
+vaccination record.</p>
+</blockquote>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
@@ -576,6 +751,16 @@ each module with minimal setup.</p>
 <tr class="odd">
 <td><code>immunABC.pop.ADM2</code></td>
 <td>ADM2-level population estimates</td>
+</tr>
+<tr class="even">
+<td><code>immunABC.pop_ids</code></td>
+<td>Individual population records of the people in the EIR</td>
+</tr>
+<tr class="odd">
+<td><code>immunABC.pop_ids_expanded_to_pop</code></td>
+<td>Individual population records expanded to match
+<code>immunABC.pop.ADM2</code>
+</td>
 </tr>
 </tbody>
 </table>

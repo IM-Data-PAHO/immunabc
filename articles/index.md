@@ -38,3 +38,7 @@
   Timeliness](https://im-data-paho.github.io/immunabc/articles/en/vaccination_timeliness_en.md):
 - [Oportunidad de
   vacunación](https://im-data-paho.github.io/immunabc/articles/es/vaccination_timeliness_es.md):
+- [Zero-Dose
+  Rate](https://im-data-paho.github.io/immunabc/articles/en/zero_dose_en.md):
+- [Tasa de cero
+  dosis](https://im-data-paho.github.io/immunabc/articles/es/zero_dose_es.md):
