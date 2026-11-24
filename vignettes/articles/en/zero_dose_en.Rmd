@@ -198,7 +198,8 @@ zd_eir %>%
 - `vaccines`: Character vector of doses to include, one rate per `dose`. Default `NULL` includes all doses in `data.EIR` and adds the combined "All" rows.
 - `birth_cohorts`: Numeric vector of birth cohort year(s) to include. Default `NULL` includes every person, regardless of birth year.
 - `data.pop`: Population denominators at the same geographic level as `geo_level`. Default `NULL`. See Example 2.
-- `data.pop_ids`: Individual population records, used as denominators instead of `data.pop` or the EIR. Default `NULL`. See Example 3.
+- `data.pop_ids`: Individual population records, used as denominators instead of `data.pop` or the EIR. Their residence is never modified: when `geo_level` is `"ADM1"` or `"ADM2"`, a warning reports the people whose residence differs from the EIR, which should be corrected before running the analysis. Default `NULL`. See Example 3.
+- `fix_residence`: When `geo_level` is `"ADM1"` or `"ADM2"`, each person in the EIR must have a single residence so they are counted in a single area. `TRUE` (default) assigns people with more than one residence the residence of their most recent vaccination, with a warning; `FALSE` stops with an error.
 
 We can visually observe these results by calling the `zd_barplot()` function as shown below.
 
@@ -241,7 +242,8 @@ zd_eir_list %>% head(10) %>% kable(caption = "Operative output")
 - `data.EIR`: EIR data frame in immunABC format.
 - `vaccines`: Character vector of doses to include, one date column per `dose`. Default `NULL` includes all doses in `data.EIR`.
 - `birth_cohorts`: Numeric vector of birth cohort year(s) of the people to list. Default `NULL` lists every person, regardless of birth year.
-- `data.pop_ids`: Individual population records. If provided, every person in it is listed, plus the people in the EIR who are missing from it, and the output includes `name` and `Source` columns. Default `NULL` lists the people in the EIR. See Example 3.
+- `data.pop_ids`: Individual population records. If provided, every person in it is listed, plus the people in the EIR who are missing from it, and the output includes `name` and `Source` columns. Default `NULL` lists the people in the EIR. See Example 3. Their residence is never modified; a warning reports the people whose residence differs from the EIR, which should be corrected before running the analysis.
+- `fix_residence`: Each person in the EIR must have a single residence. `TRUE` (default) assigns people with more than one residence the residence of their most recent vaccination, with a warning; `FALSE` stops with an error.
 
 > **Note**
 > 
@@ -249,7 +251,7 @@ zd_eir_list %>% head(10) %>% kable(caption = "Operative output")
 > 
 > - `zd_rate()` always counts the vaccinated people from the EIR, whether or not they are in the denominators. Birth cohorts or areas found in the EIR but missing from the denominators are kept, with `NA` population, coverage and zero-dose rate. If a group has more vaccinated people in the EIR than in its denominator, its coverage goes above 100%, its zero-dose rate becomes negative, and a warning is shown.
 > - `zd_barplot()` leaves out the rows with `NA` zero-dose rate, and draws negative rates as their absolute value with a red outline, adding a caption to the plot.
-> - `zd_list()` lists every person in `data.pop_ids`, plus the people in the EIR who are missing from it. Those people have no `name`, their date of birth and residence are taken from their earliest EIR record, and their `Source` column is `EIR_ONLY` instead of `POP_IDS`. A warning reports how many of them there are. Without `data.pop_ids` it lists everyone in the EIR, and it never uses `data.pop`.
+> - `zd_list()` lists every person in `data.pop_ids`, plus the people in the EIR who are missing from it. Those people have no `name`, their date of birth is taken from their earliest EIR record and their residence from their most recent vaccination, and their `Source` column is `EIR_ONLY` instead of `POP_IDS`. A warning reports how many of them there are. Without `data.pop_ids` it lists everyone in the EIR, and it never uses `data.pop`.
 
 ### Example 2: EIR and population denominators
 

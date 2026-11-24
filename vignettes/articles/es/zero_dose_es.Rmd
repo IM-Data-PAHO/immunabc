@@ -198,7 +198,8 @@ zd_eir %>%
 - `vaccines`: Vector de caracteres con las dosis a incluir, una tasa por `dose`. El valor predeterminado `NULL` incluye todas las dosis de `data.EIR` y agrega las filas combinadas "All".
 - `birth_cohorts`: Vector numérico con el año o los años de las cohortes de nacimiento a incluir. El valor predeterminado `NULL` incluye a todas las personas, independientemente de su año de nacimiento.
 - `data.pop`: Denominadores poblacionales al mismo nivel geográfico que `geo_level`. Predeterminado: `NULL`. Vea el Ejemplo 2.
-- `data.pop_ids`: Registros poblacionales individuales, usados como denominadores en lugar de `data.pop` o del RNVe. Predeterminado: `NULL`. Vea el Ejemplo 3.
+- `data.pop_ids`: Registros poblacionales individuales, usados como denominadores en lugar de `data.pop` o del RNVe. Su residencia nunca se modifica: cuando `geo_level` es `"ADM1"` o `"ADM2"`, una advertencia indica las personas cuya residencia no coincide con la del RNVe, que deben corregirse antes de ejecutar el análisis. Predeterminado: `NULL`. Vea el Ejemplo 3.
+- `fix_residence`: Cuando `geo_level` es `"ADM1"` o `"ADM2"`, cada persona del RNVe debe tener una única residencia para que se cuente en una sola área. `TRUE` (predeterminado) asigna a las personas con más de una residencia la residencia de su vacunación más reciente, con una advertencia; `FALSE` detiene la ejecución con un error.
 
 Estos resultados se pueden visualizar con la función `zd_barplot()`, como se muestra a continuación.
 
@@ -241,7 +242,8 @@ zd_eir_list %>% head(10) %>% kable(caption = "Salida operativa")
 - `data.EIR`: Data frame del RNVe en formato immunABC.
 - `vaccines`: Vector de caracteres con las dosis a incluir, una columna de fecha por `dose`. El valor predeterminado `NULL` incluye todas las dosis de `data.EIR`.
 - `birth_cohorts`: Vector numérico con el año o los años de nacimiento de las personas a listar. El valor predeterminado `NULL` lista a todas las personas, independientemente de su año de nacimiento.
-- `data.pop_ids`: Registros poblacionales individuales. Si se proporcionan, se lista a cada persona de ellos, más las personas del RNVe que no figuran en ellos, y la salida incluye las columnas `name` y `Source`. El valor predeterminado `NULL` lista a las personas del RNVe. Vea el Ejemplo 3.
+- `data.pop_ids`: Registros poblacionales individuales. Si se proporcionan, se lista a cada persona de ellos, más las personas del RNVe que no figuran en ellos, y la salida incluye las columnas `name` y `Source`. El valor predeterminado `NULL` lista a las personas del RNVe. Vea el Ejemplo 3. Su residencia nunca se modifica; una advertencia indica las personas cuya residencia no coincide con la del RNVe, que deben corregirse antes de ejecutar el análisis.
+- `fix_residence`: Cada persona del RNVe debe tener una única residencia. `TRUE` (predeterminado) asigna a las personas con más de una residencia la residencia de su vacunación más reciente, con una advertencia; `FALSE` detiene la ejecución con un error.
 
 > **Nota**
 > 
@@ -249,7 +251,7 @@ zd_eir_list %>% head(10) %>% kable(caption = "Salida operativa")
 > 
 > - `zd_rate()` siempre cuenta a las personas vacunadas a partir del RNVe, estén o no en los denominadores. Las cohortes de nacimiento o áreas que figuran en el RNVe pero faltan en los denominadores se conservan, con población, cobertura y tasa de cero dosis `NA`. Si un grupo tiene más personas vacunadas en el RNVe que en su denominador, su cobertura supera el 100%, su tasa de cero dosis se vuelve negativa y se muestra una advertencia.
 > - `zd_barplot()` excluye las filas con tasa de cero dosis `NA` y muestra las tasas negativas con su valor absoluto y un contorno rojo, agregando una nota al pie del gráfico.
-> - `zd_list()` lista a cada persona de `data.pop_ids`, más las personas del RNVe que no figuran en ellos. Estas personas no tienen nombre (`name`), su fecha de nacimiento y residencia se toman de su primer registro en el RNVe, y su columna `Source` es `EIR_ONLY` en lugar de `POP_IDS`. Una advertencia indica cuántas son. Sin `data.pop_ids` lista a todas las personas del RNVe, y nunca utiliza `data.pop`.
+> - `zd_list()` lista a cada persona de `data.pop_ids`, más las personas del RNVe que no figuran en ellos. Estas personas no tienen nombre (`name`), su fecha de nacimiento se toma de su primer registro en el RNVe y su residencia, de su vacunación más reciente, y su columna `Source` es `EIR_ONLY` en lugar de `POP_IDS`. Una advertencia indica cuántas son. Sin `data.pop_ids` lista a todas las personas del RNVe, y nunca utiliza `data.pop`.
 
 ### Ejemplo 2: RNVe y denominadores poblacionales
 

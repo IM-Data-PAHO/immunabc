@@ -7,7 +7,8 @@
 #' @param vaccines Character (optional). A character vector specifying the doses to include in the analysis. If \code{NULL} (default), all vaccines in \code{data.EIR} are included.
 #' @param birth_cohorts Numeric (optional). A vector specifying the birth cohort(s) for which the zero-dose rate should be calculated. If \code{NULL} (default), every person is included regardless of birth year. With \code{data.pop}, this also means every year in the population table; years with no records in \code{data.EIR} will show a zero-dose rate of 100.
 #' @param data.pop Data frame (optional). A data frame with population denominators. See \code{immunABC.pop.ADMX} for structure examples. If \code{NULL} (default) and no \code{data.pop_ids} is provided, the denominator is computed from \code{data.EIR}.
-#' @param data.pop_ids Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, denominators are computed from it instead of \code{data.pop} or \code{data.EIR}.
+#' @param data.pop_ids Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, denominators are computed from it instead of \code{data.pop} or \code{data.EIR}. Its residence is never modified: when geo_level is "ADM1" or "ADM2", a warning reports the people whose residence differs from their residence in \code{data.EIR}, which should be corrected before running the analysis.
+#' @param fix_residence Logical. This function requires each person in \code{data.EIR} to have a single place of residence across all their vaccinations when geo_level is "ADM1" or "ADM2", so that each person is counted in a single area. When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.
 #' @return A data frame containing the zero-dose rate for each of the \code{vaccines}, birth cohort and geographic area, including groups where nobody was vaccinated. When \code{vaccines} is \code{NULL}, it also contains rows with \code{dose} "All", counting as vaccinated the people with at least one vaccine. A warning is raised when a group has more vaccinated people than population (negative \code{zd_rate}). To list each person and their vaccines, see \code{zd_list}.
 #'
 #' @import dplyr
@@ -15,7 +16,7 @@
 #' @import tidyr
 #'
 #' @export
-zd_rate <- function(data.EIR, geo_level = "ADM0", vaccines = NULL, birth_cohorts = NULL, data.pop = NULL, data.pop_ids = NULL) {
+zd_rate <- function(data.EIR, geo_level = "ADM0", vaccines = NULL, birth_cohorts = NULL, data.pop = NULL, data.pop_ids = NULL, fix_residence = TRUE) {
 
   # validations
   .validate_geo_level(geo_level)
@@ -26,8 +27,29 @@ zd_rate <- function(data.EIR, geo_level = "ADM0", vaccines = NULL, birth_cohorts
   .validate_numeric(birth_cohorts, "birth_cohorts", min_len = 1)
   .validate_data.pop(data.pop, geo_level)
   .validate_data.pop_ids(data.pop_ids)
+  .validate_logical(fix_residence, "fix_residence")
   # .validate_vaccines(vaccines, data.schedule, "data.schedule")
   # .validate_logical(validate_doses, "validate_doses")
+
+  # Checks if the birth_cohorts variable is used
+  if(!is.null(birth_cohorts)) {
+    data.EIR <- data.EIR %>%
+      filter(year(date_birth) %in% birth_cohorts)
+  }
+
+  # When at a level greater than ADM0, each person should be assigned to a single
+  # residence, so they are counted in a single area in both the numerator and
+  # the denominator
+  if(geo_level != "ADM0") {
+    # NOTE: this function will stop execution when fix_residence is FALSE and the
+    #       data frame contains more than one residence per person
+    data.EIR <- .enforce_single_residence(data.EIR, fix_residence)
+
+    # Residence is never fixed in data.pop_ids, only checked against the EIR (warning only)
+    if(!is.null(data.pop_ids)) {
+      .validate_residence_pop_ids(data.pop_ids, data.EIR, paste0(.geo_level_cols(geo_level), "_residence"))
+    }
+  }
 
   # determine grouping column(s)
   groups <- c("birth_cohort", .geo_level_cols(geo_level))
