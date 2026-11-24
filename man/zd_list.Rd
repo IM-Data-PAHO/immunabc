@@ -13,10 +13,10 @@ zd_list(data.EIR, vaccines = NULL, birth_cohorts = NULL, data.pop_ids = NULL)
 
 \item{birth_cohorts}{Numeric (optional). A vector specifying the birth cohort(s) of the people to list. If \code{NULL} (default), every person is listed regardless of birth year.}
 
-\item{data.pop_ids}{Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, the people listed are taken from it instead of \code{data.EIR}.}
+\item{data.pop_ids}{Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, every person in it is listed, plus the people in \code{data.EIR} whose \code{ID} is not in it, with no \code{name}. A warning reports how many of these people there are.}
 }
 \value{
-A data frame with one row per person, the earliest date of each of the \code{vaccines} and a \code{Category} column: "COMPLETE" if the person has all of them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none. It includes \code{name} when \code{data.pop_ids} is provided.
+A data frame with one row per person, the earliest date of each of the \code{vaccines} and a \code{Category} column: "COMPLETE" if the person has all of them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none. When \code{data.pop_ids} is provided, it also includes \code{name} and a \code{Source} column: "POP_IDS" for people in \code{data.pop_ids}, and "EIR_ONLY" for people only found in \code{data.EIR}, whose residence and date of birth come from their earliest EIR record.
 }
 \description{
 This function lists each person with the date of each of a given set of vaccines, using data from the electronic immunization registry (EIR), and classifies them by how many of those vaccines they have received.

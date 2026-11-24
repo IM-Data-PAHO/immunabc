@@ -5,8 +5,8 @@
 #' @param data.EIR Data frame. A data frame containing individual vaccination records. See \code{immunABC.EIR} for expected structure.
 #' @param vaccines Character (optional). A character vector specifying the doses to include in the analysis. If \code{NULL} (default), all vaccines in \code{data.EIR} are included.
 #' @param birth_cohorts Numeric (optional). A vector specifying the birth cohort(s) of the people to list. If \code{NULL} (default), every person is listed regardless of birth year.
-#' @param data.pop_ids Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, the people listed are taken from it instead of \code{data.EIR}.
-#' @return A data frame with one row per person, the earliest date of each of the \code{vaccines} and a \code{Category} column: "COMPLETE" if the person has all of them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none. It includes \code{name} when \code{data.pop_ids} is provided.
+#' @param data.pop_ids Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, every person in it is listed, plus the people in \code{data.EIR} whose \code{ID} is not in it, with no \code{name}. A warning reports how many of these people there are.
+#' @return A data frame with one row per person, the earliest date of each of the \code{vaccines} and a \code{Category} column: "COMPLETE" if the person has all of them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none. When \code{data.pop_ids} is provided, it also includes \code{name} and a \code{Source} column: "POP_IDS" for people in \code{data.pop_ids}, and "EIR_ONLY" for people only found in \code{data.EIR}, whose residence and date of birth come from their earliest EIR record.
 #'
 #' @import dplyr
 #' @import lubridate
@@ -25,28 +25,40 @@ zd_list <- function(data.EIR, vaccines = NULL, birth_cohorts = NULL, data.pop_id
   doses_to_use <- .doses_to_use(data.EIR, vaccines)
 
   # one row per person to list
+  EIR_people <- data.EIR %>%
+    arrange(ID, date_vax) %>%
+    distinct(ID, .keep_all = TRUE) %>%
+    select(
+      ID,
+      date_birth,
+      ADM1_residence,
+      ADM2_residence
+    )
   if(!is.null(data.pop_ids)) {
-    pop_table <- data.pop_ids %>%
-      select(
-        ID,
-        name,
-        date_birth,
-        ADM1_residence,
-        ADM2_residence
-      )
+    pop_table <- bind_rows(
+      data.pop_ids %>%
+        select(
+          ID,
+          name,
+          date_birth,
+          ADM1_residence,
+          ADM2_residence
+        ) %>%
+        mutate(Source = "POP_IDS"),
+      EIR_people %>%
+        filter(!ID %in% data.pop_ids$ID) %>%
+        mutate(name = NA_character_, Source = "EIR_ONLY")
+    )
   } else {
-    pop_table <- data.EIR %>%
-      arrange(ID, date_vax) %>%
-      distinct(ID, .keep_all = TRUE) %>%
-      select(
-        ID,
-        date_birth,
-        ADM1_residence,
-        ADM2_residence
-      )
+    pop_table <- EIR_people
   }
   if(!is.null(birth_cohorts)) {
     pop_table <- pop_table %>% filter(year(date_birth) %in% birth_cohorts)
+  }
+
+  n_EIR_only <- sum(pop_table[["Source"]] %in% "EIR_ONLY")
+  if(n_EIR_only > 0) {
+    warning(n_EIR_only, " people in data.EIR are not in data.pop_ids. They are listed with no name and Source = \"EIR_ONLY\".")
   }
 
   # earliest date of each selected vaccine per person
@@ -68,7 +80,8 @@ zd_list <- function(data.EIR, vaccines = NULL, birth_cohorts = NULL, data.pop_id
         if_any(all_of(doses_to_use), ~ !is.na(.x)) ~ "PARTIAL",
         TRUE ~ "ZERO_DOSE"
       )
-    )
+    ) %>%
+    relocate(any_of("Source"), .after = Category)
 
   return(op_table)
 }

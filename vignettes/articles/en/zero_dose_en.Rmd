@@ -150,6 +150,10 @@ immunABC.pop_ids_expanded_to_pop %>% head() %>% kable(caption = "Example Individ
 - `date_birth`: Date of birth of person.
 - `ADM1_residence` / `ADM2_residence`: First and second geographic administrative levels of the person's residence.
 
+> **Note**
+> 
+> The simulated people with no vaccination records were only added to the 2022 and 2023 birth cohorts. This dataset was built to match `immunABC.pop.ADM2`, and the example population tables only hold the population of those two birth cohorts. People born in any other year come only from the EIR, so all of them have at least one vaccination record.
+
 ## Zero-dose analysis
 
 This module lets users estimate the zero-dose rate by birth cohort for any vaccine, or for a set of vaccines at once. It represents the percentage of people of a specific year of birth with no record of the vaccine, regardless of when they would have been vaccinated. Results can be aggregated at the national level or subnational levels (`ADM1` or `ADM2`).
@@ -158,24 +162,19 @@ When individual records are available (the EIR alone, or `data.pop_ids`), the mo
 
 ### Expected Workflow
 
-The `zd_rate()`, `zd_barplot()` and `zd_list()` functions provide a way of analyzing, visualizing and acting on the zero-dose rate. Their relationships will be shown in Figure 1.
+The `zd_rate()`, `zd_barplot()` and `zd_list()` functions provide a way of analyzing, visualizing and acting on the zero-dose rate. Their relationships are shown in Figure 1.
 
-```{=html}
-<div class="alert alert-secondary" role="note">
-  <strong>Figure 1. Expected workflow for the zero-dose analysis.</strong><br>
-  This diagram is pending and will be added soon.
-</div>
-```
+![Figure 1. Expected workflow for the zero-dose analysis.](zd_workflow.svg)
 
 <br>
 
 - `zd_rate()` computes the zero-dose rate for each vaccine, birth cohort and geographic area. When no `vaccines` are specified, it also includes the rows with `dose` "All", which count as vaccinated the people with at least one vaccine.
 - `zd_barplot()` takes the output of `zd_rate()` and plots one panel per vaccine. When `zd_rate()` was run without `vaccines`, it plots the combined "All" rate instead. If a group has more vaccinated people than population, its rate is negative; the bar shows its absolute value with a red outline.
-- `zd_list()` produces the operative output: one row per person, taken from `data.pop_ids` if provided or from the EIR otherwise, with the date of each vaccine and a `Category` column: `COMPLETE` if the person has all the vaccines analyzed, `PARTIAL` if they have some, and `ZERO_DOSE` if they have none. Since it lists people, it does not use population tables.
+- `zd_list()` produces the operative output: one row per person, taken from `data.pop_ids` and the EIR if `data.pop_ids` is provided, or from the EIR otherwise, with the date of each vaccine and a `Category` column: `COMPLETE` if the person has all the vaccines analyzed, `PARTIAL` if they have some, and `ZERO_DOSE` if they have none. Since it lists people, it does not use population tables.
 
 ### Example 1: EIR only
 
-Here we compute the zero-dose rate for the first and third doses of DTP and the first dose of the measles-containing vaccine, for the 2019 and 2020 birth cohorts, using only the EIR. The denominator is therefore the people found in the EIR.
+Here we compute the zero-dose rate for the first and third doses of DTP and the first dose of the measles-containing vaccine, for the 2022 and 2023 birth cohorts, using only the EIR. The denominator is therefore the people found in the EIR.
 
 ```{r zd-eir-example, message=FALSE, warning=FALSE}
 
@@ -184,7 +183,7 @@ zd_eir <- zd_rate(
   data.EIR = immunABC.EIR,
   geo_level = "ADM1",
   vaccines = c("DTP1", "DTP3", "SRP1"), # this can be a single vaccine
-  birth_cohorts = 2019:2020 # this can be a single year
+  birth_cohorts = c(2022, 2023) # this can be a single year
 )
 
 # show rate in table
@@ -222,8 +221,6 @@ zd_eir_plot
 
 Since everyone in the EIR has at least one vaccination record, the rates show who is missing each specific vaccine, not who has no vaccines at all. Comparing panels shows which vaccines leave more people behind in each area.
 
-The rates for DTP are very high in these cohorts. All the vaccination records in the example EIR are from 2022 and 2023, so children born in 2019 and 2020 only appear in it if they received a later dose, such as SRP1 or YFV1. Their DTP doses, given as infants, happened before the period covered by the registry. A high zero-dose rate can therefore reflect missing history in the EIR, not only unvaccinated people, and should be read together with the period the EIR covers.
-
 The operative output, produced by `zd_list()`, lists every person in the EIR with the date of each vaccine analyzed.
 
 ```{r zd-eir-op, message=FALSE}
@@ -232,7 +229,7 @@ The operative output, produced by `zd_list()`, lists every person in the EIR wit
 zd_eir_list <- zd_list(
   data.EIR = immunABC.EIR,
   vaccines = c("DTP1", "DTP3", "SRP1"),
-  birth_cohorts = 2019:2020
+  birth_cohorts = c(2022, 2023)
 )
 
 # show the first rows
@@ -244,11 +241,19 @@ zd_eir_list %>% head(10) %>% kable(caption = "Operative output")
 - `data.EIR`: EIR data frame in immunABC format.
 - `vaccines`: Character vector of doses to include, one date column per `dose`. Default `NULL` includes all doses in `data.EIR`.
 - `birth_cohorts`: Numeric vector of birth cohort year(s) of the people to list. Default `NULL` lists every person, regardless of birth year.
-- `data.pop_ids`: Individual population records. If provided, the people listed are taken from it, and the output includes their `name`. Default `NULL` lists the people in the EIR. See Example 3.
+- `data.pop_ids`: Individual population records. If provided, every person in it is listed, plus the people in the EIR who are missing from it, and the output includes `name` and `Source` columns. Default `NULL` lists the people in the EIR. See Example 3.
+
+> **Note**
+> 
+> The population table (`data.pop`) or the individual population records (`data.pop_ids`) may cover fewer people than the EIR, for example if they are missing some birth cohorts, some geographic areas, or some of the people registered in the EIR. Each function handles this as follows:
+> 
+> - `zd_rate()` always counts the vaccinated people from the EIR, whether or not they are in the denominators. Birth cohorts or areas found in the EIR but missing from the denominators are kept, with `NA` population, coverage and zero-dose rate. If a group has more vaccinated people in the EIR than in its denominator, its coverage goes above 100%, its zero-dose rate becomes negative, and a warning is shown.
+> - `zd_barplot()` leaves out the rows with `NA` zero-dose rate, and draws negative rates as their absolute value with a red outline, adding a caption to the plot.
+> - `zd_list()` lists every person in `data.pop_ids`, plus the people in the EIR who are missing from it. Those people have no `name`, their date of birth and residence are taken from their earliest EIR record, and their `Source` column is `EIR_ONLY` instead of `POP_IDS`. A warning reports how many of them there are. Without `data.pop_ids` it lists everyone in the EIR, and it never uses `data.pop`.
 
 ### Example 2: EIR and population denominators
 
-Here we compute the rates for the same vaccines, but take the denominators from the population table at ADM1 level. This table only covers the 2022 and 2023 birth cohorts, so we select those. Since it has no individual records, there is no operative output.
+Here we compute the rates for the same vaccines and birth cohorts, but take the denominators from the population table at ADM1 level. Since it has no individual records, there is no operative output.
 
 ```{r zd-pop-example, message=FALSE, warning=FALSE}
 
@@ -327,7 +332,7 @@ zd_ids_plot
 
 The same as in Example 1. Since `vaccine` is not specified and `zd_ids` contains the "All" rows, the plot shows the combined rate.
 
-The operative output now includes the name of each person, and the people with no vaccination records at all.
+The operative output now includes the name of each person, the people with no vaccination records at all, and a `Source` column showing whether each person was found in the population records (`POP_IDS`) or only in the EIR (`EIR_ONLY`). Every person in the example EIR is also in `immunABC.pop_ids_expanded_to_pop`, so all rows here are `POP_IDS`.
 
 ```{r zd-ids-op, message=FALSE}
 
@@ -346,7 +351,7 @@ zd_ids_list %>% head(10) %>% kable(caption = "Operative output")
 
 The same as in Example 1. Here, `data.pop_ids` provides the people to list:
 
-- `data.pop_ids`: Individual population records in immunABC format. Every person in it is listed, including those with no records in the EIR, and the output includes their `name`.
+- `data.pop_ids`: Individual population records in immunABC format. Every person in it is listed, including those with no records in the EIR, and the output includes their `name`. People in the EIR who are missing from it are also listed, with no `name` and `Source` set to `EIR_ONLY`.
 
 Filtering it for `Category == "ZERO_DOSE"` gives the list of zero-dose people to follow up.
 
@@ -374,17 +379,9 @@ zd_all_list <- zd_list(
   data.EIR = immunABC.EIR,
   data.pop_ids = immunABC.pop_ids_expanded_to_pop
 )
-
-# compare the size of the results with Example 3
-tibble(
-  Example = c("3: 2022 and 2023 birth cohorts", "4: every birth cohort"),
-  `Birth cohorts` = c(n_distinct(zd_ids$birth_cohort), n_distinct(zd_all$birth_cohort)),
-  `Rate rows` = c(nrow(zd_ids), nrow(zd_all)),
-  `Operative output rows` = c(nrow(zd_ids_list), nrow(zd_all_list)),
-  `Zero-dose people` = c(sum(zd_ids_list$Category == "ZERO_DOSE"), sum(zd_all_list$Category == "ZERO_DOSE"))
-) %>%
-  kable(caption = "Size of the results with and without selecting birth cohorts")
 ```
+
+The tables with the results of this run are not shown. For the 2022 and 2023 birth cohorts they hold the same results as Example 3, and adding every other birth cohort makes them too large to show in this article.
 
 #### Parameters accepted by `zd_rate()` and `zd_list()`
 
@@ -392,7 +389,7 @@ The same as in Example 3, except for `birth_cohorts`:
 
 - `birth_cohorts`: Not specified, so with the default `NULL` both functions include every person in `data.pop_ids`, regardless of birth year.
 
-The rate and the operative output now cover every person in the population records. The number of zero-dose people does not change in this example, because the people without vaccination records in `immunABC.pop_ids_expanded_to_pop` were only added to the 2022 and 2023 birth cohorts. For the same reason, earlier birth cohorts show a zero-dose rate of 0 in the plot below: everyone in them comes from the EIR.
+The rate and the operative output now cover every person in the population records. The number of zero-dose people does not change in this example, and earlier birth cohorts show a zero-dose rate of 0 in the plot below, because the example population records only add people without vaccination records to the 2022 and 2023 birth cohorts (see the note in [Individual Population Records](#individual-population-records)).
 
 The list of birth cohorts also includes implausible years, such as years far in the past or in the future. They come from data entry errors in the birth dates of the example EIR, which can be detected with the [Date Consistency Comparison](date_consistency_comparison_en.html) module.
 
