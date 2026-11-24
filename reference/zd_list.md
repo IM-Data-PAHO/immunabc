@@ -7,7 +7,13 @@ and classifies them by how many of those vaccines they have received.
 ## Usage
 
 ``` r
-zd_list(data.EIR, vaccines = NULL, birth_cohorts = NULL, data.pop_ids = NULL)
+zd_list(
+  data.EIR,
+  vaccines = NULL,
+  birth_cohorts = NULL,
+  data.pop_ids = NULL,
+  fix_residence = TRUE
+)
 ```
 
 ## Arguments
@@ -38,6 +44,14 @@ zd_list(data.EIR, vaccines = NULL, birth_cohorts = NULL, data.pop_ids = NULL)
   not in it, with no `name`. A warning reports how many of these people
   there are.
 
+- fix_residence:
+
+  Logical. This function requires each person in `data.EIR` to have a
+  single place of residence across all their vaccinations. When a person
+  has more than one residence, TRUE (default) sets all their records to
+  the residence of their most recent vaccination, and FALSE stops with
+  an error.
+
 ## Value
 
 A data frame with one row per person, the earliest date of each of the
@@ -45,5 +59,10 @@ A data frame with one row per person, the earliest date of each of the
 them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none.
 When `data.pop_ids` is provided, it also includes `name` and a `Source`
 column: "POP_IDS" for people in `data.pop_ids`, and "EIR_ONLY" for
-people only found in `data.EIR`, whose residence and date of birth come
-from their earliest EIR record.
+people only found in `data.EIR`. The residence and date of birth of
+people in `data.pop_ids` are taken from it, unmodified; a warning
+reports the people whose residence differs from their residence in
+`data.EIR`, which should be corrected before running the analysis.
+"EIR_ONLY" people get the residence of their most recent vaccination
+(see `fix_residence`) and the date of birth of their earliest EIR
+record.

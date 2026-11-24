@@ -355,7 +355,15 @@ Zero-dose rate by ADM1 level {.table}
 - `data.pop`: Population denominators at the same geographic level as
   `geo_level`. Default `NULL`. See Example 2.
 - `data.pop_ids`: Individual population records, used as denominators
-  instead of `data.pop` or the EIR. Default `NULL`. See Example 3.
+  instead of `data.pop` or the EIR. Their residence is never modified:
+  when `geo_level` is `"ADM1"` or `"ADM2"`, a warning reports the people
+  whose residence differs from the EIR, which should be corrected before
+  running the analysis. Default `NULL`. See Example 3.
+- `fix_residence`: When `geo_level` is `"ADM1"` or `"ADM2"`, each person
+  in the EIR must have a single residence so they are counted in a
+  single area. `TRUE` (default) assigns people with more than one
+  residence the residence of their most recent vaccination, with a
+  warning; `FALSE` stops with an error.
 
 We can visually observe these results by calling the
 [`zd_barplot()`](https://im-data-paho.github.io/immunabc/reference/zd_barplot.md)
@@ -433,7 +441,13 @@ Operative output {.table}
 - `data.pop_ids`: Individual population records. If provided, every
   person in it is listed, plus the people in the EIR who are missing
   from it, and the output includes `name` and `Source` columns. Default
-  `NULL` lists the people in the EIR. See Example 3.
+  `NULL` lists the people in the EIR. See Example 3. Their residence is
+  never modified; a warning reports the people whose residence differs
+  from the EIR, which should be corrected before running the analysis.
+- `fix_residence`: Each person in the EIR must have a single residence.
+  `TRUE` (default) assigns people with more than one residence the
+  residence of their most recent vaccination, with a warning; `FALSE`
+  stops with an error.
 
 > **Note**
 >
@@ -458,10 +472,11 @@ Operative output {.table}
 > - [`zd_list()`](https://im-data-paho.github.io/immunabc/reference/zd_list.md)
 >   lists every person in `data.pop_ids`, plus the people in the EIR who
 >   are missing from it. Those people have no `name`, their date of
->   birth and residence are taken from their earliest EIR record, and
->   their `Source` column is `EIR_ONLY` instead of `POP_IDS`. A warning
->   reports how many of them there are. Without `data.pop_ids` it lists
->   everyone in the EIR, and it never uses `data.pop`.
+>   birth is taken from their earliest EIR record and their residence
+>   from their most recent vaccination, and their `Source` column is
+>   `EIR_ONLY` instead of `POP_IDS`. A warning reports how many of them
+>   there are. Without `data.pop_ids` it lists everyone in the EIR, and
+>   it never uses `data.pop`.
 
 #### Example 2: EIR and population denominators
 
@@ -631,18 +646,18 @@ zd_ids_list <- zd_list(
 zd_ids_list %>% head(10) %>% kable(caption = "Operative output")
 ```
 
-| ID | name | date_birth | ADM1_residence | ADM2_residence | DTP2 | BCG RN | DTP1 | YFV1 | SRP1 | DTP3 | Category | Source |
+| ID | name | date_birth | ADM1_residence | ADM2_residence | DTP2 | BCG RN | DTP1 | YFV1 | DTP3 | SRP1 | Category | Source |
 |---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
 | 569 | Estibali Buenrostro Juarez Subia | 2022-07-28 | ADM1_2 | ADM2_2_5 | 2023-01-25 | NA | 2022-10-25 | 2023-11-17 | 2023-11-17 | 2023-11-17 | PARTIAL | POP_IDS |
-| 1843 | Trevaughn Andrade Jr Colon | 2022-06-21 | ADM1_3 | ADM2_3_15 | NA | NA | NA | 2022-12-06 | 2022-12-06 | 2022-02-08 | PARTIAL | POP_IDS |
-| 2399 | Yolanda Vera Reyes | 2022-03-05 | ADM1_3 | ADM2_3_16 | 2022-07-08 | NA | NA | 2023-03-10 | 2023-03-10 | NA | PARTIAL | POP_IDS |
-| 2736 | Graciela Salcido Spurr Zayas | 2022-02-07 | ADM1_2 | ADM2_2_5 | 2022-06-07 | 2022-02-21 | 2022-04-11 | 2023-02-22 | 2023-02-22 | 2022-08-23 | COMPLETE | POP_IDS |
-| 3074 | Arnoldo Grijalva Kutcher | 2022-03-30 | ADM1_2 | ADM2_2_5 | NA | NA | NA | 2023-07-06 | 2023-05-24 | 2022-11-14 | PARTIAL | POP_IDS |
-| 3520 | Brenda Padilla Medina | 2022-07-04 | ADM1_2 | ADM2_2_5 | 2023-01-08 | NA | 2022-09-04 | NA | NA | 2023-03-05 | PARTIAL | POP_IDS |
-| 3717 | Sol Nallely Sabino Sanchez | 2022-03-30 | ADM1_3 | ADM2_3_13 | NA | NA | 2022-06-18 | 2023-05-19 | 2023-05-19 | 2022-10-04 | PARTIAL | POP_IDS |
+| 1843 | Trevaughn Andrade Jr Colon | 2022-06-21 | ADM1_3 | ADM2_3_15 | NA | NA | NA | 2022-12-06 | 2022-02-08 | 2022-12-06 | PARTIAL | POP_IDS |
+| 2399 | Yolanda Vera Reyes | 2022-03-05 | ADM1_3 | ADM2_3_16 | 2022-07-08 | NA | NA | 2023-03-10 | NA | 2023-03-10 | PARTIAL | POP_IDS |
+| 2736 | Graciela Salcido Spurr Zayas | 2022-02-07 | ADM1_2 | ADM2_2_5 | 2022-06-07 | 2022-02-21 | 2022-04-11 | 2023-02-22 | 2022-08-23 | 2023-02-22 | COMPLETE | POP_IDS |
+| 3074 | Arnoldo Grijalva Kutcher | 2022-03-30 | ADM1_2 | ADM2_2_5 | NA | NA | NA | 2023-07-06 | 2022-11-14 | 2023-05-24 | PARTIAL | POP_IDS |
+| 3520 | Brenda Padilla Medina | 2022-07-04 | ADM1_2 | ADM2_2_5 | 2023-01-08 | NA | 2022-09-04 | NA | 2023-03-05 | NA | PARTIAL | POP_IDS |
+| 3717 | Sol Nallely Sabino Sanchez | 2022-03-30 | ADM1_3 | ADM2_3_13 | NA | NA | 2022-06-18 | 2023-05-19 | 2022-10-04 | 2023-05-19 | PARTIAL | POP_IDS |
 | 4022 | James Garibay Cline | 2022-01-14 | ADM1_3 | ADM2_3_14 | NA | NA | 2022-03-21 | NA | NA | NA | PARTIAL | POP_IDS |
 | 4121 | Anthony Reyes Rodriguez | 2022-04-18 | ADM1_2 | ADM2_2_5 | 2022-08-19 | NA | 2022-06-18 | NA | NA | NA | PARTIAL | POP_IDS |
-| 5102 | Andrea Salazar Garcia | 2022-06-26 | ADM1_3 | ADM2_3_20 | 2022-11-07 | NA | 2022-09-05 | NA | NA | 2023-01-03 | PARTIAL | POP_IDS |
+| 5102 | Andrea Salazar Garcia | 2022-06-26 | ADM1_3 | ADM2_3_20 | 2022-11-07 | NA | 2022-09-05 | NA | 2023-01-03 | NA | PARTIAL | POP_IDS |
 
 Operative output {.table style="width:100%;"}
 
@@ -668,7 +683,7 @@ zd_ids_list %>%
   kable(caption = "Operative output: zero-dose people")
 ```
 
-| ID | name | date_birth | ADM1_residence | ADM2_residence | DTP2 | BCG RN | DTP1 | YFV1 | SRP1 | DTP3 | Category | Source |
+| ID | name | date_birth | ADM1_residence | ADM2_residence | DTP2 | BCG RN | DTP1 | YFV1 | DTP3 | SRP1 | Category | Source |
 |---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
 | 214031 | Mayra Flores Montoya | 2022-04-06 | ADM1_1 | ADM2_1_1 | NA | NA | NA | NA | NA | NA | ZERO_DOSE | POP_IDS |
 | 214032 | Kevin Lucero Lovato | 2022-04-06 | ADM1_1 | ADM2_1_1 | NA | NA | NA | NA | NA | NA | ZERO_DOSE | POP_IDS |

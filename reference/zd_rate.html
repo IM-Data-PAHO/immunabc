@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>(Z)ero (D)ose Rate</h1>
-      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.0/R/zd_rate.R" class="external-link"><code>R/zd_rate.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.1/R/zd_rate.R" class="external-link"><code>R/zd_rate.R</code></a></small>
       <div class="d-none name"><code>zd_rate.Rd</code></div>
     </div>
 
@@ -62,7 +62,8 @@
 <span>  vaccines <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  birth_cohorts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data.pop <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  data.pop_ids <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  data.pop_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fix_residence <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -91,7 +92,11 @@
 
 
 <dt id="arg-data-pop-ids">data.pop_ids<a class="anchor" aria-label="anchor" href="#arg-data-pop-ids"></a></dt>
-<dd><p>Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See <code>immunABC.pop_ids</code> for expected structure. If provided, denominators are computed from it instead of <code>data.pop</code> or <code>data.EIR</code>.</p></dd>
+<dd><p>Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See <code>immunABC.pop_ids</code> for expected structure. If provided, denominators are computed from it instead of <code>data.pop</code> or <code>data.EIR</code>. Its residence is never modified: when geo_level is "ADM1" or "ADM2", a warning reports the people whose residence differs from their residence in <code>data.EIR</code>, which should be corrected before running the analysis.</p></dd>
+
+
+<dt id="arg-fix-residence">fix_residence<a class="anchor" aria-label="anchor" href="#arg-fix-residence"></a></dt>
+<dd><p>Logical. This function requires each person in <code>data.EIR</code> to have a single place of residence across all their vaccinations when geo_level is "ADM1" or "ADM2", so that each person is counted in a single area. When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.</p></dd>
 
 </dl></div>
     <div class="section level2">

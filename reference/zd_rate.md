@@ -13,7 +13,8 @@ zd_rate(
   vaccines = NULL,
   birth_cohorts = NULL,
   data.pop = NULL,
-  data.pop_ids = NULL
+  data.pop_ids = NULL,
+  fix_residence = TRUE
 )
 ```
 
@@ -58,6 +59,19 @@ zd_rate(
   (such as a civil registry) that can be cross-referenced with the EIR.
   See `immunABC.pop_ids` for expected structure. If provided,
   denominators are computed from it instead of `data.pop` or `data.EIR`.
+  Its residence is never modified: when geo_level is "ADM1" or "ADM2", a
+  warning reports the people whose residence differs from their
+  residence in `data.EIR`, which should be corrected before running the
+  analysis.
+
+- fix_residence:
+
+  Logical. This function requires each person in `data.EIR` to have a
+  single place of residence across all their vaccinations when geo_level
+  is "ADM1" or "ADM2", so that each person is counted in a single area.
+  When a person has more than one residence, TRUE (default) sets all
+  their records to the residence of their most recent vaccination, and
+  FALSE stops with an error.
 
 ## Value
 

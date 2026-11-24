@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
             
             <h4 data-toc-skip class="date">November 20, 2026</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.0/vignettes/articles/en/zero_dose_en.Rmd" class="external-link"><code>vignettes/articles/en/zero_dose_en.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.1/vignettes/articles/en/zero_dose_en.Rmd" class="external-link"><code>vignettes/articles/en/zero_dose_en.Rmd</code></a></small>
       <div class="d-none name"><code>zero_dose_en.Rmd</code></div>
     </div>
 
@@ -887,8 +887,18 @@ geographic level as <code>geo_level</code>. Default <code>NULL</code>.
 See Example 2.</li>
 <li>
 <code>data.pop_ids</code>: Individual population records, used as
-denominators instead of <code>data.pop</code> or the EIR. Default
-<code>NULL</code>. See Example 3.</li>
+denominators instead of <code>data.pop</code> or the EIR. Their
+residence is never modified: when <code>geo_level</code> is
+<code>"ADM1"</code> or <code>"ADM2"</code>, a warning reports the people
+whose residence differs from the EIR, which should be corrected before
+running the analysis. Default <code>NULL</code>. See Example 3.</li>
+<li>
+<code>fix_residence</code>: When <code>geo_level</code> is
+<code>"ADM1"</code> or <code>"ADM2"</code>, each person in the EIR must
+have a single residence so they are counted in a single area.
+<code>TRUE</code> (default) assigns people with more than one residence
+the residence of their most recent vaccination, with a warning;
+<code>FALSE</code> stops with an error.</li>
 </ul>
 <p>We can visually observe these results by calling the
 <code><a href="../../reference/zd_barplot.html">zd_barplot()</a></code> function as shown below.</p>
@@ -1084,7 +1094,14 @@ regardless of birth year.</li>
 provided, every person in it is listed, plus the people in the EIR who
 are missing from it, and the output includes <code>name</code> and
 <code>Source</code> columns. Default <code>NULL</code> lists the people
-in the EIR. See Example 3.</li>
+in the EIR. See Example 3. Their residence is never modified; a warning
+reports the people whose residence differs from the EIR, which should be
+corrected before running the analysis.</li>
+<li>
+<code>fix_residence</code>: Each person in the EIR must have a
+single residence. <code>TRUE</code> (default) assigns people with more
+than one residence the residence of their most recent vaccination, with
+a warning; <code>FALSE</code> stops with an error.</li>
 </ul>
 <blockquote>
 <p><strong>Note</strong></p>
@@ -1109,12 +1126,12 @@ red outline, adding a caption to the plot.</li>
 <li>
 <code><a href="../../reference/zd_list.html">zd_list()</a></code> lists every person in
 <code>data.pop_ids</code>, plus the people in the EIR who are missing
-from it. Those people have no <code>name</code>, their date of birth and
-residence are taken from their earliest EIR record, and their
-<code>Source</code> column is <code>EIR_ONLY</code> instead of
-<code>POP_IDS</code>. A warning reports how many of them there are.
-Without <code>data.pop_ids</code> it lists everyone in the EIR, and it
-never uses <code>data.pop</code>.</li>
+from it. Those people have no <code>name</code>, their date of birth is
+taken from their earliest EIR record and their residence from their most
+recent vaccination, and their <code>Source</code> column is
+<code>EIR_ONLY</code> instead of <code>POP_IDS</code>. A warning reports
+how many of them there are. Without <code>data.pop_ids</code> it lists
+everyone in the EIR, and it never uses <code>data.pop</code>.</li>
 </ul>
 </blockquote>
 </div>
@@ -1650,8 +1667,8 @@ person in the example EIR is also in
 <th align="left">BCG RN</th>
 <th align="left">DTP1</th>
 <th align="left">YFV1</th>
-<th align="left">SRP1</th>
 <th align="left">DTP3</th>
+<th align="left">SRP1</th>
 <th align="left">Category</th>
 <th align="left">Source</th>
 </tr></thead>
@@ -1681,8 +1698,8 @@ person in the example EIR is also in
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">2022-12-06</td>
-<td align="left">2022-12-06</td>
 <td align="left">2022-02-08</td>
+<td align="left">2022-12-06</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1696,8 +1713,8 @@ person in the example EIR is also in
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">2023-03-10</td>
-<td align="left">2023-03-10</td>
 <td align="left">NA</td>
+<td align="left">2023-03-10</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1711,8 +1728,8 @@ person in the example EIR is also in
 <td align="left">2022-02-21</td>
 <td align="left">2022-04-11</td>
 <td align="left">2023-02-22</td>
-<td align="left">2023-02-22</td>
 <td align="left">2022-08-23</td>
+<td align="left">2023-02-22</td>
 <td align="left">COMPLETE</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1726,8 +1743,8 @@ person in the example EIR is also in
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">2023-07-06</td>
-<td align="left">2023-05-24</td>
 <td align="left">2022-11-14</td>
+<td align="left">2023-05-24</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1741,8 +1758,8 @@ person in the example EIR is also in
 <td align="left">NA</td>
 <td align="left">2022-09-04</td>
 <td align="left">NA</td>
-<td align="left">NA</td>
 <td align="left">2023-03-05</td>
+<td align="left">NA</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1756,8 +1773,8 @@ person in the example EIR is also in
 <td align="left">NA</td>
 <td align="left">2022-06-18</td>
 <td align="left">2023-05-19</td>
-<td align="left">2023-05-19</td>
 <td align="left">2022-10-04</td>
+<td align="left">2023-05-19</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1801,8 +1818,8 @@ person in the example EIR is also in
 <td align="left">NA</td>
 <td align="left">2022-09-05</td>
 <td align="left">NA</td>
-<td align="left">NA</td>
 <td align="left">2023-01-03</td>
+<td align="left">NA</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1856,8 +1873,8 @@ of zero-dose people to follow up.</p>
 <th align="left">BCG RN</th>
 <th align="left">DTP1</th>
 <th align="left">YFV1</th>
-<th align="left">SRP1</th>
 <th align="left">DTP3</th>
+<th align="left">SRP1</th>
 <th align="left">Category</th>
 <th align="left">Source</th>
 </tr></thead>

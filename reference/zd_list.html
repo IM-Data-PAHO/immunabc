@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>(Z)ero (D)ose List</h1>
-      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.0/R/zd_list.R" class="external-link"><code>R/zd_list.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.1/R/zd_list.R" class="external-link"><code>R/zd_list.R</code></a></small>
       <div class="d-none name"><code>zd_list.Rd</code></div>
     </div>
 
@@ -56,7 +56,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">zd_list</span><span class="op">(</span><span class="va">data.EIR</span>, vaccines <span class="op">=</span> <span class="cn">NULL</span>, birth_cohorts <span class="op">=</span> <span class="cn">NULL</span>, data.pop_ids <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">zd_list</span><span class="op">(</span></span>
+<span>  <span class="va">data.EIR</span>,</span>
+<span>  vaccines <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  birth_cohorts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data.pop_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fix_residence <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,10 +84,14 @@
 <dt id="arg-data-pop-ids">data.pop_ids<a class="anchor" aria-label="anchor" href="#arg-data-pop-ids"></a></dt>
 <dd><p>Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See <code>immunABC.pop_ids</code> for expected structure. If provided, every person in it is listed, plus the people in <code>data.EIR</code> whose <code>ID</code> is not in it, with no <code>name</code>. A warning reports how many of these people there are.</p></dd>
 
+
+<dt id="arg-fix-residence">fix_residence<a class="anchor" aria-label="anchor" href="#arg-fix-residence"></a></dt>
+<dd><p>Logical. This function requires each person in <code>data.EIR</code> to have a single place of residence across all their vaccinations. When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame with one row per person, the earliest date of each of the <code>vaccines</code> and a <code>Category</code> column: "COMPLETE" if the person has all of them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none. When <code>data.pop_ids</code> is provided, it also includes <code>name</code> and a <code>Source</code> column: "POP_IDS" for people in <code>data.pop_ids</code>, and "EIR_ONLY" for people only found in <code>data.EIR</code>, whose residence and date of birth come from their earliest EIR record.</p>
+    <p>A data frame with one row per person, the earliest date of each of the <code>vaccines</code> and a <code>Category</code> column: "COMPLETE" if the person has all of them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none. When <code>data.pop_ids</code> is provided, it also includes <code>name</code> and a <code>Source</code> column: "POP_IDS" for people in <code>data.pop_ids</code>, and "EIR_ONLY" for people only found in <code>data.EIR</code>. The residence and date of birth of people in <code>data.pop_ids</code> are taken from it, unmodified; a warning reports the people whose residence differs from their residence in <code>data.EIR</code>, which should be corrected before running the analysis. "EIR_ONLY" people get the residence of their most recent vaccination (see <code>fix_residence</code>) and the date of birth of their earliest EIR record.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

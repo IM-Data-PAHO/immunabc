@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">immunabc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
             
             <h4 data-toc-skip class="date">20 de noviembre de 2026</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.0/vignettes/articles/es/zero_dose_es.Rmd" class="external-link"><code>vignettes/articles/es/zero_dose_es.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/IM-Data-PAHO/immunabc/blob/v0.14.1/vignettes/articles/es/zero_dose_es.Rmd" class="external-link"><code>vignettes/articles/es/zero_dose_es.Rmd</code></a></small>
       <div class="d-none name"><code>zero_dose_es.Rmd</code></div>
     </div>
 
@@ -895,7 +895,18 @@ geográfico que <code>geo_level</code>. Predeterminado:
 <li>
 <code>data.pop_ids</code>: Registros poblacionales individuales,
 usados como denominadores en lugar de <code>data.pop</code> o del RNVe.
-Predeterminado: <code>NULL</code>. Vea el Ejemplo 3.</li>
+Su residencia nunca se modifica: cuando <code>geo_level</code> es
+<code>"ADM1"</code> o <code>"ADM2"</code>, una advertencia indica las
+personas cuya residencia no coincide con la del RNVe, que deben
+corregirse antes de ejecutar el análisis. Predeterminado:
+<code>NULL</code>. Vea el Ejemplo 3.</li>
+<li>
+<code>fix_residence</code>: Cuando <code>geo_level</code> es
+<code>"ADM1"</code> o <code>"ADM2"</code>, cada persona del RNVe debe
+tener una única residencia para que se cuente en una sola área.
+<code>TRUE</code> (predeterminado) asigna a las personas con más de una
+residencia la residencia de su vacunación más reciente, con una
+advertencia; <code>FALSE</code> detiene la ejecución con un error.</li>
 </ul>
 <p>Estos resultados se pueden visualizar con la función
 <code><a href="../../reference/zd_barplot.html">zd_barplot()</a></code>, como se muestra a continuación.</p>
@@ -1093,7 +1104,16 @@ año de nacimiento.</li>
 se proporcionan, se lista a cada persona de ellos, más las personas del
 RNVe que no figuran en ellos, y la salida incluye las columnas
 <code>name</code> y <code>Source</code>. El valor predeterminado
-<code>NULL</code> lista a las personas del RNVe. Vea el Ejemplo 3.</li>
+<code>NULL</code> lista a las personas del RNVe. Vea el Ejemplo 3. Su
+residencia nunca se modifica; una advertencia indica las personas cuya
+residencia no coincide con la del RNVe, que deben corregirse antes de
+ejecutar el análisis.</li>
+<li>
+<code>fix_residence</code>: Cada persona del RNVe debe tener una
+única residencia. <code>TRUE</code> (predeterminado) asigna a las
+personas con más de una residencia la residencia de su vacunación más
+reciente, con una advertencia; <code>FALSE</code> detiene la ejecución
+con un error.</li>
 </ul>
 <blockquote>
 <p><strong>Nota</strong></p>
@@ -1120,11 +1140,11 @@ contorno rojo, agregando una nota al pie del gráfico.</li>
 <code><a href="../../reference/zd_list.html">zd_list()</a></code> lista a cada persona de
 <code>data.pop_ids</code>, más las personas del RNVe que no figuran en
 ellos. Estas personas no tienen nombre (<code>name</code>), su fecha de
-nacimiento y residencia se toman de su primer registro en el RNVe, y su
-columna <code>Source</code> es <code>EIR_ONLY</code> en lugar de
-<code>POP_IDS</code>. Una advertencia indica cuántas son. Sin
-<code>data.pop_ids</code> lista a todas las personas del RNVe, y nunca
-utiliza <code>data.pop</code>.</li>
+nacimiento se toma de su primer registro en el RNVe y su residencia, de
+su vacunación más reciente, y su columna <code>Source</code> es
+<code>EIR_ONLY</code> en lugar de <code>POP_IDS</code>. Una advertencia
+indica cuántas son. Sin <code>data.pop_ids</code> lista a todas las
+personas del RNVe, y nunca utiliza <code>data.pop</code>.</li>
 </ul>
 </blockquote>
 </div>
@@ -1662,8 +1682,8 @@ aquí todas las filas son <code>POP_IDS</code>.</p>
 <th align="left">BCG RN</th>
 <th align="left">DTP1</th>
 <th align="left">YFV1</th>
-<th align="left">SRP1</th>
 <th align="left">DTP3</th>
+<th align="left">SRP1</th>
 <th align="left">Category</th>
 <th align="left">Source</th>
 </tr></thead>
@@ -1693,8 +1713,8 @@ aquí todas las filas son <code>POP_IDS</code>.</p>
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">2022-12-06</td>
-<td align="left">2022-12-06</td>
 <td align="left">2022-02-08</td>
+<td align="left">2022-12-06</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1708,8 +1728,8 @@ aquí todas las filas son <code>POP_IDS</code>.</p>
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">2023-03-10</td>
-<td align="left">2023-03-10</td>
 <td align="left">NA</td>
+<td align="left">2023-03-10</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1723,8 +1743,8 @@ aquí todas las filas son <code>POP_IDS</code>.</p>
 <td align="left">2022-02-21</td>
 <td align="left">2022-04-11</td>
 <td align="left">2023-02-22</td>
-<td align="left">2023-02-22</td>
 <td align="left">2022-08-23</td>
+<td align="left">2023-02-22</td>
 <td align="left">COMPLETE</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1738,8 +1758,8 @@ aquí todas las filas son <code>POP_IDS</code>.</p>
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">2023-07-06</td>
-<td align="left">2023-05-24</td>
 <td align="left">2022-11-14</td>
+<td align="left">2023-05-24</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1753,8 +1773,8 @@ aquí todas las filas son <code>POP_IDS</code>.</p>
 <td align="left">NA</td>
 <td align="left">2022-09-04</td>
 <td align="left">NA</td>
-<td align="left">NA</td>
 <td align="left">2023-03-05</td>
+<td align="left">NA</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1768,8 +1788,8 @@ aquí todas las filas son <code>POP_IDS</code>.</p>
 <td align="left">NA</td>
 <td align="left">2022-06-18</td>
 <td align="left">2023-05-19</td>
-<td align="left">2023-05-19</td>
 <td align="left">2022-10-04</td>
+<td align="left">2023-05-19</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1813,8 +1833,8 @@ aquí todas las filas son <code>POP_IDS</code>.</p>
 <td align="left">NA</td>
 <td align="left">2022-09-05</td>
 <td align="left">NA</td>
-<td align="left">NA</td>
 <td align="left">2023-01-03</td>
+<td align="left">NA</td>
 <td align="left">PARTIAL</td>
 <td align="left">POP_IDS</td>
 </tr>
@@ -1868,8 +1888,8 @@ lista de personas cero dosis a las que dar seguimiento.</p>
 <th align="left">BCG RN</th>
 <th align="left">DTP1</th>
 <th align="left">YFV1</th>
-<th align="left">SRP1</th>
 <th align="left">DTP3</th>
+<th align="left">SRP1</th>
 <th align="left">Category</th>
 <th align="left">Source</th>
 </tr></thead>
