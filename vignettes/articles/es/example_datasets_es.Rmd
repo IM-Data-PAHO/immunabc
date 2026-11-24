@@ -124,6 +124,37 @@ immunABC.pop.ADM2 %>% head() %>% kable(caption = "Ejemplo de población a nivel 
 
 Esta tabla está en formato largo y contiene la población (`population`) de niños de una edad (`age`) específica durante un año (`year`) determinado a nivel `ADM2`.
 
+## Registros poblacionales individuales
+
+A diferencia de los conjuntos de datos poblacionales anteriores, que contienen estimaciones agregadas, los registros poblacionales individuales contienen una fila por persona, como en un registro civil o un censo. Como cada fila es una persona, pueden cruzarse con el RNVe mediante la columna `ID` para encontrar a las personas sin registros de vacunación y listar a cada una de ellas (principalmente para los análisis de cero dosis).
+
+Ambos conjuntos de datos tienen las mismas columnas:
+
+- `ID`: Número único de identificación de la persona. Debe coincidir con el `ID` utilizado en el RNVe.
+- Nombre (`name`): Nombre de la persona.
+- Fecha de nacimiento (`date_birth`): Fecha de nacimiento de la persona.
+- `ADM1_residence` / `ADM2_residence`: Primer y segundo nivel administrativo geográfico de residencia de la persona.
+
+### immunABC.pop_ids
+
+El conjunto de datos `immunabc::immunABC.pop_ids` contiene exactamente a las mismas personas que `immunABC.EIR`, una fila por persona. Como todas sus personas tienen al menos un registro de vacunación, resulta útil como línea base para pruebas.
+
+```{r immunABC-pop-ids, message=FALSE}
+immunABC.pop_ids %>% head() %>% kable(caption = "Ejemplo de registros poblacionales individuales")
+```
+
+### immunABC.pop_ids_expanded_to_pop
+
+El conjunto de datos `immunabc::immunABC.pop_ids_expanded_to_pop` contiene a todas las personas de `immunABC.EIR`, más personas simuladas sin registros de vacunación, de modo que cada cohorte de nacimiento coincide con la población de `immunABC.pop.ADM2`.
+
+```{r immunABC-pop-ids-expanded, message=FALSE}
+immunABC.pop_ids_expanded_to_pop %>% head() %>% kable(caption = "Ejemplo de registros poblacionales individuales ampliados a la población")
+```
+
+> **Nota**
+>
+> Las personas simuladas sin registros de vacunación solo se agregaron a las cohortes de nacimiento de 2022 y 2023, ya que las tablas de población de ejemplo solo contienen la población de esas dos cohortes. Las personas nacidas en cualquier otro año provienen solo del RNVe, por lo que todas tienen al menos un registro de vacunación.
+
 # Resumen
 
 Todos los conjuntos de datos de ejemplo se cargan automáticamente con el paquete. Puede explorar su estructura con `glimpse()` o `View()`. Están diseñados para funcionar con los argumentos predeterminados de las funciones, lo que permite probar y comprender cada módulo con una configuración mínima.
@@ -137,3 +168,5 @@ A continuación se presenta un resumen de los conjuntos de datos disponibles par
 | `immunABC.pop.ADM0`  | Estimaciones poblacionales agregadas a nivel nacional         |
 | `immunABC.pop.ADM1`  | Estimaciones poblacionales a nivel ADM1                       |
 | `immunABC.pop.ADM2`  | Estimaciones poblacionales a nivel ADM2                       |
+| `immunABC.pop_ids`   | Registros poblacionales individuales de las personas del RNVe |
+| `immunABC.pop_ids_expanded_to_pop` | Registros poblacionales individuales ampliados para coincidir con `immunABC.pop.ADM2` |

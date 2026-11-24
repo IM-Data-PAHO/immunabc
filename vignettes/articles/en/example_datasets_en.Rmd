@@ -124,6 +124,37 @@ immunABC.pop.ADM2 %>% head() %>% kable(caption = "Example Population at ADM2")
 
 Note that this table is in long format and contains the corresponding `population` of children of a specific `age` during a given `year` at the `ADM2` level.
 
+## Individual Population Records
+
+Unlike the population datasets above, which hold aggregated estimates, individual population records hold one row per person, as in a civil registry or a census. Since each row is a person, they can be cross-referenced with the EIR through the `ID` column to find the people with no vaccination records and list each of them (mainly for zero-dose analyses).
+
+Both datasets share the same columns:
+
+- `ID`: Unique person identification number. It must match the `ID` used in the EIR.
+- `name`: Name of the person.
+- `date_birth`: Date of birth of person.
+- `ADM1_residence` / `ADM2_residence`: First and second geographic administrative levels of the person's residence.
+
+### immunABC.pop_ids
+
+The `immunabc::immunABC.pop_ids` dataset contains exactly the same people as `immunABC.EIR`, one row per person. Since every person in it has at least one vaccination record, it is useful as a baseline for tests.
+
+```{r immunABC-pop-ids, message=FALSE}
+immunABC.pop_ids %>% head() %>% kable(caption = "Example Individual Population Records")
+```
+
+### immunABC.pop_ids_expanded_to_pop
+
+The `immunabc::immunABC.pop_ids_expanded_to_pop` dataset contains every person in `immunABC.EIR`, plus simulated people with no vaccination records, so that each birth cohort matches the population in `immunABC.pop.ADM2`.
+
+```{r immunABC-pop-ids-expanded, message=FALSE}
+immunABC.pop_ids_expanded_to_pop %>% head() %>% kable(caption = "Example Individual Population Records Expanded to Population")
+```
+
+> **Note**
+>
+> The simulated people with no vaccination records were only added to the 2022 and 2023 birth cohorts, since the example population tables only hold the population of those two birth cohorts. People born in any other year come only from the EIR, so all of them have at least one vaccination record.
+
 # Summary
 
 All example datasets are loaded automatically with the package. You can explore their structure using `glimpse()` or `View()`. They are designed to work seamlessly with the default arguments in all functions, allowing you to test and understand each module with minimal setup.
@@ -137,3 +168,5 @@ Here is a summary of the available datasets for your reference.
 | `immunABC.pop.ADM0`  | Aggregated national-level population estimates                |
 | `immunABC.pop.ADM1`  | ADM1-level population estimates                               |
 | `immunABC.pop.ADM2`  | ADM2-level population estimates                               |
+| `immunABC.pop_ids`   | Individual population records of the people in the EIR        |
+| `immunABC.pop_ids_expanded_to_pop` | Individual population records expanded to match `immunABC.pop.ADM2` |

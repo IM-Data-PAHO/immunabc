@@ -19,7 +19,7 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Uso
 
-Actualmente, immunABC contiene ocho módulos principales, agrupados como en el manual en indicadores de calidad del dato (CD) y de uso de los datos (UD). El código junto a cada módulo (por ejemplo, CD 3.1) es el código que se usa para referenciar al indicador dentro del manual de la OPS. Siga los enlaces a continuación para explorar viñetas detalladas con ejemplos prácticos y orientación sobre cómo usar cada módulo:
+Actualmente, immunABC contiene nueve módulos principales, agrupados como en el manual en indicadores de calidad del dato (CD) y de uso de los datos (UD). El código junto a cada módulo (por ejemplo, CD 3.1) es el código que se usa para referenciar al indicador dentro del manual de la OPS. Siga los enlaces a continuación para explorar viñetas detalladas con ejemplos prácticos y orientación sobre cómo usar cada módulo:
 
 ### Calidad del dato (CD)
 
@@ -45,6 +45,9 @@ Actualmente, immunABC contiene ocho módulos principales, agrupados como en el m
 
 4. [**UD 2.7 Tasa de abandono nominal**](https://im-data-paho.github.io/immunabc/articles/es/nominal_dropout_es.html)  
    Calcula las tasas de abandono entre cualquier par de dosis de vacunas utilizando datos nominales. Este módulo permite dar seguimiento a la continuidad de las personas dentro de un esquema de vacunación.
+
+5. [**UD 2.9 Tasa de cero dosis**](https://im-data-paho.github.io/immunabc/articles/es/zero_dose_es.html)  
+   Identifica a las personas cero dosis, es decir, sin registro de haber recibido un conjunto determinado de vacunas, y calcula la tasa de cero dosis (el complemento de la cobertura) por cohorte de nacimiento y área geográfica. Además, lista a cada persona con las vacunas recibidas, para que el programa pueda planificar estrategias focalizadas para alcanzar a las comunidades a las que no está llegando.
 
 ### Otros
 

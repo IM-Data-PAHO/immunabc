@@ -19,7 +19,7 @@ devtools::install_github("IM-Data-PAHO/immunabc")
 
 ## Usage
 
-Currently, immunABC contains eight main modules, grouped as in the manual into data quality (CD) and data usage (UD) indicators. The code beside each module (for example, CD 3.1) is the code of the indicator it implements in the manual. Follow the links below to explore detailed vignettes with practical examples and guidance on how to use each module:
+Currently, immunABC contains nine main modules, grouped as in the manual into data quality (CD) and data usage (UD) indicators. The code beside each module (for example, CD 3.1) is the code of the indicator it implements in the manual. Follow the links below to explore detailed vignettes with practical examples and guidance on how to use each module:
 
 ### Data quality (CD)
 
@@ -45,6 +45,9 @@ Currently, immunABC contains eight main modules, grouped as in the manual into d
 
 4. [**UD 2.7 Nominal Dropout Rate**](https://im-data-paho.github.io/immunabc/articles/en/nominal_dropout_en.html)  
    Calculates dropout rates between any two vaccine doses using nominal data. This module ensures accurate follow-up tracking across a vaccination schedule.
+
+5. [**UD 2.9 Zero-Dose Rate**](https://im-data-paho.github.io/immunabc/articles/en/zero_dose_en.html)  
+   Identifies zero-dose people, those with no record of receiving a given set of vaccines, and calculates the zero-dose rate (the complement of coverage) by birth cohort and geographic area. It also lists each person with the vaccines they received, so the program can plan targeted strategies to reach the communities it is missing.
 
 ### Others
 
