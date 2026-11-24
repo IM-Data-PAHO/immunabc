@@ -6,20 +6,38 @@
 #' @param vaccines Character (optional). A character vector specifying the doses to include in the analysis. If \code{NULL} (default), all vaccines in \code{data.EIR} are included.
 #' @param birth_cohorts Numeric (optional). A vector specifying the birth cohort(s) of the people to list. If \code{NULL} (default), every person is listed regardless of birth year.
 #' @param data.pop_ids Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, every person in it is listed, plus the people in \code{data.EIR} whose \code{ID} is not in it, with no \code{name}. A warning reports how many of these people there are.
-#' @return A data frame with one row per person, the earliest date of each of the \code{vaccines} and a \code{Category} column: "COMPLETE" if the person has all of them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none. When \code{data.pop_ids} is provided, it also includes \code{name} and a \code{Source} column: "POP_IDS" for people in \code{data.pop_ids}, and "EIR_ONLY" for people only found in \code{data.EIR}, whose residence and date of birth come from their earliest EIR record.
+#' @param fix_residence Logical. This function requires each person in \code{data.EIR} to have a single place of residence across all their vaccinations. When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.
+#' @return A data frame with one row per person, the earliest date of each of the \code{vaccines} and a \code{Category} column: "COMPLETE" if the person has all of them, "PARTIAL" if they have some, and "ZERO_DOSE" if they have none. When \code{data.pop_ids} is provided, it also includes \code{name} and a \code{Source} column: "POP_IDS" for people in \code{data.pop_ids}, and "EIR_ONLY" for people only found in \code{data.EIR}. The residence and date of birth of people in \code{data.pop_ids} are taken from it, unmodified; a warning reports the people whose residence differs from their residence in \code{data.EIR}, which should be corrected before running the analysis. "EIR_ONLY" people get the residence of their most recent vaccination (see \code{fix_residence}) and the date of birth of their earliest EIR record.
 #'
 #' @import dplyr
 #' @import lubridate
 #' @import tidyr
 #'
 #' @export
-zd_list <- function(data.EIR, vaccines = NULL, birth_cohorts = NULL, data.pop_ids = NULL) {
+zd_list <- function(data.EIR, vaccines = NULL, birth_cohorts = NULL, data.pop_ids = NULL, fix_residence = TRUE) {
 
   # validations
   .validate_data.EIR(data.EIR)
   .validate_vaccines(vaccines, data.EIR, "data.EIR")
   .validate_numeric(birth_cohorts, "birth_cohorts", min_len = 1)
   .validate_data.pop_ids(data.pop_ids)
+  .validate_logical(fix_residence, "fix_residence")
+
+  # Checks if the birth_cohorts variable is used
+  if(!is.null(birth_cohorts)) {
+    data.EIR <- data.EIR %>%
+      filter(year(date_birth) %in% birth_cohorts)
+  }
+
+  # Each person listed from the EIR should be assigned to a single residence
+  # NOTE: this function will stop execution when fix_residence is FALSE and the
+  #       data frame contains more than one residence per person
+  data.EIR <- .enforce_single_residence(data.EIR, fix_residence)
+
+  # Residence is never fixed in data.pop_ids, only checked against the EIR (warning only)
+  if(!is.null(data.pop_ids)) {
+    .validate_residence_pop_ids(data.pop_ids, data.EIR)
+  }
 
   # determine vaccines to evaluate
   doses_to_use <- .doses_to_use(data.EIR, vaccines)

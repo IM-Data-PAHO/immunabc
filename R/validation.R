@@ -397,6 +397,46 @@
   }
 }
 
+#' Warn when people found in both data.EIR and data.pop_ids have a different
+#' residence in each. Neither data frame is modified: the residence in data.EIR
+#' is used for the numerator and the residence in data.pop_ids for the
+#' denominator, so these people should be corrected before running the analysis.
+#' Warning only, since it flags a data-quality issue.
+#' NOTE: Expects data.EIR to hold a single residence per ID (see
+#'       .enforce_single_residence). Callers must fix residence before calling.
+#'
+#' @import dplyr
+#'
+#' @keywords internal
+#' @noRd
+.validate_residence_pop_ids <- function(data.pop_ids, data.EIR, residence_cols = c("ADM1_residence", "ADM2_residence")) {
+  EIR_residence <- data.EIR %>%
+    distinct(ID, .keep_all = TRUE) %>%
+    select(all_of(c("ID", residence_cols)))
+
+  both <- data.pop_ids %>%
+    distinct(ID, .keep_all = TRUE) %>%
+    select(all_of(c("ID", residence_cols))) %>%
+    inner_join(EIR_residence, by = "ID", suffix = c("_pop_ids", "_EIR"))
+
+  # NA-safe comparison: NA vs a value counts as different, NA vs NA does not
+  mismatch <- rep(FALSE, nrow(both))
+  for(col in residence_cols) {
+    a <- both[[paste0(col, "_pop_ids")]]
+    b <- both[[paste0(col, "_EIR")]]
+    mismatch <- mismatch | coalesce(a != b, is.na(a) != is.na(b))
+  }
+
+  n_mismatch <- sum(mismatch)
+  if(n_mismatch > 0) {
+    warning(
+      n_mismatch, " people have a different residence in data.EIR and in data.pop_ids. ",
+      "They may be counted in one area as vaccinated and in another as unvaccinated. ",
+      "Correct their residence before running the analysis."
+    )
+  }
+}
+
 #' Validate EIR duplicates.
 #'
 #' @keywords internal

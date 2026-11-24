@@ -10,7 +10,8 @@ zd_rate(
   vaccines = NULL,
   birth_cohorts = NULL,
   data.pop = NULL,
-  data.pop_ids = NULL
+  data.pop_ids = NULL,
+  fix_residence = TRUE
 )
 }
 \arguments{
@@ -24,7 +25,9 @@ zd_rate(
 
 \item{data.pop}{Data frame (optional). A data frame with population denominators. See \code{immunABC.pop.ADMX} for structure examples. If \code{NULL} (default) and no \code{data.pop_ids} is provided, the denominator is computed from \code{data.EIR}.}
 
-\item{data.pop_ids}{Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, denominators are computed from it instead of \code{data.pop} or \code{data.EIR}.}
+\item{data.pop_ids}{Data frame (optional). A data frame with individual population records (such as a civil registry) that can be cross-referenced with the EIR. See \code{immunABC.pop_ids} for expected structure. If provided, denominators are computed from it instead of \code{data.pop} or \code{data.EIR}. Its residence is never modified: when geo_level is "ADM1" or "ADM2", a warning reports the people whose residence differs from their residence in \code{data.EIR}, which should be corrected before running the analysis.}
+
+\item{fix_residence}{Logical. This function requires each person in \code{data.EIR} to have a single place of residence across all their vaccinations when geo_level is "ADM1" or "ADM2", so that each person is counted in a single area. When a person has more than one residence, TRUE (default) sets all their records to the residence of their most recent vaccination, and FALSE stops with an error.}
 }
 \value{
 A data frame containing the zero-dose rate for each of the \code{vaccines}, birth cohort and geographic area, including groups where nobody was vaccinated. When \code{vaccines} is \code{NULL}, it also contains rows with \code{dose} "All", counting as vaccinated the people with at least one vaccine. A warning is raised when a group has more vaccinated people than population (negative \code{zd_rate}). To list each person and their vaccines, see \code{zd_list}.
